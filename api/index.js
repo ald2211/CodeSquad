@@ -4,6 +4,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import authRouter from './routes/auth.route.js'
 
+
 //configue env file
 dotenv.config();
 
@@ -14,8 +15,9 @@ const corsOptions = {                             // Configure CORS to allow req
 
 const app=express()
 app.use(cors(corsOptions));                      
-app.use(express.json())                         // Middleware to parse JSON bodies                                     
-
+app.use(express.json())                         // Middleware to parse JSON bodies    
+app.use(express.static('api/public'))
+                        
 //Routes
 app.use('/api/v1/auth',authRouter);              //auth router
 
