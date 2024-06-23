@@ -82,3 +82,24 @@ export const activate=async(req,res,next)=>{
         next(err)
     }
 }
+
+export const signin=async (req,res,next)=>{
+
+    const {email,password}=req.body;
+    try{
+        let validUser=await user.aggregate([{$match:{email,verified:true}}])
+        console.log('user:',validUser[0])
+        if(validUser.length===0)return next(errorHandler(401,'Invalid email or password'))
+        
+        const validPassword=await bcrypt.compare(password,validUser[0].password)
+        if(!validPassword)return next(errorHandler(401,'Invalid email or password'))
+
+        const token=jwt.sign({id:validUser[0]._id},process.env.JWT_SECRET)
+        res.cookie('access_token',token,{httpOnly:true,expires: new Date(Date.now()+24*60*60*1000)}).status(200).json({'success':true,'message':'welcome to code Squad','user':validUser[0]})
+
+    }catch(err){
+
+        console.log('signIn error:',err)
+        next(err)
+    }
+}

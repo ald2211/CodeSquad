@@ -14,3 +14,13 @@ export const signupSchema=Yup.object({
     confirmPassword:Yup.string().oneOf([Yup.ref("password")],"password must match").required("confirmpassword is required"),
     terms:Yup.boolean().oneOf([true], 'You must accept the terms and conditions')
 })
+
+export const loginSchema=Yup.object({
+    email: Yup.string().email("Invalid email format").required('email is required'),
+    password:Yup.string().required('password is required')
+    .min(8,"password must be at leaset 8 characters")
+    .matches(/[!@#$%^&*(),.?":{}|<>]/,'atleast one symbol required')
+    .matches(/[0-9]/,"atleast one number required")
+    .matches(/[A-Z]/,"atleast one uppercase letter required")
+    .matches(/[a-z]/,"atleast one lowercase letter required"),
+})

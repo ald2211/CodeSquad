@@ -77,16 +77,16 @@ const Signup = () => {
           <img
             className="mr-2 h-4"
             src="https://static.cdnlogo.com/logos/g/35/google-icon.svg"
-            alt
-          />{" "}
+            alt='google_image'
+          />
           Log in with Google
         </button>
         <button className="w-full text-sm mt-3 flex  items-center justify-center rounded-md border p-2 outline-none ring-gray-400 ring-offset-2 transition focus:ring-2 hover:border-transparent hover:bg-blue-400 hover:text-white">
           <img
             className="mr-2 h-4"
             src="https://www.cdnlogo.com/logos/l/66/linkedin-icon.svg"
-            alt
-          />{" "}
+            alt='linkedin_image'
+          />
           Log in with Linkedin
         </button>
         <div className="relative mt-6 mb-4 flex h-px place-items-center bg-gray-200">
