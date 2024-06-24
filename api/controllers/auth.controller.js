@@ -95,7 +95,8 @@ export const signin=async (req,res,next)=>{
         if(!validPassword)return next(errorHandler(401,'Invalid email or password'))
 
         const token=jwt.sign({id:validUser[0]._id},process.env.JWT_SECRET)
-        res.cookie('access_token',token,{httpOnly:true,expires: new Date(Date.now()+24*60*60*1000)}).status(200).json({'success':true,'message':'welcome to code Squad','user':validUser[0]})
+        const {password:pass,...rest}=validUser[0]
+        res.cookie('access_token',token,{httpOnly:true,expires: new Date(Date.now()+24*60*60*1000)}).status(200).json({'success':true,'message':'welcome to code Squad','user':rest})
 
     }catch(err){
 
