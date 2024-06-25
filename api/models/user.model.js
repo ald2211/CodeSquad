@@ -19,6 +19,10 @@ const userSchema=new mongoose.Schema({
         type:String,
         default:'developer'
     },
+    avatar:{
+        type:String,
+        default:'https://cdn-icons-png.flaticon.com/128/1144/1144760.png'
+    },
     userState:{
         type:Boolean,
         default:true

@@ -7,6 +7,7 @@ import ShowError from "../components/ShowError";
 import Input from "../components/Input";
 import axios from "axios";
 import { Success,Failed } from "../helper/popup";
+import OAuth from "../components/OAuth";
 
 
 const initialValues = {
@@ -73,22 +74,7 @@ const Signup = () => {
             ? "Sign up to get work"
             : "Sign up to hire developer"}
         </h1>
-        <button className="w-full text-sm mt-8 flex  items-center justify-center rounded-md border p-2 outline-none ring-gray-400 ring-offset-2 transition focus:ring-2 hover:border-transparent hover:bg-blue-400 hover:text-white">
-          <img
-            className="mr-2 h-4"
-            src="https://static.cdnlogo.com/logos/g/35/google-icon.svg"
-            alt='google_image'
-          />
-          Log in with Google
-        </button>
-        <button className="w-full text-sm mt-3 flex  items-center justify-center rounded-md border p-2 outline-none ring-gray-400 ring-offset-2 transition focus:ring-2 hover:border-transparent hover:bg-blue-400 hover:text-white">
-          <img
-            className="mr-2 h-4"
-            src="https://www.cdnlogo.com/logos/l/66/linkedin-icon.svg"
-            alt='linkedin_image'
-          />
-          Log in with Linkedin
-        </button>
+        <OAuth role={signState} />
         <div className="relative mt-6 mb-4 flex h-px place-items-center bg-gray-200">
           <div className="absolute left-1/2 h-6 w-14 -translate-x-1/2 bg-white text-center text-sm text-gray-500">
             or

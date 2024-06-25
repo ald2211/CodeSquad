@@ -96,11 +96,54 @@ export const signin=async (req,res,next)=>{
 
         const token=jwt.sign({id:validUser[0]._id},process.env.JWT_SECRET)
         const {password:pass,...rest}=validUser[0]
-        res.cookie('access_token',token,{httpOnly:true,expires: new Date(Date.now()+24*60*60*1000)}).status(200).json({'success':true,'message':'welcome to code Squad','user':rest})
+        res.cookie('access_token',token,{httpOnly:true,expires: new Date(Date.now()+24*60*60*1000)})
+           .status(200)
+           .json({'success':true,'message':'welcome to code Squad','user':rest})
 
     }catch(err){
 
         console.log('signIn error:',err)
+        next(err)
+    }
+}
+
+export const OAuthSignin=async(req,res,next)=>{
+
+    const {name,email,photo,role}=req.body
+    try{
+
+        const user_Existed=await user.aggregate([{$match:{email}}]) 
+        if(user_Existed.length>0 && user_Existed[0].verified){
+
+            const token= jwt.sign({id:user_Existed[0]._id},process.env.JWT_SECRET)
+            
+            const {password:pass,...rest}=user_Existed[0]
+
+            res.cookie('access_token',token,{httpOnly:true,expires: new Date(Date.now()+24*60*60*1000)})
+               .status(200)
+               .json({'success':true,'message':'welcome to code Squad','user':rest})
+        }else{
+            
+            const generatePassword=Math.random().toString(36).slice(-8)+Math.random().toString(36).slice(-8)
+            const hashedPassword=await bcrypt.hash(generatePassword,10)
+            const newUser=await user({
+                name:name.split(' ').join('').toLowerCase()+Math.random().toString(36).slice(-3),
+                email,
+                password:hashedPassword,
+                verified:true,
+                role:role?'client':'developer',
+                avatar:photo
+            })
+            newUser.save()
+            
+            const token=jwt.sign({id:newUser._id},process.env.JWT_SECRET)
+            const {password:pass,...rest}=newUser._doc
+            res.cookie('access_token',token,{httpOnly:true,expires:new Date(Date.now()+24*60*60*1000)})
+               .status(200)
+               .json({'success':true,'message':'welcome to code Squad','user':rest})
+        }
+    }catch(err){
+        console.log('errorAtAuthLogin:',err)
         next(err)
     }
 }

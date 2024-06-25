@@ -9,6 +9,7 @@ import { Success,Failed } from "../helper/popup";
 import {useDispatch,useSelector} from 'react-redux'
 import { signinFailure,signinStart,signinSuccess } from "../Redux/user/userSlice";
 import spinner from '../assets/loader.gif'
+import OAuth from "../components/OAuth";
 
 const Login = () => {
 
@@ -58,22 +59,7 @@ const Login = () => {
         <h1 className="text-black  font-thin text-lg  text-center md:text-2xl my-3">
           Login to CodeSquad
         </h1>
-        <button className="w-full text-sm mt-8 flex  items-center justify-center rounded-md border p-2 outline-none ring-gray-400 ring-offset-2 transition focus:ring-2 hover:border-transparent hover:bg-blue-400 hover:text-white">
-          <img
-            className="mr-2 h-4"
-            src="https://static.cdnlogo.com/logos/g/35/google-icon.svg"
-            alt='google_image'
-          />
-          Log in with Google
-        </button>
-        <button className="w-full text-sm mt-3 flex  items-center justify-center rounded-md border p-2 outline-none ring-gray-400 ring-offset-2 transition focus:ring-2 hover:border-transparent hover:bg-blue-400 hover:text-white">
-          <img
-            className="mr-2 h-4"
-            src="https://www.cdnlogo.com/logos/l/66/linkedin-icon.svg"
-            alt='linkedin_image'
-          />
-          Log in with Linkedin
-        </button>
+        <OAuth/>
         <div className="relative mt-6 mb-4 flex h-px place-items-center bg-gray-200">
           <div className="absolute left-1/2 h-6 w-14 -translate-x-1/2 bg-white text-center text-sm text-gray-500">
             or
