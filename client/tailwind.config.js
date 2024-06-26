@@ -10,6 +10,9 @@ export default {
         'xs-custom': '0.625rem', // 10px
         
       },
+      width:{
+        '95':'95%'
+      },
       
     },
   },

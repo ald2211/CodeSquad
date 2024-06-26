@@ -1,6 +1,6 @@
 import React from "react";
 
-const ShowError = ({Error}) => {
+const ShowError = ({ Error }) => {
   return (
     <>
       <div className="pointer-events-none absolute top-3 right-0  items-center px-3 ">

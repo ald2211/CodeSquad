@@ -1,11 +1,19 @@
-import React from 'react'
+import React from "react";
+import Navbar from "../components/Navbar";
+import PublicContentOne from "../components/PublicContentOne";
+import PublicContentTwo from "../components/PublicContentTwo";
+import PublicContentThree from "../components/PublicContentThree";
+import PublicNav from "../components/PublicNav";
 
 const Public = () => {
   return (
-    <div>
-      <h1>public page</h1>
-    </div>
-  )
-}
+    <>
+      <PublicNav />
+      <PublicContentOne />
+      <PublicContentTwo />
+      <PublicContentThree />
+    </>
+  );
+};
 
-export default Public
+export default Public;

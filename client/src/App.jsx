@@ -6,6 +6,7 @@ import Login from './pages/Login'
 import Profile from './pages/Profile'
 import { ToastContainer } from 'react-toastify';
 import Home from './pages/Home'
+import Footer from './components/Footer'
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
         < Route path='/profile' element={<Profile />}/>
         < Route path='/home'  element={<Home/>}/>
       </Routes>
+      < Footer />
     </div>
   )
 }
