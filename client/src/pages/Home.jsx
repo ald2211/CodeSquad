@@ -3,7 +3,6 @@ import Navbar from "../components/Navbar";
 const Home = () => {
   return (
     <>
-      <Navbar />
       <h1 className="mt-52 text-center">welcome to home</h1>
     </>
   );

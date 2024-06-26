@@ -12,15 +12,24 @@ import Closed from './pages/Closed'
 import Info from './pages/Info'
 import Notification from './pages/Notification'
 import Messages from './pages/Messages'
+import ProtectedRoute from './components/PrivateRoutes/ProtectedRoute'
+import { useSelector } from 'react-redux'
+import Navbar from './components/Navbar'
+import PublicOnly from './components/PrivateRoutes/PublicOnly'
 
 const App = () => {
+  const {currentUser}=useSelector((state)=>state.user)
   return (
     <div>
      <ToastContainer />
+     {currentUser && <Navbar />}
       <Routes>
+        <Route element={<PublicOnly/>}>
         < Route path='/' element={<Public />}/>
         < Route path='/signup' element={<Signup />}/>
         < Route path='/login' element={<Login />}/>
+        </Route>
+        <Route element={<ProtectedRoute/>}>
         < Route path='/profile' element={<Profile />}/>
         < Route path='/home'  element={<Home/>}/>
         < Route path='/committed'  element={<Committed/>}/>
@@ -28,6 +37,7 @@ const App = () => {
         < Route path='/info'  element={<Info/>}/>
         < Route path='/notification'  element={<Notification/>}/>
         < Route path='/messages'  element={<Messages/>}/>
+        </Route>
       </Routes>
       < Footer />
     </div>
