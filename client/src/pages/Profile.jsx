@@ -1,10 +1,11 @@
 import React from 'react'
+import Navbar from '../components/Navbar'
 
 const Profile = () => {
   return (
-    <div>
-      <h1>profile page</h1>
-    </div>
+    <>
+      <Navbar/>
+    </>
   )
 }
 
