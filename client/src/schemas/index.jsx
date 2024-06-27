@@ -24,3 +24,11 @@ export const loginSchema=Yup.object({
     .matches(/[A-Z]/,"atleast one uppercase letter required")
     .matches(/[a-z]/,"atleast one lowercase letter required"),
 })
+
+export const firstSectionSchema=Yup.object({
+    userRole:Yup.string().required('this field is required')
+    .min(2,"minimum two letters required")
+    .max(20,"maximum limit exceeds"),
+    rph:Yup.string().required('this field is required')
+    .max(5,'maximum amount reached'),
+})
