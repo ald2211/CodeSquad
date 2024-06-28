@@ -6,6 +6,7 @@ import authRouter from './routes/auth.route.js'
 import userRouter from './routes/user.route.js'
 import cookieParser from 'cookie-parser'
 
+
 //configue env file
 dotenv.config();
 
@@ -23,6 +24,8 @@ app.use(express.static('api/public'))
 //Routes
 app.use('/api/v1/auth',authRouter);              //auth router
 app.use('/api/v1/user',userRouter)
+
+
 
 //connect mongodb
 mongoose.connect(process.env.MONGO)

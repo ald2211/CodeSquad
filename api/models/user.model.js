@@ -35,6 +35,10 @@ const userSchema=new mongoose.Schema({
         type:Number,
         default:0
     },
+    resume:{
+        type:String,
+        default:null
+    },
     userState:{
         type:Boolean,
         default:true

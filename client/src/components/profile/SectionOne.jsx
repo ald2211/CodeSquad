@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import Modal from "react-modal";
-import { FiDelete, FiEdit } from "react-icons/fi";
+import { FiEdit } from "react-icons/fi";
 import { useFormik } from "formik";
 import { firstSectionSchema } from "../../schemas";
 import ShowError from "../ShowError";
@@ -41,11 +41,12 @@ const DeveloperProfile = () => {
       onSubmit: async (values, action) => {
         try {
           closeEditModal();
-          const updatedValues = { ...values };
+          
+          values;
           dispatch(processStart());
           const res = await axios.patch(
             `/api/v1/user/upload/${currentUser.user._id}`,
-            updatedValues,
+            values,
             {
               headers: {
                 "Content-Type": "application/json",
@@ -58,7 +59,8 @@ const DeveloperProfile = () => {
 
           dispatch(updateUserSuccess(data));
           Success(data.message);
-          action.resetForm();
+          
+          
         } catch (err) {
           dispatch(processFailed());
           Failed(err.response ? err.response.data.message : err.message);

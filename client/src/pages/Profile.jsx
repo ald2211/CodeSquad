@@ -21,10 +21,7 @@ const Profile = () => {
         </button>
       </div>
       <SectionOne/>
-      <div className="p-6 bg-gray-100 rounded-lg shadow-md mt-4">
-        <h2 className="text-2xl font-semibold mb-2">Resume</h2>
-        <ResumeUpload />
-      </div>
+      <ResumeUpload />
       <SummarySection/>
       <SkillSection/>
       <EducationSection/>

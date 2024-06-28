@@ -5,8 +5,9 @@ import { errorHandler } from "../utils/customError.js"
 
 
 
-export const updateFirstSection=async(req,res,next)=>{
 
+export const updateUserProfile=async(req,res,next)=>{
+   
     if(req.user.id !==req.params.id)return next(errorHandler('401','unAuthorized'))
     
     try{
@@ -14,7 +15,8 @@ export const updateFirstSection=async(req,res,next)=>{
             $set:{
                 avatar:req.body.avatar,
                 rph:req.body.rph,
-                jobRole:req.body.userRole
+                jobRole:req.body.userRole,
+                resume:req.file?.filename
 
             }
         },{new:true})
@@ -24,7 +26,7 @@ export const updateFirstSection=async(req,res,next)=>{
         res.status(201).json({success:true,message:'updated successfully','user':rest})
 
     }catch(err){
-
+        console.log('errorAt server:',err)
         next(err)
     }
 
