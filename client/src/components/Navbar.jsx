@@ -9,7 +9,7 @@ const Navbar = () => {
   const {currentUser}=useSelector((state)=>state.user)
   return (
     <>
-      <header className="pb-6 bg-white lg:pb-0">
+      <header className="fixed w-full top-[0] mb-4  pb-2  z-[2] bg-white lg:pb-0">
         <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
           {/* <!-- lg+ --> */}
           <nav className="flex items-center justify-between h-16 lg:h-20">
@@ -175,7 +175,7 @@ const Navbar = () => {
               {
                 currentUser?
                 <>
-                  <img onClick={()=>navigate('/profile')} className="rounded-full h-7 w-7 object-cover" src={currentUser.user.avatar} alt="" />
+                  <img onClick={()=>navigate('/profile')} className="rounded-full h-9 w-9 cursor-pointer hover:border-[2px] border-blue-500 object-cover" src={currentUser?.user?.avatar} alt="" />
                 </>
                 :
                 <>
@@ -202,51 +202,54 @@ const Navbar = () => {
 
           {/* <!-- xs to lg --> */}
           <nav
-            className={`transition-all duration-500 ease-in-out max-h-80 overflow-hidden pt-4 pb-6 bg-white border border-gray-200 rounded-md shadow-md lg:hidden absolute w-95  ${
+            className={`transition-all duration-500 ease-in-out max-h-80 overflow-hidden pt-4 pb-6 bg-white border border-gray-200 rounded-md shadow-md lg:hidden absolute w-95  z-[1]   ${
               menuOpen ? "block" : "hidden"
             }`}
           >
             <div className="flow-root">
               <div className="flex flex-col px-6 -my-2 space-y-1">
                 <Link
-                  href="#"
-                  title=""
+                  to='/home'
+                  onClick={()=>setMenuOpen(!menuOpen)}
                   className="inline-flex py-2 text-base font-medium text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"
                 >
                   Projects
                 </Link>
 
                 <Link
-                  href="#"
-                  title=""
+                  to='/committed'
+                  onClick={()=>setMenuOpen(!menuOpen)}
                   className="inline-flex py-2 text-base font-medium text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"
                 >
                   Committed
                 </Link>
 
                 <Link
-                  href="#"
-                  title=""
+                  to='/closed'
+                  onClick={()=>setMenuOpen(!menuOpen)}
                   className="inline-flex py-2 text-base font-medium text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"
                 >
                   Closed
                 </Link>
 
                 <Link
-                  href="#"
-                  title=""
+                  to='/messages'
+                  onClick={()=>setMenuOpen(!menuOpen)}
                   className="inline-flex py-2 text-base font-medium text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"
                 >
                   Messages
                 </Link>
                 <Link
-                  href="#"
-                  title=""
+                  to='/notification'
+                  onClick={()=>setMenuOpen(!menuOpen)}
                   className="inline-flex py-2 text-base font-medium text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"
                 >
+       
                   Notification
                 </Link>
                 <Link
+                  to='/profile'
+                  onClick={()=>setMenuOpen(!menuOpen)}
                   className="inline-flex py-2 text-base font-medium text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"
                 >
                   Profile

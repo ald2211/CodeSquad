@@ -11,7 +11,7 @@ import ResumeUpload from '../components/profile/AddResume'
 
 const Profile = () => {
   return (
-    <div className="App p-4 bg-gray-200 min-h-screen">
+    <div className=" p-4 bg-gray-200 min-h-screen">
       <div className="flex justify-end mb-4">
         <button
          

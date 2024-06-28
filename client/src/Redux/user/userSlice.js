@@ -12,7 +12,7 @@ export const userSlice=createSlice({
     initialState,
     reducers:{
 
-        signinStart:(state)=>{
+        processStart:(state)=>{
             
             state.loading=true
         },
@@ -21,14 +21,20 @@ export const userSlice=createSlice({
             state.currentUser=actions.payload
             state.loading=false
         },
-        signinFailure:(state,actions)=>{
+        processFailed:(state,actions)=>{
 
             state.loading=false
-        }
+        },
+        updateUserSuccess:(state,actions)=>{
+
+            state.currentUser=actions.payload
+            state.loading=false
+        },
+       
        
     }
 })
 
-export const {signinFailure,signinStart,signinSuccess}=userSlice.actions
+export const {processFailed,processStart,signinSuccess,updateUserSuccess}=userSlice.actions
 
 export default userSlice.reducer

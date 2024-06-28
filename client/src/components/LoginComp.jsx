@@ -8,8 +8,8 @@ import axios from "axios";
 import { Success, Failed } from "../helper/popup";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  signinFailure,
-  signinStart,
+  processFailed,
+  processStart,
   signinSuccess,
 } from "../Redux/user/userSlice";
 import spinner from "../assets/loader.gif";
@@ -31,7 +31,7 @@ const LoginComp = () => {
       onSubmit: async (values, action) => {
         try {
           console.log("values:", values);
-          dispatch(signinStart());
+          dispatch(processStart());
           const res = await axios.post("/api/v1/auth/signin", values, {
             headers: {
               "Content-Type": "application/json",
@@ -45,7 +45,7 @@ const LoginComp = () => {
           Success(data.message);
         } catch (err) {
           console.log("signupError:", err);
-          dispatch(signinFailure());
+          dispatch(processFailed());
           Failed(err.response ? err.response.data.message : err.message);
         }
       },
