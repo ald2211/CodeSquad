@@ -113,13 +113,13 @@ const SkillsSection = () => {
               <button
                 type="button"
                 onClick={closeEditModal}
-                className="text-gray-500 hover:underline"
+                className="text-gray-500 hover:text-gray-800"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="text-blue-500 hover:underline"
+                className="text-blue-500 hover:text-blue-800"
               >
                 Save
               </button>
