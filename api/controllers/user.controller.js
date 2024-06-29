@@ -16,7 +16,9 @@ export const updateUserProfile=async(req,res,next)=>{
                 avatar:req.body.avatar,
                 rph:req.body.rph,
                 jobRole:req.body.userRole,
-                resume:req.file?.filename
+                resume:req.file?.filename,
+                summary:req.body.summary,
+                skills:req.body.skills
 
             }
         },{new:true})

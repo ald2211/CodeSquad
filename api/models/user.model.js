@@ -39,6 +39,12 @@ const userSchema=new mongoose.Schema({
         type:String,
         default:null
     },
+    summary:{
+        type:String,
+    },
+    skills:{
+        type:[String]
+    },
     userState:{
         type:Boolean,
         default:true

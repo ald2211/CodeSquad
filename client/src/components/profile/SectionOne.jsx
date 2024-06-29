@@ -41,8 +41,6 @@ const DeveloperProfile = () => {
       onSubmit: async (values, action) => {
         try {
           closeEditModal();
-          
-          values;
           dispatch(processStart());
           const res = await axios.patch(
             `/api/v1/user/upload/${currentUser.user._id}`,

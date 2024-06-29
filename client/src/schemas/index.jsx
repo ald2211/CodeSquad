@@ -32,3 +32,17 @@ export const firstSectionSchema=Yup.object({
     rph:Yup.string().required('this field is required')
     .max(5,'maximum amount reached'),
 })
+
+export const summarySchema = Yup.object({
+    summary: Yup.string()
+      .max(200, 'Summary must be at most 200 characters long.'),
+  });
+
+
+export const skillsSchema = Yup.object().shape({
+    skills: Yup.string()
+    .matches(
+         /^(\s*\w+(\.\w+)?\s*,)*\s*\w+(\.\w+)?\s*$/,
+      "Skills must be comma-separated words or dot-separated words (e.g., React.js, Express.js) without spaces in between."
+      )
+  });
