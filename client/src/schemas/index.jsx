@@ -46,3 +46,16 @@ export const skillsSchema = Yup.object().shape({
       "Skills must be comma-separated words or dot-separated words (e.g., React.js, Express.js) without spaces in between."
       )
   });
+
+  export const educationSchema = Yup.object({
+    courseName: Yup.string().required("Course name is required"),
+    collegeName: Yup.string().required("College name is required"),
+    country: Yup.string().required("Country is required"),
+    startDate: Yup.date().required("Start date is required"),
+    endDate: Yup.date()
+      .required("End date is required")
+      .test('is-greater', 'End date must be greater than start date', function (value) {
+        const { startDate } = this.parent;
+        return !startDate || !value || value > startDate;
+      })
+  });

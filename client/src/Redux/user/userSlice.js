@@ -3,6 +3,7 @@ import {createSlice} from '@reduxjs/toolkit'
 const initialState={
 
     currentUser:null,
+    currentEducation:null,
     loading:false
 }
 
@@ -30,11 +31,15 @@ export const userSlice=createSlice({
             state.currentUser=actions.payload
             state.loading=false
         },
+        updateEducationSuccess:(state,actions)=>{
+            
+            state.currentEducation=actions.payload
+        }
        
        
     }
 })
 
-export const {processFailed,processStart,signinSuccess,updateUserSuccess}=userSlice.actions
+export const {processFailed,processStart,signinSuccess,updateUserSuccess,updateEducationSuccess}=userSlice.actions
 
 export default userSlice.reducer
