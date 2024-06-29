@@ -83,7 +83,7 @@ const EducationSection = () => {
       initialValues,
       validationSchema: educationSchema,
       onSubmit: async (values,action) => {
-        
+
         try {
           closeEditModal();
           let res;
@@ -143,19 +143,19 @@ useEffect(() => {
          {currentEducation.data?.map((edu, index) => (
           <div key={index} className="mb-4 p-4 bg-gray-50 rounded-lg relative">
             <div className="grid grid-cols-2 border-[3px] p-4">
-              <div>
+              <div className="mb-2">
                 <h3 className="text-xl font-medium">Course Name</h3>
                 <p className="text-gray-700">{edu.courseName}</p>
               </div>
-              <div>
+              <div className="mb-2">
                 <h3 className="text-xl font-medium">College Name</h3>
                 <p className="text-gray-700">{edu.collegeName}</p>
               </div>
-              <div>
+              <div className="mb-2" >
                 <h3 className="text-xl font-medium">Country</h3>
                 <p className="text-gray-700">{edu.country}</p>
               </div>
-              <div>
+              <div className="mb-2">
                 <h3 className="text-xl font-medium">Duration</h3>
                 <p className="text-gray-700">
                   {edu.startDate.split('T')[0]} to {edu.endDate.split('T')[0]}
@@ -362,4 +362,4 @@ useEffect(() => {
   );
 };
 
-export default EducationSection;
+export default React.memo(EducationSection);

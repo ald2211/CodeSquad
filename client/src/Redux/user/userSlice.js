@@ -4,6 +4,7 @@ const initialState={
 
     currentUser:null,
     currentEducation:null,
+    currentExperience:null,
     loading:false
 }
 
@@ -34,12 +35,16 @@ export const userSlice=createSlice({
         updateEducationSuccess:(state,actions)=>{
             
             state.currentEducation=actions.payload
+        },
+        updateExperienceSuccess:(state,action)=>{
+
+            state.currentExperience=action.payload
         }
        
        
     }
 })
 
-export const {processFailed,processStart,signinSuccess,updateUserSuccess,updateEducationSuccess}=userSlice.actions
+export const {processFailed,processStart,signinSuccess,updateUserSuccess,updateEducationSuccess,updateExperienceSuccess}=userSlice.actions
 
 export default userSlice.reducer

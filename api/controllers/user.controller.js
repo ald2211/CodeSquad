@@ -1,4 +1,5 @@
 import education from "../models/education.model.js"
+import experience from "../models/experience.model.js"
 import User from "../models/user.model.js"
 import { errorHandler } from "../utils/customError.js"
 
@@ -35,6 +36,7 @@ export const updateUserProfile=async(req,res,next)=>{
 
 }
 
+//user education
 
 export const getEducation=async(req,res,next)=>{
 
@@ -130,6 +132,108 @@ export const deleteEducation=async(req,res,next)=>{
         
         const userEducation = await education.aggregate([{$match:{ userId:req.user.id }}]);
         res.status(200).json({success:true,message:'education updated',data:userEducation})
+
+      } catch (err) {
+        console.log('error:',err)
+        next(err)
+      }
+}
+
+//user experience
+export const getExperience=async(req,res,next)=>{
+
+    try {
+       
+        const userExperience = await experience.aggregate([{$match:{ userId:req.user.id }}]);
+        res.status(200).json({
+            success: true,
+            message: 'Details fetched successfully',
+            data: userExperience
+          });
+      } catch (err) {
+        next(err)
+      }
+}
+
+export const addExperience=async(req,res,next)=>{
+
+    if(req.user.id !==req.params.id)return next(errorHandler(401,'unAuthorized'))
+        
+        try{
+             // Check for duplicate education entries
+             console.log('body:',req.body)
+             const existingExperience = await experience.aggregate([
+                {
+                  $match: {
+                    userId: req.user.id,
+                    jobTitle: req.body.jobTitle,
+                    company: req.body.company,
+                    
+                  }
+                }
+              ]);
+
+
+  console.log('existingEducation:',existingExperience)
+
+      if (existingExperience && existingExperience.length>0) return next(errorHandler(400,'experience entry already exists' ));
+              const newExperience=new experience({
+                userId: req.user.id,
+                jobTitle:req.body.jobTitle,
+                company:req.body.company,
+                location:req.body.location,
+                startDate: new Date(req.body.startDate),
+                endDate: new Date(req.body.endDate),
+            })
+
+
+            await newExperience.save()
+            const userExperience = await experience.aggregate([{$match:{ userId:req.user.id }}]);
+            res.status(200).json({success:true,message:'new experience added',data:userExperience})
+        }catch(err){
+            console.log('experienceUploadError:',err)
+            next(err)
+        }
+}
+
+export const editExperience=async(req,res,next)=>{
+
+
+  try {
+    const existingExperience = await experience.findOne({ _id: req.params.exp_id, userId: req.params.user_id });
+
+    if (!existingExperience)return next(errorHandler(404,'Experience entry not found'))
+
+    const updateExperience=await experience.findByIdAndUpdate(req.params.exp_id,{
+        $set:{
+            
+            jobTitle:req.body.jobTitle,
+            company:req.body.company,
+            location:req.body.location,
+            startDate: req.body.startDate,
+            endDate: req.body.endDate
+
+        }
+    },{new:true})
+    await updateExperience.save();
+
+    const userExperience = await experience.aggregate([{$match:{ userId:req.user.id }}]);
+
+    res.status(200).json({success:true,message:'Experience updated successfully',data:userExperience})
+  } catch (err) {
+    console.log('updationError:',err)
+    next(err)
+  }
+}
+
+export const deleteExperience=async(req,res,next)=>{
+    try {
+        const experienceToRemove = await experience.findOneAndDelete({ _id: req.params.id, user: req.user._id });
+    
+        if (!experienceToRemove) return next(errorHandler(404, 'Experience entry not found'));
+        
+        const userExperience = await experience.aggregate([{$match:{ userId:req.user.id }}]);
+        res.status(200).json({success:true,message:'Experience updated successfully',data:userExperience})
 
       } catch (err) {
         console.log('error:',err)

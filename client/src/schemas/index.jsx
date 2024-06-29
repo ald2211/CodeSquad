@@ -59,3 +59,16 @@ export const skillsSchema = Yup.object().shape({
         return !startDate || !value || value > startDate;
       })
   });
+
+  export const experienceSchema = Yup.object({
+    jobTitle: Yup.string().required("jobTitle is required"),
+    company: Yup.string().required("company name is required"),
+    location: Yup.string().required(" company location is required"),
+    startDate: Yup.date().required("Start date is required"),
+    endDate: Yup.date()
+      .required("End date is required")
+      .test('is-greater', 'End date must be greater than start date', function (value) {
+        const { startDate } = this.parent;
+        return !startDate || !value || value > startDate;
+      })
+  });
