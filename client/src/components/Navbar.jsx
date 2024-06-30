@@ -175,7 +175,7 @@ const Navbar = () => {
               {
                 currentUser?
                 <>
-                  <img onClick={()=>navigate('/profile')} className="rounded-full h-9 w-9 cursor-pointer hover:border-[2px] border-blue-500 object-cover" src={currentUser?.user?.avatar} alt="" />
+                  <img onClick={()=>navigate('/profile')} className="rounded-full h-9 w-9 cursor-pointer hover:border-[2px] border-blue-500 object-cover" src={currentUser?.data?.avatar} alt="" />
                 </>
                 :
                 <>

@@ -19,7 +19,7 @@ const ResumeUpload = () => {
         setLoadingEffect(true)
         const formData = new FormData();
         formData.append('resume', file);
-      const res=await axios.patch(`/api/v1/user/upload/${currentUser.user._id}`,formData,{
+      const res=await axios.patch(`/api/v1/user/upload/${currentUser.data._id}`,formData,{
 
         headers:{
           'Content-Type': 'multipart/form-data'
@@ -63,10 +63,10 @@ const ResumeUpload = () => {
             htmlFor="resume"
             className="cursor-pointer bg-blue-500 hover:bg-blue-600 ml-0 text-white  py-2 px-4   rounded-lg"
           >
-            {`${currentUser.user.resume?'update':'upload '}Resume`} 
+            {`${currentUser?.data?.resume?'update':'upload '}Resume`} 
           </label>
-          {currentUser.user.resume && (
-            <span className="ml-4">{ currentUser.user.resume.split('--')[1]}</span>
+          {currentUser?.data?.resume && (
+            <span className="ml-4">{ currentUser.data.resume.split('--')[1]}</span>
           )}
     </div>
     :

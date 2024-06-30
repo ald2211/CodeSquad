@@ -28,7 +28,7 @@ export const updateUserProfile = async (req, res, next) => {
 
     res
       .status(201)
-      .json({ success: true, message: "updated successfully", user: rest });
+      .json({ success: true, message: "updated successfully", data: rest });
   } catch (err) {
     console.log("errorAt server:", err);
     next(err);
@@ -392,7 +392,7 @@ export const editProjects = async (req, res, next) => {
         req.body.projectSummary.trim() === ""
       )
         return next(errorHandler(400, "invalid input"));
-        
+
     const updateProject = await project.findByIdAndUpdate(
       req.params.proj_id,
       {

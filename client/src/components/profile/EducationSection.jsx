@@ -100,7 +100,7 @@ const EducationSection = () => {
             );
           }else{
              res = await axios.post(
-              `/api/v1/user/education/add/${currentUser.user._id}`,
+              `/api/v1/user/education/add/${currentUser.data._id}`,
               values,
               {
                 headers: {

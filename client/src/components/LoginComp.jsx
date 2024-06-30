@@ -37,10 +37,10 @@ const LoginComp = () => {
               "Content-Type": "application/json",
             },
           });
-          const data = res.data || "nill";
+          const data = res.data;
           console.log("user:", data);
           action.resetForm();
-          dispatch(signinSuccess({ data }));
+          dispatch(signinSuccess(data));
           navigate("/home");
           Success(data.message);
         } catch (err) {

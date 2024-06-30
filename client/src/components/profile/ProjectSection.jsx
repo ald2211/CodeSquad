@@ -96,7 +96,7 @@ const ProjectsSection = () => {
           );
         } else {
           res = await axios.post(
-            `/api/v1/user/projects/add/${currentUser.user._id}`,
+            `/api/v1/user/projects/add/${currentUser.data._id}`,
             values,
             {
               headers: {
@@ -134,7 +134,7 @@ const ProjectsSection = () => {
     <>
       <div className="p-6 bg-gray-100 rounded-lg shadow-md mt-4 relative">
         <h2 className="text-2xl font-semibold mb-2">Projects</h2>
-        {currentProjects?.data.length > 0 ? (
+        {currentProjects?.data?.length > 0 ? (
           <>
             {currentProjects?.data?.map((proj, index) => (
               <div key={index} className="border-[3px] mb-4 p-4 bg-gray-50 rounded-lg relative">

@@ -31,4 +31,4 @@ const experienceSchema=new mongoose.Schema({
 })
 
 
-export default mongoose.model('userExperience',experienceSchema)
+export default mongoose.model('user_experience',experienceSchema)

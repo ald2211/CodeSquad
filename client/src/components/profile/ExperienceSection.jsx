@@ -97,7 +97,7 @@ const ExperienceSection = () => {
           );
         } else {
           res = await axios.post(
-            `/api/v1/user/experience/add/${currentUser.user._id}`,
+            `/api/v1/user/experience/add/${currentUser.data._id}`,
             values,
             {
               headers: {

@@ -6,7 +6,6 @@ import Token from "../models/token.model.js"
 import verifyEmail from "../utils/sendMail.js"
 import { tokenGenerator } from "../helpers/tokenGenerator.js"
 
-import path from 'path';
 
 
 
@@ -26,6 +25,8 @@ export const signup=async(req,res,next)=>{
           if (!username || username.trim().length < 2) {
             return next(errorHandler(400,'Name must be at least 2 characters long'))
           }
+
+          if (!role || (role !== 'developer' && role !== 'client'))return next(errorHandler(400,'invalid role'))
           
         const userExisted=await user.aggregate([{$match:{email:email}}])
         console.log('user',userExisted)
@@ -94,11 +95,11 @@ export const signin=async (req,res,next)=>{
         const validPassword=await bcrypt.compare(password,validUser[0].password)
         if(!validPassword)return next(errorHandler(401,'Invalid email or password'))
 
-        const token=jwt.sign({id:validUser[0]._id},process.env.JWT_SECRET)
-        const {password:pass,...rest}=validUser[0]
+        const token=jwt.sign({id:validUser[0]._id,role:validUser[0].role},process.env.JWT_SECRET)
+        const {password:pass,...data}=validUser[0]
         res.cookie('access_token',token,{httpOnly:true,expires: new Date(Date.now()+24*60*60*1000)})
            .status(200)
-           .json({'success':true,'message':'welcome to code Squad','user':rest})
+           .json({'success':true,'message':'welcome to code Squad',data})
 
     }catch(err){
 
@@ -115,13 +116,13 @@ export const OAuthSignin=async(req,res,next)=>{
         const user_Existed=await user.aggregate([{$match:{email}}]) 
         if(user_Existed.length>0 && user_Existed[0].verified){
 
-            const token= jwt.sign({id:user_Existed[0]._id},process.env.JWT_SECRET)
+            const token= jwt.sign({id:user_Existed[0]._id,role:user_Existed[0].role},process.env.JWT_SECRET)
             
-            const {password:pass,...rest}=user_Existed[0]
+            const {password:pass,...data}=user_Existed[0]
 
             res.cookie('access_token',token,{httpOnly:true,expires: new Date(Date.now()+24*60*60*1000)})
                .status(200)
-               .json({'success':true,'message':'welcome to code Squad','user':rest})
+               .json({'success':true,'message':'welcome to code Squad',data})
         }else{
             
             const generatePassword=Math.random().toString(36).slice(-8)+Math.random().toString(36).slice(-8)
@@ -136,11 +137,11 @@ export const OAuthSignin=async(req,res,next)=>{
             })
             newUser.save()
             
-            const token=jwt.sign({id:newUser._id},process.env.JWT_SECRET)
-            const {password:pass,...rest}=newUser._doc
+            const token=jwt.sign({id:newUser._id,role:newUser.role},process.env.JWT_SECRET)
+            const {password:pass,...data}=newUser._doc
             res.cookie('access_token',token,{httpOnly:true,expires:new Date(Date.now()+24*60*60*1000)})
                .status(200)
-               .json({'success':true,'message':'welcome to code Squad','user':rest})
+               .json({'success':true,'message':'welcome to code Squad',data})
         }
     }catch(err){
         console.log('errorAtAuthLogin:',err)

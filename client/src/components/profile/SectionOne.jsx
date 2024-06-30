@@ -30,8 +30,8 @@ const DeveloperProfile = () => {
   const dispatch = useDispatch();
 
   const initialValues = {
-    userRole: currentUser?.user?.jobRole || "your role",
-    rph: currentUser?.user?.rph || 0,
+    userRole: currentUser?.data?.jobRole || "your role",
+    rph: currentUser?.data?.rph || 0,
   };
 
   const { handleChange, handleBlur, values, errors, handleSubmit, touched } =
@@ -43,7 +43,7 @@ const DeveloperProfile = () => {
           closeEditModal();
           dispatch(processStart());
           const res = await axios.patch(
-            `/api/v1/user/upload/${currentUser.user._id}`,
+            `/api/v1/user/upload/${currentUser.data._id}`,
             values,
             {
               headers: {
@@ -103,7 +103,7 @@ const DeveloperProfile = () => {
         setUpdateImage(imageUrl);
         try {
           const res = await axios.patch(
-            `/api/v1/user/upload/${currentUser.user._id}`,
+            `/api/v1/user/upload/${currentUser.data._id}`,
             { avatar: imageUrl },
             {
               headers: {
@@ -152,13 +152,13 @@ const DeveloperProfile = () => {
               <img
                 onClick={() => fileRef.current.click()}
                 className=" lg:self-start object-cover w-32 h-32  rounded-full"
-                src={currentUser?.user?.avatar}
+                src={currentUser?.data?.avatar}
                 alt="image"
               />
               <p className=" text-xl md:text-2xl flex flex-col mt-6 ml-3 lg:text-4xl font-semibold text-black">
-                {currentUser?.user?.name}
+                {currentUser?.data?.name}
                 <span className="font-normal text-lg md:text-xl  text-left lg:text-2xl text-gray-600">
-                  {currentUser?.user?.jobRole}
+                  {currentUser?.data?.jobRole}
                 </span>
               </p>
             </div>
@@ -166,9 +166,9 @@ const DeveloperProfile = () => {
 
           {/* Right div */}
           <div className="flex flex-col lg:items-center lg:mr-0 md:mr-0 m-auto  md:items-end md:w-1/2 p-4">
-            <StarRating rating={currentUser?.user?.averageRating}/>
+            <StarRating rating={currentUser?.data?.averageRating}/>
             <p className="text-gray-600 text-xl text-center  md:text-3xl md:mr-[41px] lg:text-4xl lg:ml-7 md:text-right">
-              {`₹${currentUser?.user?.rph}/hr`}
+              {`₹${currentUser?.data?.rph}/hr`}
             </p>
           </div>
           <div className="flex space-x-2 ml-auto md:mb-auto lg:mb-auto">

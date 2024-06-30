@@ -25,7 +25,7 @@ const userSchema=new mongoose.Schema({
     },
     jobRole:{
         type:String,
-        default:'developer'
+        default:'your role'
     },
     averageRating:{
         type:Number,

@@ -14,14 +14,14 @@ import { HiOutlineDocumentAdd } from "react-icons/hi";
 
 const SkillsSection = () => {
   const dispatch = useDispatch(); 
-  const currentUser = useSelector((state) => state.user.currentUser); 
+  const {currentUser} = useSelector((state) => state.user); 
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const skills = currentUser?.user?.skills || []; 
+  const skills = currentUser?.data?.skills; 
 
   const { handleChange, handleBlur, values, errors, touched, handleSubmit } =
     useFormik({
-      initialValues: { skills:currentUser.user.skills.join(", ") },
+      initialValues: { skills:currentUser?.data?.skills.join(", ") },
       validationSchema: skillsSchema,
       onSubmit: async (values, { resetForm }) => {
         try {
@@ -29,7 +29,7 @@ const SkillsSection = () => {
           const updatedSkills =values.skills===''?[]:values.skills.split(",").map(skill => skill.trim());
           
           const res = await axios.patch(
-            `/api/v1/user/upload/${currentUser.user._id}`,
+            `/api/v1/user/upload/${currentUser.data._id}`,
             { skills: updatedSkills },
             {
               headers: {

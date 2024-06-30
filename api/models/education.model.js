@@ -28,4 +28,4 @@ const educationSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("DeveloperEducation", educationSchema);
+export default mongoose.model("user_educations", educationSchema);

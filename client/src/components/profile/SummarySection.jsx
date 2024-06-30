@@ -23,14 +23,14 @@ const SummarySection = () => {
   const dispatch=useDispatch()
   const { handleChange, handleBlur, values, errors, handleSubmit, touched } =
     useFormik({
-      initialValues:{summary:currentUser?.user?.summary||''},
+      initialValues:{summary:currentUser?.data?.summary||''},
       validationSchema: summarySchema,
       onSubmit: async (values, action) => {
         try {
           closeEditModal();
           setLoading(true)
           const res = await axios.patch(
-            `/api/v1/user/upload/${currentUser.user._id}`,
+            `/api/v1/user/upload/${currentUser?.data?._id}`,
             values,
             {
               headers: {
@@ -65,14 +65,14 @@ const SummarySection = () => {
     {!loading?
       <>
        <p className="text-gray-700">
-       {currentUser.user.summary?currentUser.user.summary
+       {currentUser.data.summary?currentUser.data.summary
        
        :
        <MdPostAdd onClick={openEditModal} className="m-auto h-9 w-9 hover:text-blue-600"  />
        
        }
     </p>
-   { !currentUser.user.summary?<HiOutlineDocumentAdd
+   { !currentUser.data.summary?<HiOutlineDocumentAdd
         className=" absolute top-[3%] right-[1%] h-8 w-8 hover:text-blue-500"
         onClick={openEditModal}
    />
@@ -89,7 +89,7 @@ const SummarySection = () => {
         overlayClassName="fixed inset-0 bg-black bg-opacity-75"
       >
         <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg mx-auto">
-          <h2 className="text-2xl font-semibold mb-4">{currentUser.user.summary?'Edit Details':'Add Details'}</h2>
+          <h2 className="text-2xl font-semibold mb-4">{currentUser.data.summary?'Edit Details':'Add Details'}</h2>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <textarea
