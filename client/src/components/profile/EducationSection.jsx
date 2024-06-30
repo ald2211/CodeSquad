@@ -146,7 +146,7 @@ useEffect(() => {
     <>
       <div className="p-6 bg-gray-100 rounded-lg shadow-md mt-4 relative ">
         <h2 className="text-2xl font-semibold mb-2">Education</h2>
-       {currentEducation.data.length>0?
+       {currentEducation?.data?.length>0?
         <>
          {currentEducation.data?.map((edu, index) => (
           <div key={index} className="mb-4 p-4 bg-gray-50 rounded-lg relative">

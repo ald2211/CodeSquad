@@ -44,12 +44,20 @@ export const userSlice=createSlice({
         updateProjectSuccess:(state,action)=>{
 
             state.currentProjects=action.payload
+        },
+        signoutSuccess:(state,action)=>{
+
+            state.currentUser=null,
+            state.currentEducation=null,
+            state.currentExperience=null,
+            state.currentProjects=null,
+            state.loading=false
         }
        
        
     }
 })
 
-export const {processFailed,processStart,signinSuccess,updateUserSuccess,updateEducationSuccess,updateExperienceSuccess,updateProjectSuccess}=userSlice.actions
+export const {processFailed,processStart,signinSuccess,updateUserSuccess,updateEducationSuccess,updateExperienceSuccess,updateProjectSuccess,signoutSuccess}=userSlice.actions
 
 export default userSlice.reducer

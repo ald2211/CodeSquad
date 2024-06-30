@@ -136,7 +136,7 @@ const DeveloperProfile = () => {
   };
 
   return (
-    <section className="relative mt-[54px] flex flex-col md:flex-row items-center p-4 bg-gray-100 rounded-lg shadow-md">
+    <section className="relative  flex flex-col md:flex-row items-center p-4 bg-gray-100 rounded-lg shadow-md">
       {/* Left div */}
       {!loading ? (
         <>

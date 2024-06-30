@@ -1,5 +1,5 @@
 import express from 'express';
-import { signup,activate, signin,OAuthSignin } from '../controllers/auth.controller.js';
+import { signup,activate, signin,OAuthSignin, signout } from '../controllers/auth.controller.js';
 
 const router=express.Router()
 
@@ -14,6 +14,9 @@ router.post('/signin',signin)
 
 //OAuth signin
 router.post('/OAuth',OAuthSignin)
+
+//signout
+router.get('/signout',signout)
 
 
 export default router

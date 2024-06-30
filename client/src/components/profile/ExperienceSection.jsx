@@ -141,7 +141,7 @@ const ExperienceSection = () => {
     <>
     <div className="p-6 bg-gray-100 rounded-lg shadow-md mt-4 relative ">
       <h2 className="text-2xl font-semibold mb-2">Experience</h2>
-     {currentExperience.data.length>0?
+     {currentExperience?.data?.length>0?
       <>
        {currentExperience.data?.map((exp, index) => (
         <div key={index} className="mb-4 p-4 bg-gray-50 rounded-lg relative">
