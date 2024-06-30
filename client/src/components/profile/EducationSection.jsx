@@ -131,6 +131,14 @@ useEffect(() => {
         startDate: selectedEducation.startDate,
         endDate: selectedEducation.endDate,
       });
+    }else{
+      setValues({
+        courseName: ' ',
+        collegeName: ' ',
+        country: ' ',
+        startDate: '',
+        endDate: '',
+      });
     }
   }, [selectedEducation, setValues]);
 

@@ -5,6 +5,7 @@ const initialState={
     currentUser:null,
     currentEducation:null,
     currentExperience:null,
+    currentProjects:[],
     loading:false
 }
 
@@ -39,12 +40,16 @@ export const userSlice=createSlice({
         updateExperienceSuccess:(state,action)=>{
 
             state.currentExperience=action.payload
+        },
+        updateProjectSuccess:(state,action)=>{
+
+            state.currentProjects=action.payload
         }
        
        
     }
 })
 
-export const {processFailed,processStart,signinSuccess,updateUserSuccess,updateEducationSuccess,updateExperienceSuccess}=userSlice.actions
+export const {processFailed,processStart,signinSuccess,updateUserSuccess,updateEducationSuccess,updateExperienceSuccess,updateProjectSuccess}=userSlice.actions
 
 export default userSlice.reducer

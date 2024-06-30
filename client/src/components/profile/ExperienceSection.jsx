@@ -126,6 +126,14 @@ const ExperienceSection = () => {
         startDate: selectedExperience.startDate.split("T")[0],
         endDate: selectedExperience.endDate.split("T")[0],
       });
+    }else{
+      setValues({
+        jobTitle:' ',
+        company:' ',
+        location:' ',
+        startDate:'',
+        endDate:'',
+      })
     }
   }, [selectedExperience, setValues]);
 

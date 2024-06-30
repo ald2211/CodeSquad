@@ -72,3 +72,12 @@ export const skillsSchema = Yup.object().shape({
         return !startDate || !value || value > startDate;
       })
   });
+
+  
+
+  export const projectSchema = Yup.object({
+    projectName: Yup.string().required("project Name is required"),
+    projectSummary: Yup.string()
+      .required('project description is required')
+      .max(200, 'Summary must be at most 200 characters long.'),
+  });
