@@ -1,4 +1,3 @@
-import education from "../models/education.model.js";
 import educationService from "../service/education.service.js";
 import { errorHandler } from "../utils/customError.js";
 
