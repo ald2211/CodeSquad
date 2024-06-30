@@ -174,15 +174,12 @@ const DeveloperProfile = () => {
             </p>
             }
           </div>
-          {
-            currentUser.data.role==='developer'&&
-            <div className="flex space-x-2 ml-auto md:mb-auto lg:mb-auto">
+          <div className="flex space-x-2 ml-auto md:mb-auto lg:mb-auto">
             <FiEdit
               className="absolute top-[3%] right-[1%] h-6 w-6 hover:text-blue-500"
               onClick={openEditModal}
             />
           </div>
-          }
           {/* Edit Modal */}
           <Modal
             isOpen={isEditModalOpen}
@@ -213,26 +210,29 @@ const DeveloperProfile = () => {
                     <ShowError Error={errors.userRole} />
                   ) : null}
                 </div>
+               {
+                currentUser.data.role=='developer'&&
                 <div className="mb-4">
-                  <label
-                    className="block text-gray-700 text-sm font-bold mb-2"
-                    htmlFor="hourlyPay"
-                  >
-                    Hourly Pay
-                  </label>
-                  <input
-                    id="rph"
-                    name="rph"
-                    type="number"
-                    value={values.rph}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  />
-                  {errors.rph && touched.rph ? (
-                    <ShowError Error={errors.rph} />
-                  ) : null}
-                </div>
+                <label
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                  htmlFor="hourlyPay"
+                >
+                  Hourly Pay
+                </label>
+                <input
+                  id="rph"
+                  name="rph"
+                  type="number"
+                  value={values.rph}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+                {errors.rph && touched.rph ? (
+                  <ShowError Error={errors.rph} />
+                ) : null}
+              </div>
+               }
                 <div className="flex justify-end space-x-2">
                   <button
                     type="button"

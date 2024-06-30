@@ -1,21 +1,10 @@
 import express from "express";
 import { verifyUser } from "../utils/verifyUser.js";
-import {
-  addEducation,
-  updateUserProfile,
-  editEducation,
-  deleteEducation,
-  getEducation,
-  addExperience,
-  editExperience,
-  deleteExperience,
-  getExperience,
-  addProjects,
-  deleteProjects,
-  getProjects,
-  editProjects,
-} from "../controllers/user.controller.js";
+import {updateUserProfile} from "../controllers/user.controller.js";
 import { upload } from "../utils/uploadConfig.js";
+import { addEducation, deleteEducation, editEducation, getEducation } from "../controllers/education.controller.js";
+import { addExperience, deleteExperience, editExperience, getExperience } from "../controllers/experience.controller.js";
+import { addProjects, deleteProjects, editProjects, getProjects } from "../controllers/project.controller.js";
 const router = express.Router();
 
 router.patch(

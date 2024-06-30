@@ -26,7 +26,7 @@ export const loginSchema=Yup.object({
 })
 
 export const firstSectionSchema=Yup.object({
-    userRole:Yup.string().required('this field is required')
+    userRole:Yup.string().trim().required('this field is required')
     .min(2,"minimum two letters required")
     .max(20,"maximum limit exceeds"),
     rph:Yup.string().required('this field is required')
@@ -34,7 +34,7 @@ export const firstSectionSchema=Yup.object({
 })
 
 export const summarySchema = Yup.object({
-    summary: Yup.string()
+    summary: Yup.string().trim()
       .max(200, 'Summary must be at most 200 characters long.'),
   });
 
