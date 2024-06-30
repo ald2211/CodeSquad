@@ -12,7 +12,7 @@ import { tokenGenerator } from "../helpers/tokenGenerator.js"
 export const signup=async(req,res,next)=>{
 
     const {username,email,password,role}=req.body
-    
+    console.log('body:',req.body)
     try{
         if (!email || !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
             return next(errorHandler(400,'Invalid email address'))
@@ -47,7 +47,8 @@ export const signup=async(req,res,next)=>{
             const newUser=new user({
                 name:username,
                 email,
-                password:hashPassword
+                password:hashPassword,
+                role:role
             })
             await newUser.save()
     

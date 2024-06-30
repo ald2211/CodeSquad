@@ -33,6 +33,7 @@ const SignupComp = () => {
     onSubmit: async (values, action) => {
       const { terms, confirmPassword, ...rest } = values;
       rest.role = signState ? "client" : "developer";
+      console.log('final:',rest)
       try {
         console.log(rest);
         const res = await axios.post("/api/v1/auth/signup", rest, {

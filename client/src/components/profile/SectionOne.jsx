@@ -167,16 +167,22 @@ const DeveloperProfile = () => {
           {/* Right div */}
           <div className="flex flex-col lg:items-center lg:mr-0 md:mr-0 m-auto  md:items-end md:w-1/2 p-4">
             <StarRating rating={currentUser?.data?.averageRating}/>
-            <p className="text-gray-600 text-xl text-center  md:text-3xl md:mr-[41px] lg:text-4xl lg:ml-7 md:text-right">
+            {
+              currentUser.data.role=='developer'&&
+              <p className="text-gray-600 text-xl text-center  md:text-3xl md:mr-[41px] lg:text-4xl lg:ml-7 md:text-right">
               {`₹${currentUser?.data?.rph}/hr`}
             </p>
+            }
           </div>
-          <div className="flex space-x-2 ml-auto md:mb-auto lg:mb-auto">
+          {
+            currentUser.data.role==='developer'&&
+            <div className="flex space-x-2 ml-auto md:mb-auto lg:mb-auto">
             <FiEdit
               className="absolute top-[3%] right-[1%] h-6 w-6 hover:text-blue-500"
               onClick={openEditModal}
             />
           </div>
+          }
           {/* Edit Modal */}
           <Modal
             isOpen={isEditModalOpen}

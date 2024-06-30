@@ -16,7 +16,7 @@ import spinner from '../assets/loader.gif'
 const Profile = () => {
 
   const dispatch=useDispatch()
-  const {loading}=useSelector((state)=>state.user)
+  const {currentUser,loading}=useSelector((state)=>state.user)
   const handleSignOut=async(req,res)=>{
 
     try{
@@ -49,13 +49,21 @@ const Profile = () => {
           </button>
         </div>
         <SectionOne/>
-        <ResumeUpload />
+        {
+          currentUser.data.role==='developer'&& <ResumeUpload />
+        }
+       
         <SummarySection/>
+        {
+          currentUser.data.role==='developer'&&
+        <>
         <SkillSection/>
         <EducationSection/>
         <ExperienceSection/>
         <ProjectsSection/>
   
+        </>
+        }
       </div>
         
         :
