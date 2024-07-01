@@ -8,6 +8,7 @@ import Input from "../components/Input";
 import axios from "axios";
 import { Success, Failed } from "../helper/popup";
 import OAuth from "../components/OAuth";
+import TermsAndCondition from "./TermsAndCondition";
 
 const initialValues = {
   username: "",
@@ -18,6 +19,7 @@ const initialValues = {
 };
 const SignupComp = () => {
   const [signState, setSignState] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const {
     handleChange,
@@ -27,6 +29,7 @@ const SignupComp = () => {
     handleSubmit,
     touched,
     isSubmitting,
+    setValues
   } = useFormik({
     initialValues,
     validationSchema: signupSchema,
@@ -181,12 +184,12 @@ const SignupComp = () => {
                 className="font-light text-gray-500 dark:text-gray-300"
               >
                 I accept the
-                <Link
-                  to="termsAndConditions"
+                <button
+                  onClick={()=>setIsModalOpen(true)}
                   className="font-medium text-primary-900 hover:underline dark:text-primary-400"
                 >
                   Terms and Conditions
-                </Link>
+                </button>
               </label>
             </div>
           </div>
@@ -214,7 +217,9 @@ const SignupComp = () => {
             </Link>
           </p>
         </form>
+        <TermsAndCondition isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       </div>
+      
     </>
   );
 };
