@@ -9,6 +9,7 @@ import { experienceSchema } from "../../schemas";
 import { MdPostAdd } from "react-icons/md";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
 import { updateExperienceSuccess } from "../../Redux/user/userSlice";
+import { addExperience, deleteExperience, editExperience, getExperience } from "../../api/service";
 
 const ExperienceSection = () => {
   const { currentUser, currentExperience } = useSelector((state) => state.user); // Assuming currentUser is stored in the Redux store
@@ -29,18 +30,11 @@ const ExperienceSection = () => {
   };
 
   useEffect(() => {
-    axios
-      .get(`/api/v1/user/experience/get`, {
-        withCredentials: true,
-      })
-      .then((response) => {
-        console.log("response:", response.data);
+      getExperience().then((response)=>{
         dispatch(updateExperienceSuccess(response.data));
       })
-      .catch((error) => {
-        console.log("fetching experience data failed", error);
-      });
-  }, [dispatch]);
+      .catch((err)=>console.log('fetchErrrorExp:',err))
+  }, []);
 
   const openEditModal = (experience) => {
     setSelectedExperience(experience);
@@ -65,15 +59,13 @@ const ExperienceSection = () => {
   const handleDelete = async (id) => {
     try {
       closeDeleteModal();
-      const res = await axios.delete(`/api/v1/user/experience/delete/${id}`, {
-        withCredentials: true,
-      });
+      const res =await deleteExperience(id)
       const data = res.data;
       console.log("data from delete", data);
       dispatch(updateExperienceSuccess(data));
       Success(data.message);
     } catch (err) {
-      Failed(err.response ? err.response.data.message : err.message);
+      console.log(err)
     }
   };
 
@@ -85,34 +77,16 @@ const ExperienceSection = () => {
         closeEditModal();
         let res;
         if (!newExp) {
-          res = await axios.patch(
-            `/api/v1/user/experience/edit/${selectedExperience._id}/${selectedExperience.userId}`,
-            values,
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-              withCredentials: true,
-            }
-          );
+          res=await editExperience(selectedExperience._id,selectedExperience.userId,values)
         } else {
-          res = await axios.post(
-            `/api/v1/user/experience/add/${currentUser.data._id}`,
-            values,
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-              withCredentials: true,
-            }
-          );
+          res = await addExperience(currentUser.data._id,values)
         }
         const data = res.data;
         dispatch(updateExperienceSuccess(data));
         Success(data.message);
         action.resetForm();
       } catch (err) {
-        Failed(err.response ? err.response.data.message : err.message);
+        console.log(err)
       }
     },
   });

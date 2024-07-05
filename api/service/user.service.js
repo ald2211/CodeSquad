@@ -3,13 +3,13 @@ import { errorHandler } from "../utils/customError.js";
 
 class userService{
 
-    async updateUserProfile(userId, profileData, file) {
-        
+    async updateUserProfile(userId, profileData) {
+        console.log('profile DAta:',profileData)
         const updateData = {
           avatar: profileData.avatar,
           rph: profileData.rph,
           jobRole: profileData?.userRole?.trim(),
-          resume: file ? file.filename : profileData.resume,
+          resume:  profileData.resume,
           summary: profileData?.summary?.trim(),
           skills: profileData.skills,
         };

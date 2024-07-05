@@ -4,7 +4,7 @@ import { errorHandler } from "../utils/customError.js";
 class educationService{
 
     async getAllUserEducation(userId){
-        console.log('edu service')
+      
         return await educationRepository.findAllByUserId(userId)
     }
 

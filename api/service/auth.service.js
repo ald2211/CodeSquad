@@ -80,12 +80,20 @@ async userSignIn({email, password}){
     if (!validPassword)
         throw errorHandler(401, "Invalid email or password")
 
-    const token = jwt.sign(
+    const accessToken = jwt.sign(
       { id: validUser[0]._id, role: validUser[0].role },
-      process.env.JWT_SECRET
-    );
+      process.env.JWT_ACCESS_SECRET,
+      { expiresIn: '5m' }
+  );
+
+  const refreshToken = jwt.sign(
+    { id: validUser[0]._id, role: validUser[0].role },
+    process.env.JWT_SECRET,
+    { expiresIn: '24h' }
+);
+
     const { password: pass, ...data } = validUser[0];
-    return {data,token}
+    return {data,accessToken,refreshToken}
 }
 
 }

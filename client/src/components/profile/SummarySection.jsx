@@ -13,6 +13,7 @@ import {
 } from "../../Redux/user/userSlice";
 import spinner from "../../assets/loader.gif";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
+import { uploadSummary } from "../../api/service";
 
 
 const SummarySection = () => {
@@ -29,16 +30,7 @@ const SummarySection = () => {
         try {
           closeEditModal();
           setLoading(true)
-          const res = await axios.patch(
-            `/api/v1/user/upload/${currentUser?.data?._id}`,
-            values,
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-              withCredentials: true,
-            }
-          );
+          const res = await uploadSummary(currentUser?.data?._id,values)
           const data = res.data;
           console.log(data);
           
@@ -47,7 +39,7 @@ const SummarySection = () => {
           Success('summary updated successfully');
         } catch (err) {
           setLoading(false)
-          Failed(err.response ? err.response.data.message : err.message);
+          console.log(err)
         }
       },
     });

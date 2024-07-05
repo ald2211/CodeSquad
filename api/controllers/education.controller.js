@@ -5,7 +5,7 @@ import { errorHandler } from "../utils/customError.js";
 
 export const getEducation = async (req, res, next) => {
   try {
-    console.log('edu controller')
+    
     const userEducation = await educationService.getAllUserEducation(req.user.id)
     res.status(200).json({
       success: true,

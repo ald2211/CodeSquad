@@ -9,6 +9,7 @@ import axios from "axios";
 import { updateUserSuccess } from "../../Redux/user/userSlice";
 import { MdPostAdd } from "react-icons/md";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
+import { uploadSkills } from "../../api/service";
 
 
 
@@ -27,17 +28,8 @@ const SkillsSection = () => {
         try {
           closeEditModal();
           const updatedSkills =values.skills===''?[]:values.skills.split(",").map(skill => skill.trim());
-          
-          const res = await axios.patch(
-            `/api/v1/user/upload/${currentUser.data._id}`,
-            { skills: updatedSkills },
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-              withCredentials: true,
-            }
-          );
+          console.log('updatedSkills:',updatedSkills)
+          const res =await uploadSkills(currentUser.data._id,updatedSkills)
           const data = res.data;
           console.log(data);
 
@@ -45,7 +37,7 @@ const SkillsSection = () => {
           Success(data.message);
         } catch (err) {
          
-          Failed(err.response ? err.response.data.message : err.message);
+         console.log('err',err)
         }
       },
     });

@@ -9,11 +9,12 @@ import { educationSchema } from "../../schemas";
 import { MdPostAdd } from "react-icons/md";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
 import { updateEducationSuccess } from "../../Redux/user/userSlice";
+import { addEducation, deleteEducation, editEducation, getEducation } from "../../api/service";
 
 
 const EducationSection = () => {
   
-  const {currentUser,currentEducation} = useSelector((state) => state.user); // Assuming currentUser is stored in the Redux store
+  const {currentUser,currentEducation} = useSelector((state) => state.user);
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedEducation, setSelectedEducation] = useState(null);
@@ -29,21 +30,17 @@ const EducationSection = () => {
     endDate: "",
   }
 
+ 
   useEffect(()=>{
 
-    axios.get(`/api/v1/user/education/get`,{
-      withCredentials:true
-    })
-    .then((response)=>{
-      console.log('response:',response.data)
+    getEducation().then((response)=>{
       dispatch(updateEducationSuccess(response.data))
     })
-    .catch((error)=>{
-      console.log('fetching education data failed',error)
-    })
-    
+    .catch((err)=> console.log('errfetch:',err))
+     
   },[])
-
+  
+ 
   const openEditModal = (education) => {
     setSelectedEducation(education);
     setIsEditModalOpen(true);
@@ -66,15 +63,12 @@ const EducationSection = () => {
   const handleDelete = async (id) => {
     try {
       closeDeleteModal()
-      const res = await axios.delete(`/api/v1/user/education/delete/${id}`, {
-        withCredentials: true,
-      });
-      const data = res.data;
-      console.log('data from delete',data)
+      const res=await deleteEducation(id)
+      const data=res.data
       dispatch(updateEducationSuccess(data))
       Success(data.message);
     } catch (err) {
-      Failed(err.response ? err.response.data.message : err.message);
+      console.log(err)
     }
   };
 
@@ -88,35 +82,22 @@ const EducationSection = () => {
           closeEditModal();
           let res;
           if(!newEdu){
-             res = await axios.patch(
-              `/api/v1/user/education/edit/${selectedEducation._id}/${selectedEducation.userId}`,
-              values,
-              {
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                withCredentials: true,
-              }
-            );
+            
+            res = await editEducation(selectedEducation._id,selectedEducation.userId,values)
           }else{
-             res = await axios.post(
-              `/api/v1/user/education/add/${currentUser.data._id}`,
-              values,
-              {
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                withCredentials: true,
-              }
-            );
+            console.log('selected:',selectedEducation)
+            res =await addEducation(currentUser.data._id,values)
+             
           }
           const data = res.data;
           dispatch(updateEducationSuccess(data))
+          console.log('dataaa:',data)
           Success(data.message);
           action.resetForm()
           
         } catch (err) {
-          Failed(err.response ? err.response.data.message : err.message);
+          console.log('error:',err)
+          
         
         }
       },

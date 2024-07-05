@@ -44,19 +44,20 @@ export const activate = async (req, res, next) => {
 
 export const signin = async (req, res, next) => {
   try {
-    const {data,token}=await authService.userSignIn(req.body)
-    res
-      .cookie("access_token", token, {
-        httpOnly: true,
-        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      const { data, accessToken, refreshToken } = await authService.userSignIn(req.body);
+      res.cookie("refresh_token", refreshToken, {
+          httpOnly: true,
+          expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
       })
       .status(200)
-      .json({ success: true, message: "welcome to code Squad", data });
+      .json({ success: true, message: "Welcome to Code Squad", data, accessToken });
   } catch (err) {
-    console.log("signIn error:", err);
-    next(err);
+      console.log("signIn error:", err);
+      next(err);
   }
 };
+
+
 
 export const OAuthSignin = async (req, res, next) => {
   const { name, email, photo, role } = req.body;
@@ -83,5 +84,28 @@ export const signout = async (req, res, next) => {
   } catch (err) {
     console.log("error at signout:", err);
     next(err);
+  }
+};
+
+
+//handling refresh token
+export const tokenRefresh = async (req, res, next) => {
+  const refreshToken = req.cookies.refresh_token;
+  console.log('refresh:',refreshToken)
+  if (!refreshToken) {
+      return next(errorHandler(400, 'invalid token'));
+  }
+
+  try {
+      const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+      const newAccessToken = jwt.sign(
+          { id: decoded.id, role: decoded.role },
+          process.env.JWT_ACCESS_SECRET,
+          { expiresIn: '5m' }
+      );
+
+      res.status(200).json({ success: true, accessToken: newAccessToken });
+  } catch (err) {
+      return next(errorHandler(403, 'Forbidden'));
   }
 };

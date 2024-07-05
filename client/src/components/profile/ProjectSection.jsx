@@ -9,6 +9,7 @@ import { projectSchema } from "../../schemas";
 import { MdPostAdd } from "react-icons/md";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
 import { updateProjectSuccess } from "../../Redux/user/userSlice";
+import { addProjects, deleteProjects, editProjects, getProjects } from "../../api/service";
 
 Modal.setAppElement('#root');
 
@@ -28,18 +29,10 @@ const ProjectsSection = () => {
   };
 
   useEffect(() => {
-    axios
-      .get(`/api/v1/user/projects/get`, {
-        withCredentials: true,
-      })
-      .then((response) => {
-        console.log("response:", response.data);
-        dispatch(updateProjectSuccess(response.data));
-      })
-      .catch((error) => {
-        console.log("fetching projects data failed", error);
-      });
-  }, [dispatch]);
+    getProjects().then((response)=>{
+      dispatch(updateProjectSuccess(response.data));
+    }).catch((err)=>console.log(err))
+  }, []);
 
   const openEditModal = (project) => {
     setSelectedProject(project);
@@ -64,15 +57,13 @@ const ProjectsSection = () => {
   const handleDelete = async (id) => {
     try {
       closeDeleteModal();
-      const res = await axios.delete(`/api/v1/user/projects/delete/${id}`, {
-        withCredentials: true,
-      });
+      const res = await deleteProjects(id)
       const data = res.data;
       console.log("data from delete", data);
       dispatch(updateProjectSuccess(data));
       Success(data.message);
     } catch (err) {
-      Failed(err.response ? err.response.data.message : err.message);
+      console.log(err)
     }
   };
 
@@ -84,34 +75,16 @@ const ProjectsSection = () => {
         closeEditModal();
         let res;
         if (!newProj) {
-          res = await axios.patch(
-            `/api/v1/user/projects/edit/${selectedProject._id}/${selectedProject.userId}`,
-            values,
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-              withCredentials: true,
-            }
-          );
+          res = await editProjects(selectedProject._id,selectedProject.userId,values)
         } else {
-          res = await axios.post(
-            `/api/v1/user/projects/add/${currentUser.data._id}`,
-            values,
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-              withCredentials: true,
-            }
-          );
+          res = await addProjects(currentUser.data._id,values)
         }
         const data = res.data;
         dispatch(updateProjectSuccess(data));
         Success(data.message);
         action.resetForm();
       } catch (err) {
-        Failed(err.response ? err.response.data.message : err.message);
+        console.log(err)
       }
     },
   });

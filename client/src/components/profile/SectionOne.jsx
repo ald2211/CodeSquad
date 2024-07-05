@@ -21,6 +21,7 @@ import {
 } from "../../Redux/user/userSlice";
 import spinner from "../../assets/loader.gif";
 import StarRating from "./StarRating";
+import { updateUser, uploadImage } from "../../api/service";
 
 const DeveloperProfile = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -42,16 +43,7 @@ const DeveloperProfile = () => {
         try {
           closeEditModal();
           dispatch(processStart());
-          const res = await axios.patch(
-            `/api/v1/user/upload/${currentUser.data._id}`,
-            values,
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-              withCredentials: true,
-            }
-          );
+          const res = await updateUser(currentUser.data._id,values)
           const data = res.data;
           console.log(data);
 
@@ -60,6 +52,7 @@ const DeveloperProfile = () => {
           
           
         } catch (err) {
+          
           dispatch(processFailed());
           Failed(err.response ? err.response.data.message : err.message);
         }
@@ -101,17 +94,9 @@ const DeveloperProfile = () => {
         const imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
         setFile(null);
         setUpdateImage(imageUrl);
+        console.log('imageUrl:',imageUrl)
         try {
-          const res = await axios.patch(
-            `/api/v1/user/upload/${currentUser.data._id}`,
-            { avatar: imageUrl },
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-              withCredentials: true,
-            }
-          );
+         const res=await uploadImage(currentUser.data._id,imageUrl)
           const data = res.data;
           console.log(data);
           console.log("serverImg:", data.message);

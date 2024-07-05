@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useFormik } from "formik";
 import { loginSchema } from "../schemas";
@@ -7,6 +7,7 @@ import ShowError from "../components/ShowError";
 import axios from "axios";
 import { Success, Failed } from "../helper/popup";
 import { useDispatch, useSelector } from "react-redux";
+import { userLogin } from "../api/service";
 import {
   processFailed,
   processStart,
@@ -14,8 +15,10 @@ import {
 } from "../Redux/user/userSlice";
 import spinner from "../assets/loader.gif";
 import OAuth from "../components/OAuth";
+import ForgotPasswordModal from "./ForgotPassword";
 
 const LoginComp = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
   const { loading, currentUser } = useSelector((state) => state.user);
 
@@ -30,23 +33,24 @@ const LoginComp = () => {
       validationSchema: loginSchema,
       onSubmit: async (values, action) => {
         try {
-          console.log("values:", values);
           dispatch(processStart());
-          const res = await axios.post("/api/v1/auth/signin", values, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-          const data = res.data;
-          console.log("user:", data);
-          action.resetForm();
-          dispatch(signinSuccess(data));
-          navigate("/home");
-          Success(data.message);
+          const response=await userLogin(values)
+          
+          if (response.success) {
+            const data = response.data;
+            console.log("user:", data);
+            localStorage.setItem('accessToken', data.accessToken);
+            action.resetForm();
+            dispatch(signinSuccess(data));
+            navigate("/home");
+            Success(data.message);
+        } else {
+            throw new Error(response.message);
+        };
         } catch (err) {
           console.log("signupError:", err);
           dispatch(processFailed());
-          Failed(err.response ? err.response.data.message : err.message);
+          Failed(err.message);
         }
       },
     });
@@ -114,6 +118,7 @@ const LoginComp = () => {
               >
                 Sign In
               </button>
+              <div className="flex justify-between">
               <p className="text-sm mb-3 font-light text-gray-500 dark:text-gray-400">
                 Don't have an account?
                 <Link
@@ -123,7 +128,15 @@ const LoginComp = () => {
                   Sign Up
                 </Link>
               </p>
+              <p onClick={()=>setIsModalOpen(true)} className="text-sm mb-3 font-normal text-blue-600 hover:underline cursor-pointer">
+                Forgot Password?
+              </p>
+              </div>
             </form>
+            <ForgotPasswordModal
+       isOpen={isModalOpen}
+       onClose={() => setIsModalOpen(false)}
+     />
           </div>
         </>
       ) : (
@@ -138,3 +151,9 @@ const LoginComp = () => {
 };
 
 export default LoginComp;
+
+
+{/* <div className="min-h-screen flex items-center justify-center">
+     
+    
+   </div> */}

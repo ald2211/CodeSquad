@@ -7,12 +7,7 @@ import { addExperience, deleteExperience, editExperience, getExperience } from "
 import { addProjects, deleteProjects, editProjects, getProjects } from "../controllers/project.controller.js";
 const router = express.Router();
 
-router.patch(
-  "/upload/:id",
-  verifyUser,
-  upload.single("resume"),
-  updateUserProfile
-);
+router.patch("/upload/:id",verifyUser,updateUserProfile);
 
 //education section
 router.post("/education/add/:id", verifyUser, addEducation);

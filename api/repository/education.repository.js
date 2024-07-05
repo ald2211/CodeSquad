@@ -4,7 +4,6 @@ class educationRepository{
 
     async findAllByUserId(userId){
 
-        console.log('edu repo')
         return await   Education.aggregate([{ $match: { userId } },]);
     }
 

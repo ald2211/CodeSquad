@@ -12,7 +12,8 @@ dotenv.config();
 
 const corsOptions = {                             // Configure CORS to allow requests from http://localhost:5173
     origin: "http://localhost:5173",
-    credentials: true                            // Allow credentials (cookies)
+    credentials: true ,                          // Allow credentials (cookies)
+    allowedHeaders: ['Content-Type', 'Authorization'],
   };
 
 const app=express()
