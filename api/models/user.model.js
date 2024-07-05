@@ -17,7 +17,8 @@ const userSchema=new mongoose.Schema({
     },
     role:{
         type:String,
-        default:'developer'
+        default:'developer',
+        required:true
     },
     avatar:{
         type:String,

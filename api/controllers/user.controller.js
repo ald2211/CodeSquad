@@ -1,4 +1,3 @@
-import User from "../models/user.model.js";
 import userService from "../service/user.service.js";
 import { errorHandler } from "../utils/customError.js";
 

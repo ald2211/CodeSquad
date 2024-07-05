@@ -123,7 +123,7 @@ const DeveloperProfile = () => {
   return (
     <section className="relative  flex flex-col md:flex-row items-center p-4 bg-gray-100 rounded-lg shadow-md">
       {/* Left div */}
-      {!loading ? (
+      {!loading ? 
         <>
           <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div className="text-center flex">
@@ -237,13 +237,11 @@ const DeveloperProfile = () => {
             </div>
           </Modal>
         </>
-      ) : (
-        <>
+      : 
           <div className="w-full h-full flex items-center justify-center">
             <img className="w-[60px]" src={spinner} alt="spinner" />
           </div>
-        </>
-      )}
+      }
     </section>
   );
 };
