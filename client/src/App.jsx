@@ -24,11 +24,11 @@ const App = () => {
      <ToastContainer />
      {currentUser && <Navbar />}
       <Routes>
-        <Route element={<PublicOnly/>}>
+        
         < Route path='/' element={<Public />}/>
-        < Route path='/signup' element={<Signup />}/>
-        < Route path='/login' element={<Login />}/>
-        </Route>
+       {!currentUser&&<> < Route path='/signup' element={<Signup />}/>
+        < Route path='/login' element={<Login />}/></>}
+
         <Route element={<ProtectedRoute/>}>
         < Route path='/profile' element={<Profile />}/>
         < Route path='/home'  element={<Home/>}/>
