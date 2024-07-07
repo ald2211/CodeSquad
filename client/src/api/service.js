@@ -312,3 +312,15 @@ export const uploadResume = async (userId, resumeUrl) => {
       Failed(err.response ? err.response.data.message : err.message) 
     }
   }
+
+
+  //logout
+  export const userLogout =async ()=>{
+
+    try{
+      const res=await axiosInstance.get('/auth/signout')
+      return res
+    }catch(err){
+      Failed(err.response ? err.response.data.message : err.message) 
+    }
+  }

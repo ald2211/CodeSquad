@@ -15,19 +15,27 @@ import Messages from './pages/Messages'
 import ProtectedRoute from './components/PrivateRoutes/ProtectedRoute'
 import { useSelector } from 'react-redux'
 import Navbar from './components/Navbar'
-import PublicOnly from './components/PrivateRoutes/PublicOnly'
+import NotFound from './pages/NotFound'
+import AdminOnly from './components/PrivateRoutes/AdminOnly'
+import UserManagement from './pages/UserManagement'
 
 const App = () => {
   const {currentUser}=useSelector((state)=>state.user)
   return (
     <div>
      <ToastContainer />
-     {currentUser && <Navbar />}
+     {currentUser &&  <Navbar />}
+     
+
       <Routes>
         
+       {!currentUser&&
+        <> 
         < Route path='/' element={<Public />}/>
-       {!currentUser&&<> < Route path='/signup' element={<Signup />}/>
-        < Route path='/login' element={<Login />}/></>}
+        < Route path='/signup' element={<Signup />}/>
+        < Route path='/login' element={<Login />}/>
+        </>
+        }
 
         <Route element={<ProtectedRoute/>}>
         < Route path='/profile' element={<Profile />}/>
@@ -37,9 +45,14 @@ const App = () => {
         < Route path='/info'  element={<Info/>}/>
         < Route path='/notification'  element={<Notification/>}/>
         < Route path='/messages'  element={<Messages/>}/>
+        <Route element={<AdminOnly/>}>
+        <Route path='/admin/userManagement' element={<UserManagement/>}/>
         </Route>
+        </Route>
+        
+        <Route path='*' element={<NotFound />} />
       </Routes>
-      < Footer />
+      <Footer/>
     </div>
   )
 }

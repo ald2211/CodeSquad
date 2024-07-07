@@ -9,7 +9,7 @@ const Navbar = () => {
   const {currentUser}=useSelector((state)=>state.user)
   return (
     <>
-      <header className="fixed w-full top-[0] mb-4  pb-2  z-[2] bg-white lg:pb-0">
+      <header className={`fixed w-full top-[0] mb-4  pb-2  z-[2] bg-white lg:pb-0 ${currentUser.data.role==='admin'&& 'border-[1px]'}`}>
         <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
           {/* <!-- lg+ --> */}
           <nav className="flex items-center justify-between h-16 lg:h-20">
@@ -57,7 +57,9 @@ const Navbar = () => {
               )}
             </button>
 
-            <div className="hidden lg:flex lg:items-center  lg:space-x-10">
+            {
+              currentUser.data.role!=='admin'&&
+              <div className="hidden lg:flex lg:items-center  lg:space-x-10">
             <NavLink
   to="/home"
   className={({ isActive }) =>
@@ -138,6 +140,7 @@ const Navbar = () => {
   )}
 </NavLink>
             </div>
+            }
 
              <div className="hidden lg:flex lg:items-center  lg:space-x-5">
                 {/* new added */}
@@ -213,25 +216,37 @@ const Navbar = () => {
                   onClick={()=>setMenuOpen(!menuOpen)}
                   className="inline-flex py-2 text-base font-medium text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"
                 >
-                  Projects
+                  {currentUser.data.role==='admin'?'Dashboard':'Projects'}
                 </Link>
 
                 <Link
-                  to='/committed'
+                  to={currentUser.data.role==='admin'?'/admin/userManagement':'/committed'}
                   onClick={()=>setMenuOpen(!menuOpen)}
                   className="inline-flex py-2 text-base font-medium text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"
                 >
-                  Committed
+                  {currentUser.data.role==='admin'?'User Management ':'Committed'}
                 </Link>
 
                 <Link
-                  to='/closed'
+                  to={currentUser.data.role==='admin'?'/admin/projectManagement':'/closed'}
                   onClick={()=>setMenuOpen(!menuOpen)}
                   className="inline-flex py-2 text-base font-medium text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"
                 >
-                  Closed
+                  {currentUser.data.role==='admin'?'Project Management ':'Closed'}
                 </Link>
-
+                {
+                  currentUser.data.role==='admin'&&
+                  <>
+                
+                <Link
+                  to='/admin/managePayment'
+                  onClick={()=>setMenuOpen(!menuOpen)}
+                  className="inline-flex py-2 text-base font-medium text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"
+                >
+                  Payments Management
+                </Link>
+                  </>
+                }
                 <Link
                   to='/messages'
                   onClick={()=>setMenuOpen(!menuOpen)}

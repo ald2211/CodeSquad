@@ -12,6 +12,7 @@ import { processFailed, processStart, signoutSuccess } from '../Redux/user/userS
 import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
 import spinner from '../assets/loader.gif'
+import { userLogout } from '../api/service'
 
 const Profile = () => {
 
@@ -21,7 +22,7 @@ const Profile = () => {
 
     try{
       dispatch(processStart())
-      const res=await axios.get('/api/v1/auth/signout')
+      const res=await userLogout()
       if(!res.data.success){
         dispatch(processFailed())
         Failed('some error occured')
@@ -39,7 +40,10 @@ const Profile = () => {
       <>
       {
         !loading?
-        <div className=" p-4 bg-gray-200 min-h-screen">
+        <>
+        {
+          currentUser.data.role!=='admin'?
+          <div className=" p-4 bg-gray-200 min-h-screen ">
         <div className="flex justify-end mb-4">
           <button
             onClick={handleSignOut}
@@ -65,6 +69,10 @@ const Profile = () => {
         </>
         }
       </div>
+      :
+      <div className='h-screen w-full'> this is admin page</div>
+        }
+        </>
         
         :
           <div className="w-full h-screen flex items-center justify-center">
