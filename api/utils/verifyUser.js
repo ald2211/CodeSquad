@@ -14,6 +14,7 @@ export const verifyUser = (requiredRoles = []) => {
                 return next(errorHandler(401, 'Unauthorized'));
             }
             req.user = user;
+            console.log('jwt:',user)
 
             // Check if the user's role is included in the required roles
             if (requiredRoles.length && !requiredRoles.includes(user.role)) {

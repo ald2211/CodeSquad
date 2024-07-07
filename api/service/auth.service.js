@@ -47,12 +47,19 @@ async userOAuthSignup({name, email, photo, role}){
 
     const user_Existed = await userRepository.findByEmail(email)
     if (user_Existed.length > 0 && user_Existed[0].verified) {
-        const token = jwt.sign(
-          { id: user_Existed[0]._id, role: user_Existed[0].role },
-          process.env.JWT_SECRET
-        );
+      const accessToken = jwt.sign(
+        { id: user_Existed[0]._id, role: user_Existed[0].role },
+        process.env.JWT_ACCESS_SECRET,
+        { expiresIn: '5m' }
+    );
+  
+    const refreshToken = jwt.sign(
+      { id: user_Existed[0]._id, role: user_Existed[0].role },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+  );
         const { password: pass, ...data } = user_Existed[0];
-        return {data,token}
+        return {data,accessToken,refreshToken}
     }else{
         const generatePassword =
         Math.random().toString(36).slice(-8) +
@@ -60,12 +67,20 @@ async userOAuthSignup({name, email, photo, role}){
       const hashedPassword = await bcrypt.hash(generatePassword, 10);
       
       const newUser=await userRepository.createOAuthUser(name,email,hashedPassword,role,photo)
-      const token = jwt.sign(
+      
+      const accessToken = jwt.sign(
         { id: newUser._id, role: newUser.role },
-        process.env.JWT_SECRET
-      );
+        process.env.JWT_ACCESS_SECRET,
+        { expiresIn: '5m' }
+    );
+  
+    const refreshToken = jwt.sign(
+      { id: validUser[0]._id, role: validUser[0].role },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+  );
       const { password: pass, ...data } = newUser._doc;
-      return {data,token}
+      return {data,accessToken,refreshToken}
     }
 }
 

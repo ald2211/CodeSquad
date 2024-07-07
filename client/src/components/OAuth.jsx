@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { signinSuccess } from "../Redux/user/userSlice";
 import { useNavigate } from "react-router-dom";
 import { Failed, Success } from "../helper/popup";
+import { OAuthLogin } from "../api/service";
 
 const OAuth = ({ role }) => {
   const dispatch = useDispatch();
@@ -28,11 +29,7 @@ const OAuth = ({ role }) => {
         photo: result.user.photoURL,
         role,
       };
-      const res = await axios.post("/api/v1/auth/OAuth", user_details, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await OAuthLogin(user_details)
       const data = res.data || "nill";
       console.log("data:", data);
       dispatch(signinSuccess(data));
@@ -57,11 +54,7 @@ const OAuth = ({ role }) => {
         photo: result.user.photoURL,
         role,
       };
-      const res = await axios.post("/api/v1/auth/OAuth", user_details, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await OAuthLogin(user_details)
       const data = res.data || "nill";
       console.log("data:", data);
       dispatch(signinSuccess(data));

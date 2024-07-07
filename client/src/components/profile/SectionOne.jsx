@@ -105,7 +105,7 @@ const DeveloperProfile = () => {
         } catch (err) {
           console.log("serverImgErr:", err);
           dispatch(processFailed());
-          Failed(err.message);
+          
         }
       }
     );

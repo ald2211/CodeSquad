@@ -16,6 +16,18 @@ export const userLogin = async (values) => {
     }
 };
 
+export const OAuthLogin=async(user_details)=>{
+  try{
+     const res=await axiosInstance.post("/auth/OAuth", user_details, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return res
+  }catch(err){
+    Failed(err.response ? err.response.data.message : err.message) 
+  }
+}
 export const updateUser = async (userId, values) => {
     try {
         const res = await axiosInstance.patch(
@@ -47,6 +59,7 @@ export const uploadImage=async (userId,imageUrl)=>{
             withCredentials: true,
           }
         );
+        console.log('res:',res)
         return res
       } catch (err) {
         console.log("serverImgErr:", err);
