@@ -42,7 +42,7 @@ const Home = () => {
         <AdminHome />
       ) : (
         <div className="min-h-screen bg-gray-100 p-4 mt-[90px]">
-          <div className="container mx-auto flex flex-col lg:flex-row">
+          <div className=" flex flex-col lg:flex-row">
             {/* Left Section */}
             <div className="w-full lg:w-1/4 p-4">
               <FilterBox />

@@ -4,7 +4,6 @@ import { useFormik } from "formik";
 import { loginSchema } from "../schemas";
 import Input from "../components/Input";
 import ShowError from "../components/ShowError";
-import axios from "axios";
 import { Success, Failed } from "../helper/popup";
 import { useDispatch, useSelector } from "react-redux";
 import { userLogin } from "../api/service";
