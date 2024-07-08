@@ -95,7 +95,6 @@ export const tokenRefresh = async (req, res, next) => {
 
   try {
       const decoded =  jwt.verify(refreshToken, process.env.JWT_SECRET);
-      console.log('decoded:',decoded)
       const newAccessToken = jwt.sign(
           { id: decoded.id, role: decoded.role },
           process.env.JWT_ACCESS_SECRET,
