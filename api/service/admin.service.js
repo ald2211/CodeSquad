@@ -3,11 +3,11 @@ import { errorHandler } from "../utils/customError.js"
 
 class adminService{
 
-    async findAllUsers(){
+    async findAllUsers(page,limit){
 
-        const result =await userRepository.findAllUsers()
+        return await userRepository.findAllUsers(page,limit)
 
-        return result
+        
 
     }
 

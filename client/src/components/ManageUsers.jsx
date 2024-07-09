@@ -10,6 +10,11 @@ const ManageUsers = () => {
   const [userData, setUserData] = useState([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedUserDetails,setSelectedUserDetails] = useState({});
+  const [search,setSearch]=useState('')
+  const [currentPage, setCurrentPage] = useState(1); // Track current page
+  const [totalPages, setTotalPages] = useState(1); // Total number of pages
+  const [totalItems, setTotalItems] = useState(0); // Total number of items
+  const itemsPerPage = 10; // Number of items per page
 
 
   const openDeleteModal = async(id,userState,key) => {
@@ -41,14 +46,21 @@ const ManageUsers = () => {
   }
 
   useEffect(() => {
-    getAllUsers()
+    getAllUsers(currentPage,itemsPerPage)
       .then((res) => {
-        const data = res.data;
-        setUserData(data.data);
+        const { data, totalPages, totalItems } = res.data;
+        setUserData(data);
+        setTotalPages(totalPages);
+        setTotalItems(totalItems);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [currentPage, itemsPerPage]);
   console.log('userData:',userData)
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <>
       <div className="flex flex-row mt-[80px]">
@@ -64,9 +76,10 @@ const ManageUsers = () => {
                   <input
                     type="text"
                     name="hs-table-with-pagination-search"
+                    onChange={(e)=>setSearch(e.target.value)}
                     id="hs-table-with-pagination-search"
                     className="py-2 px-3 z-0 ps-9 block w-full border-gray-200 shadow-sm rounded-lg text-sm focus:z-0 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
-                    placeholder="Search for items"
+                    placeholder="Search for users"
                   />
                   <div className="absolute inset-y-0 start-0 flex items-center pointer-events-none ps-3">
                     <svg
@@ -109,8 +122,8 @@ const ManageUsers = () => {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {userData.map((user,key) => (
-                      <tr key={key}>
+                    {userData.filter((item)=>search.toLowerCase()===''?item:item.name.toLowerCase().includes(search)).map((user,key) => (
+                      <tr key={user._id}>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <div className="flex-shrink-0 h-10 w-10">
@@ -145,7 +158,11 @@ const ManageUsers = () => {
                   </tbody>
                 </table>
               </div>
-              <Pagination/>
+              <Pagination
+               totalPages={totalPages}
+               currentPage={currentPage}
+               onPageChange={handlePageChange}
+              />
             </div>
           </div>
         </div>

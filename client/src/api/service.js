@@ -328,10 +328,17 @@ export const uploadResume = async (userId, resumeUrl) => {
 
   //admin 
 
-  export const getAllUsers=async()=>{
+  export const getAllUsers=async(page,limit)=>{
 
     try{
-      const res=await axiosInstance.get('/admin/allUsers',{withCredentials:true})
+      const res = await axiosInstance.get(`/admin/allUsers`, {
+        params: {
+          page,
+          limit
+        },
+        withCredentials: true
+      });
+      
       return res
     }catch(err){
       Failed(err.response ? err.response.data.message : err.message) 

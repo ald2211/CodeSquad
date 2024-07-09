@@ -72,7 +72,7 @@ const Profile = () => {
       </div>
       :
       <div className=" w-full mt-[82px] flex">
-      <div style={{ width: '22%' }}>
+      <div className='w-15p lg:w-22p'>
         <Sidebar />
       </div>
       <div className="w-3/4 p-4">
