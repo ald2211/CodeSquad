@@ -10,9 +10,10 @@ import ResumeUpload from '../components/profile/AddResume'
 import { Failed } from '../helper/popup'
 import { processFailed, processStart, signoutSuccess } from '../Redux/user/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
-import axios from 'axios'
 import spinner from '../assets/loader.gif'
 import { userLogout } from '../api/service'
+import Sidebar from '../components/AdminSidebar'
+import AdminProfile from '../components/profile/AdminProfile'
 
 const Profile = () => {
 
@@ -70,7 +71,14 @@ const Profile = () => {
         }
       </div>
       :
-      <div className='h-screen w-full'> this is admin page</div>
+      <div className=" w-full mt-[82px] flex">
+      <div style={{ width: '22%' }}>
+        <Sidebar />
+      </div>
+      <div className="w-3/4 p-4">
+        <AdminProfile />
+      </div>
+    </div>
         }
         </>
         
