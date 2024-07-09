@@ -49,7 +49,7 @@ const LoginComp = () => {
         } catch (err) {
           console.log("signupError:", err);
           dispatch(processFailed());
-          Failed(err.message);
+          
         }
       },
     });

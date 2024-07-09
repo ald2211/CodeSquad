@@ -4,6 +4,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import authRouter from './routes/auth.route.js'
 import userRouter from './routes/user.route.js'
+import adminRouter from './routes/admin.route.js'
 import cookieParser from 'cookie-parser'
 
 
@@ -24,7 +25,8 @@ app.use(express.static('api/public'))
                         
 //Routes
 app.use('/api/v1/auth',authRouter);              //auth router
-app.use('/api/v1/user',userRouter)
+app.use('/api/v1/user',userRouter);
+app.use('/api/v1/admin',adminRouter);
 
 
 

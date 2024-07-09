@@ -70,6 +70,15 @@ class userRepository{
           return User.updateOne({ _id: userId }, { $set: { verified: true } });
         }
 
+   //adimin
+
+        async findAllUsers(){
+          return User.find({role:{$ne:'admin'}})
+        }
+
+        async findUserById(id){
+          return User.findById(id)
+        }
 }
 
 export default new userRepository()

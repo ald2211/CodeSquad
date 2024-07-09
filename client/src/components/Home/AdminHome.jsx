@@ -1,8 +1,9 @@
-import React from 'react';
-import Sidebar from './AdminSidebar';
-import BarChart from './BarChart';
+import React, { useEffect } from 'react';
+import Sidebar from '../AdminSidebar';
+import BarChart from '../BarChart';
 
 const AdminHome = () => {
+  
    const topClients = [
       { id: 1, name: 'Alice Johnson', photo: 'https://randomuser.me/api/portraits/women/1.jpg', email: 'alice.johnson@example.com', totalProjects: 50 },
       { id: 2, name: 'Bob Smith', photo: 'https://randomuser.me/api/portraits/men/2.jpg', email: 'bob.smith@example.com', totalProjects: 45 },

@@ -4,7 +4,6 @@ import { FiEdit, FiTrash } from "react-icons/fi";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { Failed, Success } from "../../helper/popup";
-import axios from "axios";
 import { educationSchema } from "../../schemas";
 import { MdPostAdd } from "react-icons/md";
 import { HiOutlineDocumentAdd } from "react-icons/hi";

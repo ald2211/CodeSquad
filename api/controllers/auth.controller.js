@@ -1,8 +1,6 @@
-import user from "../models/user.model.js";
+
 import { errorHandler } from "../utils/customError.js";
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import Token from "../models/token.model.js";
 import verifyEmail from "../utils/sendMail.js";
 import { tokenGenerator } from "../helpers/tokenGenerator.js";
 import authService from "../service/auth.service.js";

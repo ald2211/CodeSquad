@@ -37,7 +37,7 @@ const OAuth = ({ role }) => {
       Success("Welcome to CodeSquad");
     } catch (err) {
       console.log("auth signin failed:", err);
-      Failed("google Sign In failed");
+      
     }
   };
 
@@ -62,7 +62,6 @@ const OAuth = ({ role }) => {
       Success("Welcome to CodeSquad");
     } catch (err) {
       console.log("gitHubError:", err);
-      Failed("GitHub Sign In failed");
     }
   };
 

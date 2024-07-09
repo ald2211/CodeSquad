@@ -326,6 +326,39 @@ export const uploadResume = async (userId, resumeUrl) => {
     }
   }
 
+  //admin 
+
+  export const getAllUsers=async()=>{
+
+    try{
+      const res=await axiosInstance.get('/admin/allUsers',{withCredentials:true})
+      return res
+    }catch(err){
+      Failed(err.response ? err.response.data.message : err.message) 
+    }
+  }
+
+  export const updateUserState=async(userId,userState)=>{
+      console.log('useeeeer:',userState)
+    try{
+      const res = await axiosInstance.patch(
+        `/admin/updateStatus/${userId}`,
+        {userState},
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      return res
+    }catch(err){
+      console.log('updateStatusError:',err)
+      Failed(err.response ? err.response.data.message : err.message) 
+    }
+  }
+
+
 
   //logout
   export const userLogout =async ()=>{

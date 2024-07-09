@@ -47,6 +47,10 @@ async userOAuthSignup({name, email, photo, role}){
 
     const user_Existed = await userRepository.findByEmail(email)
     if (user_Existed.length > 0 && user_Existed[0].verified) {
+      
+      if (!user_Existed[0].userState)
+        throw errorHandler(403, "the Account is Blocked please contact Admin");
+
       const accessToken = jwt.sign(
         { id: user_Existed[0]._id, role: user_Existed[0].role },
         process.env.JWT_ACCESS_SECRET,
@@ -94,6 +98,11 @@ async userSignIn({email, password}){
     const validPassword = await bcrypt.compare(password, validUser[0].password);
     if (!validPassword)
         throw errorHandler(401, "Invalid email or password")
+
+    console.log('state:',validUser.userState)
+    if (!validUser[0].userState)
+      throw errorHandler(403, "the Account is Blocked please contact Admin");
+    
 
     const accessToken = jwt.sign(
       { id: validUser[0]._id, role: validUser[0].role },

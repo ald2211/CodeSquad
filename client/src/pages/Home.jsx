@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
-import AdminHome from "../components/AdminHome";
+import AdminHome from "../components/Home/AdminHome";
 import FilterBox from "../components/Home/FilterBox";
 import SearchBar from "../components/Home/SearchBar";
 import MiniNav from "../components/Home/MiniNav";
