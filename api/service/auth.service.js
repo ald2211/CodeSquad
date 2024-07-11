@@ -120,6 +120,11 @@ async userSignIn({email, password}){
     return {data,accessToken,refreshToken}
 }
 
+  async verifyUserState(id){
+
+      return await userRepository.findUserById(id)
+  }
+
 }
 
 export default new authService()

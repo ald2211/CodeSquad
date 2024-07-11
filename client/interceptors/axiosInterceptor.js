@@ -46,6 +46,8 @@ axiosInstance.interceptors.response.use(
         
         // Redirect to login or handle unauthenticated state
       }
+    } else if (error.response.status === 403) {
+      localStorage.clear();
     }
 
     console.error('Response error:', error);
