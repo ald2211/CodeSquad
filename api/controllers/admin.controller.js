@@ -6,7 +6,8 @@ export const getAllUsers=async(req,res,next)=>{
     try{
         const page = parseInt(req.query.page) || 1;  // Current page number, default to 1
         const limit = parseInt(req.query.limit) || 10;  // Number of items per page, default to 10
-        const {count,users}=await adminService.findAllUsers(page,limit);
+        const search= req.query.search || ""
+        const {count,users}=await adminService.findAllUsers(page,limit,search);
         res.status(200).json({
             totalItems: count,
             totalPages: Math.ceil(count / limit),

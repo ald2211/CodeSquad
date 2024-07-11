@@ -328,13 +328,14 @@ export const uploadResume = async (userId, resumeUrl) => {
 
   //admin 
 
-  export const getAllUsers=async(page,limit)=>{
+  export const getAllUsers=async(page,limit,search)=>{
 
     try{
       const res = await axiosInstance.get(`/admin/allUsers`, {
         params: {
           page,
-          limit
+          limit,
+          search
         },
         withCredentials: true
       });

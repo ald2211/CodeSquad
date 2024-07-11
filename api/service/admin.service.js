@@ -3,9 +3,9 @@ import { errorHandler } from "../utils/customError.js"
 
 class adminService{
 
-    async findAllUsers(page,limit){
+    async findAllUsers(page,limit,search){
 
-        return await userRepository.findAllUsers(page,limit)
+        return await userRepository.findAllUsers(page,limit,search)
 
         
 

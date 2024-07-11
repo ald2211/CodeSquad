@@ -72,13 +72,17 @@ class userRepository{
 
    //adimin
 
-        async findAllUsers(page,limit){
-          
-         const users=await User.find({role:{$ne:'admin'}})
+        async findAllUsers(page,limit,search){
+        
+        const query=search?
+        { $or: [{ name: new RegExp(search, 'i') }, { email: new RegExp(search, 'i') }] }
+        :
+        {}
+        query.role={$ne:'admin'}
+        const count=await User.countDocuments(query)
+         const users=await User.find(query)
           .skip((page - 1) * limit)
           .limit(limit)
-          const count=await User.countDocuments()
-          console.log('users:',users,'count:',count)
           return {count,users}
         }
 
