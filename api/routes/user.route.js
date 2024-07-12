@@ -1,7 +1,6 @@
 import express from "express";
 import { verifyUser } from "../utils/verifyUser.js";
-import {updateUserProfile} from "../controllers/user.controller.js";
-import { upload } from "../utils/uploadConfig.js";
+import {getUserInfo, updateUserProfile} from "../controllers/user.controller.js";
 import { addEducation, deleteEducation, editEducation, getEducation } from "../controllers/education.controller.js";
 import { addExperience, deleteExperience, editExperience, getExperience } from "../controllers/experience.controller.js";
 import { addProjects, deleteProjects, editProjects, getProjects } from "../controllers/project.controller.js";
@@ -26,5 +25,8 @@ router.post("/projects/add/:id", verifyUser(['developer','client']), addProjects
 router.patch("/projects/edit/:proj_id/:user_id", verifyUser(['developer','client']), editProjects);
 router.delete("/projects/delete/:id", verifyUser(['developer','client']), deleteProjects);
 router.get("/projects/get", verifyUser(['developer','client']), getProjects);
+
+//fetch user-info
+router.get('/user-info',verifyUser(['admin','client','developer']),getUserInfo)
 
 export default router;

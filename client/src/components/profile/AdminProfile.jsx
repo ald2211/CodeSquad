@@ -8,7 +8,6 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../../firebase/firebase";
-import axios from "axios";
 import {
   processStart,
   updateUserSuccess,
@@ -16,6 +15,7 @@ import {
 } from "../../Redux/user/userSlice";
 import spinner from "../../assets/loader.gif";
 import { uploadImage } from "../../api/service";
+
 
 const AdminProfile = () => {
   const { currentUser, loading } = useSelector((state) => state.user);
@@ -57,10 +57,11 @@ const AdminProfile = () => {
         try {
           const res = await uploadImage(currentUser.data._id, imageUrl);
           const data = res.data;
-          console.log(data);
+          console.log('dataaaaaaaaa:',data);
           console.log("serverImg:", data.message);
           dispatch(updateUserSuccess(data));
           Success("profile image updated Successfully");
+          
         } catch (err) {
           console.log("serverImgErr:", err);
           dispatch(processFailed());
@@ -68,7 +69,7 @@ const AdminProfile = () => {
       }
     );
   };
-
+  
   return (
     <section className="relative flex flex-col items-center md:flex-row md:items-start p-4 bg-gray-100 rounded-lg shadow-md w-full">
       {!loading ? (
@@ -96,7 +97,7 @@ const AdminProfile = () => {
           </div>
         </div>
       ) : (
-        <div className="w-full h-[60px] bg-white flex items-center justify-center">
+        <div className="w-full h-screen bg-white flex items-center justify-center">
           <img className="w-[60px]" src={spinner} alt="Loading" />
         </div>
       )}

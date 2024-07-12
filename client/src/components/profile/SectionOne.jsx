@@ -13,7 +13,6 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../../firebase/firebase";
-import axios from "axios";
 import {
   processStart,
   updateUserSuccess,
@@ -66,7 +65,7 @@ const DeveloperProfile = () => {
   const [updateImage, setUpdateImage] = useState(null);
 
   useEffect(() => {
-    if (file) {
+    if (file && currentUser.data.role!=='admin') {
       handleFileUpload(file);
     }
   }, [file]);

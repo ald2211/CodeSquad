@@ -1,3 +1,4 @@
+import userRepository from "../repository/user.repository.js";
 import UserRepository from "../repository/user.repository.js";
 import { errorHandler } from "../utils/customError.js";
 
@@ -22,6 +23,10 @@ class userService{
     
         const { password, ...rest } = updatedUser._doc;
         return rest;
+      }
+
+      async getUserInfo(id){
+        return await userRepository.findUserById(id)
       }
 
 }

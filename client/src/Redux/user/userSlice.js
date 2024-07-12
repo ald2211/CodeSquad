@@ -1,63 +1,91 @@
-import {createSlice} from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { fetchUser } from '../../api/service';
 
-const initialState={
-
-    currentUser:null,
-    currentEducation:null,
-    currentExperience:null,
-    currentProjects:[],
-    loading:false
-}
-
-export const userSlice=createSlice({
-
-    name:'user',
-    initialState,
-    reducers:{
-
-        processStart:(state)=>{
-            
-            state.loading=true
-        },
-        signinSuccess:(state,actions)=>{
-
-            state.currentUser=actions.payload
-            state.loading=false
-        },
-        processFailed:(state,actions)=>{
-
-            state.loading=false
-        },
-        updateUserSuccess:(state,actions)=>{
-
-            state.currentUser=actions.payload
-            state.loading=false
-        },
-        updateEducationSuccess:(state,actions)=>{
-            
-            state.currentEducation=actions.payload
-        },
-        updateExperienceSuccess:(state,action)=>{
-
-            state.currentExperience=action.payload
-        },
-        updateProjectSuccess:(state,action)=>{
-
-            state.currentProjects=action.payload
-        },
-        signoutSuccess:(state,action)=>{
-
-            state.currentUser=null,
-            state.currentEducation=null,
-            state.currentExperience=null,
-            state.currentProjects=null,
-            state.loading=false
-        }
-       
-       
+ export const fetch_user = createAsyncThunk('user/fetchUser', async (_, { rejectWithValue }) => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+        return rejectWithValue('No token found');
+    } 
+    try{
+        const userData = await fetchUser(token);
+        return userData.data;
+    }catch(err){
+        console.log('errAtSlice:',err)
     }
-})
+        
+   
+});
 
-export const {processFailed,processStart,signinSuccess,updateUserSuccess,updateEducationSuccess,updateExperienceSuccess,updateProjectSuccess,signoutSuccess}=userSlice.actions
+const initialState = {
+    currentUser: null,
+    currentEducation: null,
+    currentExperience: null,
+    currentProjects: [],
+    loading: false,
+    error: null
+};
 
-export default userSlice.reducer
+const userSlice = createSlice({
+    name: 'user',
+    initialState,
+    reducers: {
+        processStart: (state) => {
+            state.loading = true;
+        },
+        signinSuccess: (state, action) => {
+            state.currentUser = action.payload;
+            state.loading = false;
+        },
+        processFailed: (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+        },
+        updateUserSuccess: (state, action) => {
+            state.currentUser = action.payload;
+            state.loading = false;
+        },
+        updateEducationSuccess: (state, action) => {
+            state.currentEducation = action.payload;
+        },
+        updateExperienceSuccess: (state, action) => {
+            state.currentExperience = action.payload;
+        },
+        updateProjectSuccess: (state, action) => {
+            state.currentProjects = action.payload;
+        },
+        signoutSuccess: (state) => {
+            state.currentUser = null;
+            state.currentEducation = null;
+            state.currentExperience = null;
+            state.currentProjects = null;
+            state.loading = false;
+        }
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(fetch_user.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(fetch_user.fulfilled, (state, action) => {
+                state.currentUser = action.payload;
+                state.loading = false;
+            })
+            .addCase(fetch_user.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            });
+    }
+});
+
+export const {
+    processFailed,
+    processStart,
+    signinSuccess,
+    updateUserSuccess,
+    updateEducationSuccess,
+    updateExperienceSuccess,
+    updateProjectSuccess,
+    signoutSuccess
+} = userSlice.actions;
+
+export default userSlice.reducer;

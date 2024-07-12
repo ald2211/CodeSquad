@@ -1,6 +1,7 @@
 import axiosInstance from "../../interceptors/axiosInterceptor";
 import { Failed } from "../helper/popup";
 
+
 export const userLogin = async (values) => {
     try {
         console.log('values:', values);
@@ -22,6 +23,19 @@ export const OAuthLogin=async(user_details)=>{
       headers: {
         "Content-Type": "application/json",
       },
+    });
+    return res
+  }catch(err){
+    Failed(err.response ? err.response.data.message : err.message) 
+  }
+}
+
+//fetch user info
+
+export const fetchUser=async ()=>{
+  try{
+    const res = await axiosInstance.get('/user/user-info', {
+      withCredentials:true
     });
     return res
   }catch(err){
@@ -373,6 +387,7 @@ export const uploadResume = async (userId, resumeUrl) => {
 
     try{
       const res=await axiosInstance.get('/auth/signout')
+      localStorage.removeItem('accessToken')
       return res
     }catch(err){
       Failed(err.response ? err.response.data.message : err.message) 
