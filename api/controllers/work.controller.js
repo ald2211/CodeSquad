@@ -15,8 +15,22 @@ export const createWork =async(req,res,next)=>{
 export const getClientAllWorks=async(req,res,next)=>{
 
    try{
-      const data=await workService.getClientWorks(req.user.id)
-      return res.status(200).json({success:true,message:' fetch success',data})
+      const page = parseInt(req.query.page) || 1;  // Current page number, default to 1
+      const limit = parseInt(req.query.limit)||10;  // Number of items per page
+      const search= req.query.search || ""
+      const {data,count}=await workService.getClientWorks(req.user.id,page,limit,search)
+      console.log('page:',page)
+      console.log('limit:',limit)
+      // console.log('\ndata:',data)
+      // console.log('count:',count)
+      return res.status(200).json({
+         success:true,
+         message:' fetch success',
+          data,
+      totalItems:count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+      })
    }catch(err){
       console.log('err at clientwork fetch:',err)
       next(err)

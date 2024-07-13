@@ -402,16 +402,17 @@ export const uploadResume = async (userId, resumeUrl) => {
     }
   }
 
-  export const getClientsAllWorks=async()=>{
-    try{
+  export const getClientsAllWorks = async (parameters) => {
+    try {
       const res = await axiosInstance.get('/user/work/clientWorks', {
-        withCredentials:true
+        params: parameters,
+        withCredentials: true
       });
-      return res
-    }catch(err){
-      Failed(err.response ? err.response.data.message : err.message) 
+      return res;
+    } catch (err) {
+      Failed(err.response ? err.response.data.message : err.message);
     }
-  }
+  };
 
   export const updateClientWork=async(values,workId)=>{
     try{

@@ -6,9 +6,6 @@ class adminService{
     async findAllUsers(page,limit,search){
 
         return await userRepository.findAllUsers(page,limit,search)
-
-        
-
     }
 
     async updateUserStatus(id,{userState}){

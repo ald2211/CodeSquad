@@ -23,9 +23,10 @@ class workSerivice{
         return await workRepository.findAllWorksByUserId(clientId);
     }
 
-    async getClientWorks(clientId){
+    async getClientWorks(clientId,page,limit,search){
 
-       return await workRepository.findAllWorksByUserId(clientId)
+       return await workRepository.findAllWorksByUserId(clientId,page,limit,search)
+       
     }
     
     async updateWork(workId,workData,clientId){

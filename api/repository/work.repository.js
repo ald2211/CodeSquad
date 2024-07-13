@@ -9,8 +9,18 @@ class workRepository{
     async findWorkById(id){
       return await Work.findOne({workNumber:id})
     }
-    async findAllWorksByUserId(clientId) {
-      return await Work.aggregate([{ $match: { clientId } }]);
+    async findAllWorksByUserId(clientId,page,limit,search) {
+      if (!clientId) throw new Error('Client ID is required');
+  const query = search
+    ? { $or: [{ workName: new RegExp(search, 'i') }, { workType: new RegExp(search, 'i') }], clientId: clientId }
+    : { clientId: clientId };
+
+    const count = await Work.countDocuments(query);
+    const data = await Work.find(query)
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+      return { count, data };
     }
 
     async findByWorkIdAndUpdate(workNumber, updateData) {
