@@ -13,7 +13,7 @@ import WorksPagination from './WorksPagination';
 import SearchBar from './SearchBar';
 import MiniNav from './MiniNav';
 
-const ProjectDetails = () => {
+const ProjectDetails = ({filterSearch}) => {
   const { currentUser, userWorks } = useSelector((state) => state.user);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [showEditProjectModal, setShowEditProjectModal] = useState(false);
@@ -30,14 +30,13 @@ const ProjectDetails = () => {
   const [totalItems, setTotalItems] = useState(0); // Total number of items
   const itemsPerPage = 2; // Number of items per page
 
-
   // Function to handle page change and scroll to top
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-  console.log('currentPage:',currentPage)
+  
   const fetchWorks = async () => {
-    const res = await getClientsAllWorks({ page: currentPage, search, limit: itemsPerPage });
+    const res = await getClientsAllWorks({ page: currentPage, search, limit: itemsPerPage,filterSearch });
     dispatch(updateWorkSuccess(res.data.data));
     setTotalPages(res.data.totalPages);
     setTotalItems(res.data.totalItems);
@@ -46,7 +45,7 @@ const ProjectDetails = () => {
   useEffect(() => {
     fetchWorks();
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [currentPage, search]); // Removed dispatch from dependencies
+  }, [currentPage, search,filterSearch]); // Removed dispatch from dependencies
 
   const handleShowEditProject = (project) => {
     setProjectToEdit(project);
@@ -90,7 +89,7 @@ const ProjectDetails = () => {
       console.log(err);
     }
   };
-
+  console.log('userData:',userWorks)
   return (
     <>
       <SearchBar setSearch={setSearch} />
@@ -104,7 +103,7 @@ const ProjectDetails = () => {
         </div>
       ) : (
         <>
-          {userWorks.map((work) => (
+          {userWorks?.map((work) => (
             <div key={work.workNumber} className="relative p-6 mb-6 border border-gray-300 rounded-lg bg-white shadow-md w-full max-w-4xl mx-auto">
               {currentUser.data.role === 'developer' ? (
                 <button className="absolute top-4 right-4">
