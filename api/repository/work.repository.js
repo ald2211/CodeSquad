@@ -14,8 +14,11 @@ class workRepository{
     }
 
     async findByWorkIdAndUpdate(workNumber, updateData) {
-       console.log('workNumber:',workNumber)
-       return await Work.updateOne({workNumber:workNumber}, { $set:updateData });
+       return await Work.updateOne({workNumber}, { $set:updateData });
+    }
+
+    async deleteWorkByWorkNumber(workNumber){
+       return await Work.deleteOne({workNumber})
     }
     
 }

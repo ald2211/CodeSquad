@@ -431,6 +431,18 @@ export const uploadResume = async (userId, resumeUrl) => {
     }
   }
 
+  export const deleteClientWork=async(id)=>{
+    try {
+        const res = await axiosInstance.delete(`/user/work/delete/${id}`, {
+          withCredentials: true,
+        });
+        
+        return res
+      } catch (err) {
+        Failed(err.response ? err.response.data.message : err.message) 
+      }
+  }
+
   //logout
   export const userLogout =async ()=>{
 

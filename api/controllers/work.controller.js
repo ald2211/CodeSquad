@@ -33,3 +33,15 @@ export const updateClientWork=async(req,res,next)=>{
       console.log('err at work update:',err)
    }
 }
+
+export const deleteClientWork=async(req,res,next)=>{
+
+   try{
+      const data=await workService.deleteClientWorkByWorkId( req.params.workId,req.user.id)
+      console.log('dataWorkDelte:',data)
+      return res.status(200).json({success:true,message:' project deleted successfully',data})
+   }catch(err){
+      console.log('error in work delete:',err)
+      next(err)
+   }
+}

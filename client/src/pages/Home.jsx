@@ -42,32 +42,36 @@ const Home = () => {
       {currentUser.data.role === "admin" ? (
         <AdminHome />
       ) : (
-        <div className="min-h-screen bg-gray-100 p-4 mt-[90px]">
-          <div className=" flex flex-col lg:flex-row">
-            {/* Left Section */}
-            <div className="w-full lg:w-1/4 p-4">
-              <FilterBox />
-            </div>
+       <div className="min-h-screen bg-gray-100 p-4 mt-[90px]">
+  <div className="flex flex-col lg:flex-row">
+    {/* Right Section */}
+    <div className="w-full lg:w-1/4 p-4 order-1">
+      <ProfileBox />
+      <StatsBox />
+    </div>
 
-            {/* Middle Section */}
-            <div className="w-full lg:w-2/4 p-4">
-              <SearchBar />
-              <MiniNav />
-              <ProjectDetails/>
+    {/* Left Section */}
+    <div className="w-full lg:w-1/4 p-4 order-2">
+      <FilterBox />
+    </div>
 
-              {/* Pagination */}
-              <WorksPagination
-              currentPage={currentPage}
-              />
-            </div>
+    {/* Middle Section */}
+    <div className="w-full lg:w-2/4 p-4 order-3">
+      <SearchBar />
+      <MiniNav />
+      <ProjectDetails projects={currentProjects} />
 
-            {/* Right Section */}
-            <div className="w-full lg:w-1/4 p-4">
-              <ProfileBox />
-              <StatsBox />
-            </div>
-          </div>
-        </div>
+      {/* Pagination */}
+      <WorksPagination
+        currentPage={currentPage}
+        totalProjects={projects.length}
+        projectsPerPage={projectsPerPage}
+        paginate={paginate}
+      />
+    </div>
+  </div>
+</div>
+
       )}
     </>
   );

@@ -46,6 +46,16 @@ class workSerivice{
       }
       return await workRepository.findAllWorksByUserId(clientId)
     }
+
+    async deleteClientWorkByWorkId( workNumber,clientId) {
+      const workToRemove = await workRepository.deleteWorkByWorkNumber(workNumber);
+  
+      if (!workToRemove) {
+        throw errorHandler(404, "Project entry not found");
+      }
+  
+      return await workRepository.findAllWorksByUserId(clientId)
+    }
 }
 
 export default new workSerivice()
