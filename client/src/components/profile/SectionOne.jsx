@@ -65,7 +65,7 @@ const DeveloperProfile = () => {
   const [updateImage, setUpdateImage] = useState(null);
 
   useEffect(() => {
-    if (file && currentUser.data.role!=='admin') {
+    if (file) {
       handleFileUpload(file);
     }
   }, [file]);

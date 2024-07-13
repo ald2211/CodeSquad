@@ -30,6 +30,7 @@ const MiniNav = () => {
             <AddProjectModal
               isOpen={showAddProjectModal}
               handleClose={handleCloseAddProjectModal}
+              isAddMode={true}
             />
           )}
           </>

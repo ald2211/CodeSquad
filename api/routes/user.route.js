@@ -4,6 +4,7 @@ import {getUserInfo, updateUserProfile} from "../controllers/user.controller.js"
 import { addEducation, deleteEducation, editEducation, getEducation } from "../controllers/education.controller.js";
 import { addExperience, deleteExperience, editExperience, getExperience } from "../controllers/experience.controller.js";
 import { addProjects, deleteProjects, editProjects, getProjects } from "../controllers/project.controller.js";
+import { createWork, getClientAllWorks,updateClientWork } from "../controllers/work.controller.js";
 const router = express.Router();
 
 router.patch("/upload/:id",verifyUser(['developer','client','admin']),updateUserProfile);
@@ -28,5 +29,10 @@ router.get("/projects/get", verifyUser(['developer','client']), getProjects);
 
 //fetch user-info
 router.get('/user-info',verifyUser(['admin','client','developer']),getUserInfo)
+
+//user work
+router.post('/work/add',verifyUser(['client']),createWork)
+router.get('/work/clientWorks',verifyUser(['client','developer']),getClientAllWorks)
+router.patch('/work/update/:workId',verifyUser(['client']),updateClientWork)
 
 export default router;

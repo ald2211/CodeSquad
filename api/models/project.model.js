@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const projectSchema=new mongoose.Schema({
 
-    userId:{
+    clientId:{
 
         type:String,
         ref:'user',

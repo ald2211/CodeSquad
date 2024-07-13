@@ -380,7 +380,56 @@ export const uploadResume = async (userId, resumeUrl) => {
     }
   }
 
+  //work
 
+  export const addWork=async(values)=>{
+
+    try{
+        const res = await axiosInstance.post(
+          `/user/work/add`,
+          values,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+        return res
+    }catch(err){
+      console.log('addWorkerr:',err)
+      Failed(err.response ? err.response.data.message : err.message) 
+    }
+  }
+
+  export const getClientsAllWorks=async()=>{
+    try{
+      const res = await axiosInstance.get('/user/work/clientWorks', {
+        withCredentials:true
+      });
+      return res
+    }catch(err){
+      Failed(err.response ? err.response.data.message : err.message) 
+    }
+  }
+
+  export const updateClientWork=async(values,workId)=>{
+    try{
+      const res = await axiosInstance.patch(
+        `/user/work/update/${workId}`,
+        values,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      return res
+    }catch(err){
+      Failed(err.response?err.response.data.message:err.message)
+    }
+  }
 
   //logout
   export const userLogout =async ()=>{

@@ -21,6 +21,7 @@ const initialState = {
     currentEducation: null,
     currentExperience: null,
     currentProjects: [],
+    userWorks:[],
     loading: false,
     error: null
 };
@@ -52,6 +53,10 @@ const userSlice = createSlice({
         },
         updateProjectSuccess: (state, action) => {
             state.currentProjects = action.payload;
+        },
+        updateWorkSuccess:(state,action)=>{
+            state.userWorks=action.payload
+            state.loading=false;
         },
         signoutSuccess: (state) => {
             state.currentUser = null;
@@ -85,6 +90,7 @@ export const {
     updateEducationSuccess,
     updateExperienceSuccess,
     updateProjectSuccess,
+    updateWorkSuccess,
     signoutSuccess
 } = userSlice.actions;
 

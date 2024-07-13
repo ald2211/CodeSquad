@@ -8,6 +8,7 @@ import MiniNav from "../components/Home/MiniNav";
 import ProjectDetails from "../components/Home/ProjectDetails";
 import ProfileBox from "../components/Home/ProfileBox";
 import StatsBox from "../components/Home/StatsBox";
+import WorksPagination from "../components/Home/WorksPagination";
 
 const Home = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -52,43 +53,12 @@ const Home = () => {
             <div className="w-full lg:w-2/4 p-4">
               <SearchBar />
               <MiniNav />
-              {currentProjects.map((project) => (
-                <ProjectDetails key={project.id} {...project} />
-              ))}
+              <ProjectDetails/>
 
               {/* Pagination */}
-              <nav aria-label="Page navigation example">
-                <ul className="inline-flex -space-x-px text-sm">
-                  <li>
-                    <button
-                      onClick={() => paginate(currentPage - 1)}
-                      className={`flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${currentPage === 1 && "opacity-50 cursor-not-allowed"}`}
-                      disabled={currentPage === 1}
-                    >
-                      Previous
-                    </button>
-                  </li>
-                  {[...Array(Math.ceil(projects.length / projectsPerPage)).keys()].map((pageNumber) => (
-                    <li key={pageNumber}>
-                      <button
-                        onClick={() => paginate(pageNumber + 1)}
-                        className={`flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${currentPage === pageNumber + 1 ? "text-blue-600 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white" : ""}`}
-                      >
-                        {pageNumber + 1}
-                      </button>
-                    </li>
-                  ))}
-                  <li>
-                    <button
-                      onClick={() => paginate(currentPage + 1)}
-                      className={`flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${indexOfLastProject >= projects.length && "opacity-50 cursor-not-allowed"}`}
-                      disabled={indexOfLastProject >= projects.length}
-                    >
-                      Next
-                    </button>
-                  </li>
-                </ul>
-              </nav>
+              <WorksPagination
+              currentPage={currentPage}
+              />
             </div>
 
             {/* Right Section */}

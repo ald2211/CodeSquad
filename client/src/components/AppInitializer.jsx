@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetch_user, updateUserSuccess } from '../Redux/user/userSlice';
+import { fetch_user } from '../Redux/user/userSlice';
 import spinner from '../assets/loader.gif'
-import { Success } from '../helper/popup';
 
 const AppInitializer = ({ children }) => {
     const dispatch = useDispatch();

@@ -82,30 +82,21 @@ export const skillsSchema = Yup.object().shape({
       .max(200, 'Summary must be at most 200 characters long.'),
   });
 
+
+let today = new Date();
+today.setHours(0, 0, 0, 0);
   
   export const addProjectSchema = Yup.object().shape({
     projectName: Yup.string()
       .required("Project Name is required"),
     type: Yup.string()
-      .oneOf(['fixed', 'hourly'])
       .required("Type is required"),
-    fixedPrice: Yup.number()
-      .when('type', {
-        is: 'fixed',
-        then: schema => schema.required("Fixed Price is required")
-          .min(0, "Fixed Price must be greater than or equal to 0")
-      }),
-    rph: Yup.number()
-      .when('type', {
-        is: 'hourly',
-        then: schema => schema.required("rate per hour is required")
-          .min(0, "rate per hour must be greater than or equal to 0")
-      }),
-    startDate: Yup.date()
-      .required("Start Date is required"),
+    budget: Yup.number()
+      .required("budget is required")
+      .min(0, "Price must be greater than or equal to 0"),
     endDate: Yup.date()
-      .required("End Date is required")
-      .min(Yup.ref('startDate'), "End Date must be later than Start Date"),
+    .required("End Date is required")
+    .min(today, "End Date must be later than today"),
     description: Yup.string()
       .required("Description is required"),
     attachment: Yup.mixed()
