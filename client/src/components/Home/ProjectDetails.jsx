@@ -130,6 +130,9 @@ const ProjectDetails = ({filterSearch}) => {
                   {isDescriptionExpanded ? "Read Less" : "Read More"}
                 </button>}
               </p>
+               {
+                work.attachMents&&<p className='text-sm text-blue-500 hover:underline cursor-pointer mb-1' onClick={()=>window.open(`${work.attachMents.split('__')[0]}`)}>Attachment</p>
+               }
               <div className="flex justify-between text-sm text-gray-600 mb-4">
                 <p>Bid Ends: {work.bidEndDate.split('T')[0]}</p>
                 <p>Total Bids: {work.bidsCount}</p>
