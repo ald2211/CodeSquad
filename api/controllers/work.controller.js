@@ -19,7 +19,7 @@ export const getClientAllWorks=async(req,res,next)=>{
       const limit = parseInt(req.query.limit)||10;  // Number of items per page
       const filterSearch=req.query.filterSearch||""
       const search= req.query.search || ""
-      const {data,count}=await workService.getClientWorks(req.user.id,page,limit,search,filterSearch)
+      const {data,count}=await workService.getClientWorks(req.user.id,page,limit,search,filterSearch,req.user.role,req.query.miniNavFilter)
       console.log('filter:',filterSearch)
       console.log('page:',page)
       console.log('limit:',limit)
@@ -59,3 +59,18 @@ export const deleteClientWork=async(req,res,next)=>{
       next(err)
    }
 }
+
+//bookmarks
+
+export const handleBookMarks= async (req, res,next) => {
+ 
+   try {
+      console.log('req.user.id:',req.user.id,'req.params.id:',req.params.workId)
+      const {status,message,data}=await workService.bookMarkHandler(req.user.id,req.params.workId)
+      res.status(200).json({success:status,message,data})
+    
+   } catch (error) {
+     console.log('errAtBookMark:',error)
+     next(error)
+   }
+ };

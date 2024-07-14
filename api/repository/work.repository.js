@@ -9,13 +9,12 @@ class workRepository{
     async findWorkById(id){
       return await Work.findOne({workNumber:id})
     }
-    async findAllWorksByUserId(clientId,page,limit,search,filterSearch) {
-      if (!clientId) throw new Error('Client ID is required');
+    async findAllWorksByUserId(Id,page,limit,search,filterSearch,role,miniNavFilter) {
   let query = search
-    ? { $or: [{ workName: new RegExp(search, 'i') }, { workType: new RegExp(search, 'i') }], clientId: clientId }
-    : { clientId: clientId };
+    ? { $or: [{ workName: new RegExp(search, 'i') }, { workType: new RegExp(search, 'i') }]}
+    : { };
 
-   console.log('filterSearch:',filterSearch)
+  if(role==='client')query.clientId=Id;
    if(filterSearch){
     let filterData=filterSearch.split('--')
     query={
@@ -27,8 +26,27 @@ class workRepository{
       }
     }
   }
+  console.log('mini:',miniNavFilter)
+  if(miniNavFilter==='recent'){
+      const twoWeeksAgo = new Date();
+      twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+      query={
+        ...query,
+        createdAt:{ $gte: twoWeeksAgo }
+      }
+    }
+
+    if(miniNavFilter==='saved'){
+     
+      query={
+        ...query,
+        bookMarks:{ $in: [Id] }
+      }
+    }
+    
     const count = await Work.countDocuments(query);
     const data = await Work.find(query)
+      .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit);
 
@@ -42,7 +60,15 @@ class workRepository{
     async deleteWorkByWorkNumber(workNumber){
        return await Work.deleteOne({workNumber})
     }
+
+    async findOneByWorkId(workNumber){
+      return await Work.findOne({workNumber})
+    }
     
+    async saveBookMarkChanges(work){
+
+      await work.save();
+    }
 }
 
 export default new workRepository()

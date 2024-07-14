@@ -20,7 +20,6 @@ export const verifyUser = (requiredRoles = []) => {
                 return next(errorHandler(403,'forbidden'))
             }
             req.user = user;
-            
 
             // Check if the user's role is included in the required roles
             if (requiredRoles.length && !requiredRoles.includes(user.role)) {

@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import Modal from "react-modal";
 import { CiBookmark } from "react-icons/ci";
+import { FaBookmark } from "react-icons/fa";
 import BidsModal from "./BidsModal";
 import AddProjectModal from "./AddProjectModal"; // Import the modal
 import { useDispatch, useSelector } from 'react-redux';
 import { FiEdit } from "react-icons/fi";
 import { MdDeleteOutline } from "react-icons/md";
 import { updateWorkSuccess } from '../../Redux/user/userSlice';
-import { deleteClientWork, getClientsAllWorks } from '../../api/service';
+import { deleteClientWork, getClientsAllWorks, handlebookMark } from '../../api/service';
 import { Success } from '../../helper/popup';
 import WorksPagination from './WorksPagination';
 import SearchBar from './SearchBar';
@@ -23,12 +24,13 @@ const ProjectDetails = ({filterSearch}) => {
   const [selectedId, setSelectedId] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  // Pagination related
+  // Pagination and filter related
   const [search, setSearch] = useState('');
+  const [miniNavFilter,setMiniNavFilter]=useState('')
   const [currentPage, setCurrentPage] = useState(1); // Track current page
   const [totalPages, setTotalPages] = useState(1); // Total number of pages
   const [totalItems, setTotalItems] = useState(0); // Total number of items
-  const itemsPerPage = 2; // Number of items per page
+  const itemsPerPage = 10; // Number of items per page
 
   // Function to handle page change and scroll to top
   const paginate = (pageNumber) => {
@@ -36,7 +38,7 @@ const ProjectDetails = ({filterSearch}) => {
   };
   
   const fetchWorks = async () => {
-    const res = await getClientsAllWorks({ page: currentPage, search, limit: itemsPerPage,filterSearch });
+    const res = await getClientsAllWorks({ page: currentPage, search, limit: itemsPerPage,filterSearch,miniNavFilter });
     dispatch(updateWorkSuccess(res.data.data));
     setTotalPages(res.data.totalPages);
     setTotalItems(res.data.totalItems);
@@ -45,7 +47,7 @@ const ProjectDetails = ({filterSearch}) => {
   useEffect(() => {
     fetchWorks();
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [currentPage, search,filterSearch]); // Removed dispatch from dependencies
+  }, [currentPage, search,filterSearch,miniNavFilter]); // Removed dispatch from dependencies
 
   const handleShowEditProject = (project) => {
     setProjectToEdit(project);
@@ -79,6 +81,18 @@ const ProjectDetails = ({filterSearch}) => {
     setIsDeleteModalOpen(false);
   };
 
+  //handle bookmark
+  const handleBookMark=async(workNumber)=>{
+    try{
+      const res=await handlebookMark(workNumber)
+      console.log('bookmark:',res.data)
+      dispatch(updateWorkSuccess(res.data.data.data))
+      Success(res.data.message)
+    }catch(err){
+      console.log('react_bookMarkErr:',err)
+    }
+  }
+
   const handleDelete = async (workNumber) => {
     try {
       closeDeleteModal();
@@ -93,7 +107,7 @@ const ProjectDetails = ({filterSearch}) => {
   return (
     <>
       <SearchBar setSearch={setSearch} />
-      <MiniNav />
+      <MiniNav setMiniNavFilter={setMiniNavFilter} />
       {userWorks.length === 0 ? (
         <div className="flex flex-col items-center relative p-6 mb-6 border border-gray-300 rounded-lg bg-white shadow-md w-full max-w-4xl mx-auto">
           <svg className="w-12 h-12 mb-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -107,7 +121,17 @@ const ProjectDetails = ({filterSearch}) => {
             <div key={work.workNumber} className="relative p-6 mb-6 border border-gray-300 rounded-lg bg-white shadow-md w-full max-w-4xl mx-auto">
               {currentUser.data.role === 'developer' ? (
                 <button className="absolute top-4 right-4">
-                  <CiBookmark className="text-gray-600 w-6 h-6 hover:text-blue-600" />
+                   {work.bookMarks.includes(currentUser.data._id) ? (
+      <FaBookmark
+        onClick={() => handleBookMark(work.workNumber)}
+        className="text-blue-700 w-6 h-6 hover:text-blue-600"
+      />
+    ) : (
+      <CiBookmark
+        onClick={() => handleBookMark(work.workNumber)}
+        className="text-gray-600 w-6 h-6 hover:text-blue-600"
+      />
+    )}
                 </button>
               ) : (
                 <div className="absolute top-4 right-4 flex space-x-2">

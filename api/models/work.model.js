@@ -52,7 +52,11 @@ const workSchema = new mongoose.Schema({
   workStatus: {
     type: String,
     default: 'pending'
-  }
-});
+  },
+  bookMarks: [{
+    type: String,
+    ref: 'user'
+  }]
+},{timestamps:true});
 
 export default mongoose.model('Work',workSchema);

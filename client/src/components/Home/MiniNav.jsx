@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import AddProjectModal from './AddProjectModal';
 
-const MiniNav = () => {
+const MiniNav = ({setMiniNavFilter}) => {
     const {currentUser}=useSelector((state)=>state.user)
     const [showAddProjectModal, setShowAddProjectModal] = useState(false);
 
@@ -14,14 +14,34 @@ const MiniNav = () => {
         setShowAddProjectModal(false);
       };
 
+      const handleFilterChange = (filterValue) => {
+       
+        if (filterValue==='recent') {
+          setMiniNavFilter('recent')
+        }else if(filterValue==='saved'){
+          setMiniNavFilter('saved')
+          ('saved')
+        }
+        else{
+          setMiniNavFilter('')
+
+        }
+
+    };
+
       
   return (
     <div className="flex justify-start mb-4">
       {currentUser.data.role==='developer'?
         <>
-        <button className="bg-white ml-2 text-black border border-black py-1 px-7 text-sm rounded-full hover:bg-blue-500 hover:text-white">Matched</button>
-        <button className="bg-white ml-2 text-black border border-black py-1 px-7 text-sm rounded-full hover:bg-blue-500 hover:text-white">Recent</button>
-        <button className="bg-white ml-2 text-black border border-black py-1 px-7 text-sm rounded-full hover:bg-blue-500 hover:text-white">Saved</button> 
+        <select 
+        className="bg-white ml-2 text-black border border-black px-1 py-1 text-sm rounded-full "
+        onChange={(e) => handleFilterChange(e.target.value)}
+        >
+            <option value="projects">Projects</option>
+            <option value="recent">Recent</option>
+            <option value="saved">Saved</option>
+       </select>
         </>
         :
         <>

@@ -444,6 +444,19 @@ export const uploadResume = async (userId, resumeUrl) => {
       }
   }
 
+  //bookmark
+  export const handlebookMark=async(workId)=>{
+
+    try{
+      const res= await axiosInstance.patch(`/user/work/bookmark/${workId}`,{
+        withCredentials:true,
+      })
+      return res
+    }catch(err){
+      Failed(err.response?err.response.data.message:err.message)
+    }
+  }
+
   //logout
   export const userLogout =async ()=>{
 
