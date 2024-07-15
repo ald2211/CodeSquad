@@ -1,32 +1,40 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { CiBookmark } from "react-icons/ci";
 import { FaBookmark } from "react-icons/fa";
 import BidsModal from "./BidsModal";
 import AddProjectModal from "./AddProjectModal"; // Import the modal
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import { FiEdit } from "react-icons/fi";
 import { MdDeleteOutline } from "react-icons/md";
-import { updateWorkSuccess } from '../../Redux/user/userSlice';
-import { deleteClientWork, getClientsAllWorks, handlebookMark } from '../../api/service';
-import { Success } from '../../helper/popup';
-import WorksPagination from './WorksPagination';
-import SearchBar from './SearchBar';
-import MiniNav from './MiniNav';
+import { updateWorkSuccess } from "../../Redux/user/userSlice";
+import {
+  deleteClientWork,
+  getClientsAllWorks,
+  handlebookMark,
+  removBid,
+} from "../../api/service";
+import { Success } from "../../helper/popup";
+import WorksPagination from "./WorksPagination";
+import SearchBar from "./SearchBar";
+import MiniNav from "./MiniNav";
+import PlaceBidModal from "./PlaceABidModal";
 
-const ProjectDetails = ({filterSearch}) => {
+const ProjectDetails = ({ filterSearch }) => {
   const { currentUser, userWorks } = useSelector((state) => state.user);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [showEditProjectModal, setShowEditProjectModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [placeBid, setPlaceBid] = useState(false);
   const [projectToEdit, setProjectToEdit] = useState(null); // State for project to edit
+  const [placeBidDetails, setPlaceBidDetails] = useState(null);
   const dispatch = useDispatch();
   const [selectedId, setSelectedId] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   // Pagination and filter related
-  const [search, setSearch] = useState('');
-  const [miniNavFilter,setMiniNavFilter]=useState('')
+  const [search, setSearch] = useState("");
+  const [miniNavFilter, setMiniNavFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1); // Track current page
   const [totalPages, setTotalPages] = useState(1); // Total number of pages
   const [totalItems, setTotalItems] = useState(0); // Total number of items
@@ -36,18 +44,24 @@ const ProjectDetails = ({filterSearch}) => {
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-  
+
   const fetchWorks = async () => {
-    const res = await getClientsAllWorks({ page: currentPage, search, limit: itemsPerPage,filterSearch,miniNavFilter });
+    const res = await getClientsAllWorks({
+      page: currentPage,
+      search,
+      limit: itemsPerPage,
+      filterSearch,
+      miniNavFilter,
+    });
     dispatch(updateWorkSuccess(res.data.data));
     setTotalPages(res.data.totalPages);
     setTotalItems(res.data.totalItems);
   };
-
+ 
   useEffect(() => {
     fetchWorks();
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [currentPage, search,filterSearch,miniNavFilter]); // Removed dispatch from dependencies
+  }, [currentPage, search, filterSearch, miniNavFilter]); // Removed dispatch from dependencies
 
   const handleShowEditProject = (project) => {
     setProjectToEdit(project);
@@ -57,6 +71,11 @@ const ProjectDetails = ({filterSearch}) => {
   const handleCloseEditProjectModal = () => {
     setShowEditProjectModal(false);
     setProjectToEdit(null); // Reset the project to edit
+  };
+
+  const handleClosePlaceBidModal = () => {
+    setPlaceBid(false);
+    setPlaceBidDetails(null);
   };
 
   const handleShowBids = () => {
@@ -80,18 +99,24 @@ const ProjectDetails = ({filterSearch}) => {
     setSelectedId(null);
     setIsDeleteModalOpen(false);
   };
+  
+  const handleRemoveBid=async(workId)=>{
+    const res=await removBid(workId)
+    dispatch(updateWorkSuccess(res.data.data))
+    Success(res.data.message);
+  }
 
   //handle bookmark
-  const handleBookMark=async(workNumber)=>{
-    try{
-      const res=await handlebookMark(workNumber)
-      console.log('bookmark:',res.data)
-      dispatch(updateWorkSuccess(res.data.data.data))
-      Success(res.data.message)
-    }catch(err){
-      console.log('react_bookMarkErr:',err)
+  const handleBookMark = async (workNumber) => {
+    try {
+      const res = await handlebookMark(workNumber);
+      console.log("bookmark:", res.data);
+      dispatch(updateWorkSuccess(res.data.data.data));
+      Success(res.data.message);
+    } catch (err) {
+      console.log("react_bookMarkErr:", err);
     }
-  }
+  };
 
   const handleDelete = async (workNumber) => {
     try {
@@ -103,35 +128,49 @@ const ProjectDetails = ({filterSearch}) => {
       console.log(err);
     }
   };
-  console.log('userData:',userWorks)
+  console.log("userData:", userWorks);
   return (
     <>
       <SearchBar setSearch={setSearch} />
       <MiniNav setMiniNavFilter={setMiniNavFilter} />
       {userWorks.length === 0 ? (
         <div className="flex flex-col items-center relative p-6 mb-6 border border-gray-300 rounded-lg bg-white shadow-md w-full max-w-4xl mx-auto">
-          <svg className="w-12 h-12 mb-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16h8M8 12h8M9 20h6a2 2 0 002-2V6a2 2 0 00-2-2H9a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          <svg
+            className="w-12 h-12 mb-4 text-gray-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M8 16h8M8 12h8M9 20h6a2 2 0 002-2V6a2 2 0 00-2-2H9a2 2 0 00-2 2v12a2 2 0 002 2z"
+            ></path>
           </svg>
           <p className="text-gray-600 text-center">No Projects found</p>
         </div>
       ) : (
         <>
           {userWorks?.map((work) => (
-            <div key={work.workNumber} className="relative p-6 mb-6 border border-gray-300 rounded-lg bg-white shadow-md w-full max-w-4xl mx-auto">
-              {currentUser.data.role === 'developer' ? (
+            <div
+              key={work.workNumber}
+              className="relative p-6 mb-6 border border-gray-300 rounded-lg bg-white shadow-md w-full max-w-4xl mx-auto"
+            >
+              {currentUser.data.role === "developer" ? (
                 <button className="absolute top-4 right-4">
-                   {work.bookMarks.includes(currentUser.data._id) ? (
-      <FaBookmark
-        onClick={() => handleBookMark(work.workNumber)}
-        className="text-blue-700 w-6 h-6 hover:text-blue-600"
-      />
-    ) : (
-      <CiBookmark
-        onClick={() => handleBookMark(work.workNumber)}
-        className="text-gray-600 w-6 h-6 hover:text-blue-600"
-      />
-    )}
+                  {work.bookMarks.includes(currentUser.data._id) ? (
+                    <FaBookmark
+                      onClick={() => handleBookMark(work.workNumber)}
+                      className="text-blue-700 w-6 h-6 hover:text-blue-600"
+                    />
+                  ) : (
+                    <CiBookmark
+                      onClick={() => handleBookMark(work.workNumber)}
+                      className="text-gray-600 w-6 h-6 hover:text-blue-600"
+                    />
+                  )}
                 </button>
               ) : (
                 <div className="absolute top-4 right-4 flex space-x-2">
@@ -145,21 +184,39 @@ const ProjectDetails = ({filterSearch}) => {
               )}
               <h3 className="text-xl font-semibold mb-4">{work.workName}</h3>
               <div className="flex justify-between text-sm text-gray-600 mb-4">
-                <span>{work.bidStartDate.split('T')[0]}</span>
-                <span>Type: {work.workType}<br />Budget: {work.budget}</span>
+                <span>{work.bidStartDate.split("T")[0]}</span>
+                <span>
+                  Type: {work.workType}
+                  <br />
+                  Budget: {work.budget}
+                </span>
               </div>
               <p className="text-gray-600 mb-4 text-sm">
-                {isDescriptionExpanded ? work.description : `${work.description.slice(0, 100)}...`}
-                {work.description.length > 100 && <button onClick={toggleDescription} className="text-blue-500 ml-2 text-sm">
-                  {isDescriptionExpanded ? "Read Less" : "Read More"}
-                </button>}
+                {isDescriptionExpanded
+                  ? work.description
+                  : `${work.description.slice(0, 100)}...`}
+                {work.description.length > 100 && (
+                  <button
+                    onClick={toggleDescription}
+                    className="text-blue-500 ml-2 text-sm"
+                  >
+                    {isDescriptionExpanded ? "Read Less" : "Read More"}
+                  </button>
+                )}
               </p>
-               {
-                work.attachMents&&<p className='text-sm text-blue-500 hover:underline cursor-pointer mb-1' onClick={()=>window.open(`${work.attachMents.split('__')[0]}`)}>Attachment</p>
-               }
+              {work.attachMents && (
+                <p
+                  className="text-sm text-blue-500 hover:underline cursor-pointer mb-1"
+                  onClick={() =>
+                    window.open(`${work.attachMents.split("__")[0]}`)
+                  }
+                >
+                  Attachment
+                </p>
+              )}
               <div className="flex justify-between text-sm text-gray-600 mb-4">
-                <p>Bid Ends: {work.bidEndDate.split('T')[0]}</p>
-                <p>Total Bids: {work.bidsCount}</p>
+                <p>Bid Ends: {work.bidEndDate.split("T")[0]}</p>
+                <p>Total Bids: {work?.bids?.length||0}</p>
               </div>
               <div className="flex justify-end space-x-4">
                 <button
@@ -168,11 +225,30 @@ const ProjectDetails = ({filterSearch}) => {
                 >
                   Show Bids
                 </button>
-                {currentUser.data.role === 'developer' && (
-                  <button className="bg-white text-black border border-black py-1 px-7 text-sm rounded-full hover:bg-blue-500 hover:text-white">
-                    Place a Bid
-                  </button>
-                )}
+                {currentUser.data.role === "developer" &&
+                  (work.bids.find(
+                    (dev) => dev.developer === currentUser.data._id
+                  ) ?(
+                    <button
+                      onClick={() => {
+                        handleRemoveBid(work.workNumber);
+                      }}
+                      className="bg-white text-black border border-black py-1 px-7 text-sm rounded-full hover:bg-blue-500 hover:text-white"
+                    >
+                      Withdraw the Bid
+                    </button>
+                  ):
+                  (
+                    <button
+                      onClick={() => {
+                        setPlaceBid(true);
+                        setPlaceBidDetails(work.workNumber);
+                      }}
+                      className="bg-white text-black border border-black py-1 px-7 text-sm rounded-full hover:bg-blue-500 hover:text-white"
+                    >
+                      Place a Bid
+                    </button>
+                  ) )}
               </div>
               {showModal && (
                 <BidsModal
@@ -193,6 +269,12 @@ const ProjectDetails = ({filterSearch}) => {
           selectedWork={projectToEdit} // Pass project to edit
         />
       )}
+      {/* place a bid modal */}
+      <PlaceBidModal
+        isOpen={placeBid}
+        workId={placeBidDetails}
+        handleClose={handleClosePlaceBidModal}
+      />
       {/* delete Modal */}
       <Modal
         isOpen={isDeleteModalOpen}

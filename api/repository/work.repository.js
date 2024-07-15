@@ -9,7 +9,7 @@ class workRepository{
     async findWorkById(id){
       return await Work.findOne({workNumber:id})
     }
-    async findAllWorksByUserId(Id,page,limit,search,filterSearch,role,miniNavFilter) {
+    async findAllWorksByUserId(role,Id,page,limit,search,filterSearch,miniNavFilter) {
   let query = search
     ? { $or: [{ workName: new RegExp(search, 'i') }, { workType: new RegExp(search, 'i') }]}
     : { };
@@ -69,6 +69,20 @@ class workRepository{
 
       await work.save();
     }
+
+    async createBid(id,bidDetails){
+       const data={
+          developer:id,
+          bidAmount:bidDetails.bidAmount,
+          deliveryTime:bidDetails.deliveryTime
+       }
+       return await Work.updateOne({workNumber:bidDetails.workId},{ $push: { bids: data } }) 
+    }
+
+    async removeBid(workId,Id){
+      
+      return await Work.updateOne({ workNumber: workId },{ $pull: { bids: { developer: Id } } });
+   }
 }
 
 export default new workRepository()

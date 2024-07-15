@@ -4,7 +4,7 @@ import {getUserInfo, updateUserProfile} from "../controllers/user.controller.js"
 import { addEducation, deleteEducation, editEducation, getEducation } from "../controllers/education.controller.js";
 import { addExperience, deleteExperience, editExperience, getExperience } from "../controllers/experience.controller.js";
 import { addProjects, deleteProjects, editProjects, getProjects } from "../controllers/project.controller.js";
-import { createWork, getClientAllWorks,updateClientWork,deleteClientWork, handleBookMarks } from "../controllers/work.controller.js";
+import { createWork, getClientAllWorks,updateClientWork,deleteClientWork, handleBookMarks, placeAbid, removeAbid } from "../controllers/work.controller.js";
 const router = express.Router();
 
 router.patch("/upload/:id",verifyUser(['developer','client','admin']),updateUserProfile);
@@ -36,5 +36,9 @@ router.get('/work/clientWorks',verifyUser(['client','developer']),getClientAllWo
 router.patch('/work/update/:workId',verifyUser(['client']),updateClientWork)
 router.delete('/work/delete/:workId',verifyUser(['client']),deleteClientWork)
 router.patch('/work/bookmark/:workId',verifyUser(['developer']),handleBookMarks)
+
+//user Bids
+router.post('/bid/place',verifyUser(['developer']),placeAbid)
+router.patch('/bid/remove',verifyUser(['developer']),removeAbid)
 
 export default router;

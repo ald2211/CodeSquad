@@ -103,3 +103,12 @@ today.setHours(0, 0, 0, 0);
       .nullable()
       .notRequired(),
   });
+
+  export const bidSchema = Yup.object().shape({
+    bidAmount: Yup.number().required('Bid amount is required').min(1, 'Bid amount must be at least 1'),
+    deliveryTime: Yup.number()
+    .required('Delivery time is required')
+    .min(1, 'Delivery time must be at least 1 day')
+    .max(360, 'Delivery time must be less than a year')
+  });
+  

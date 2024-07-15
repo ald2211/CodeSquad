@@ -4,7 +4,7 @@ import { errorHandler } from "../utils/customError.js";
 
 class workSerivice{
 
-    async addWork(clientId,workData){
+    async addWork(role,clientId,workData){
 
         //create a unique work id
         const workNumber=await generateUniqueWorkId()
@@ -21,16 +21,16 @@ class workSerivice{
         };
     
         await workRepository.create(newWork);
-        return await workRepository.findAllWorksByUserId(clientId);
+        return await workRepository.findAllWorksByUserId(role,clientId);
     }
 
-    async getClientWorks(clientId,page,limit,search,filterSearch,role,miniNavFilter){
+    async getClientWorks(role,clientId,page,limit,search,filterSearch,miniNavFilter){
 
-       return await workRepository.findAllWorksByUserId(clientId,page,limit,search,filterSearch,role,miniNavFilter)
+       return await workRepository.findAllWorksByUserId(role,clientId,page,limit,search,filterSearch,miniNavFilter)
        
     }
     
-    async updateWork(workId,workData,clientId){
+    async updateWork(role,workId,workData,clientId){
         console.log('UpdateworkData:',workData)
       const updateWorkData = {
           workName:workData.projectName,
@@ -46,20 +46,20 @@ class workSerivice{
       if (!updatedUser) {
         throw errorHandler(404, "work not found");
       }
-      return await workRepository.findAllWorksByUserId(clientId)
+      return await workRepository.findAllWorksByUserId(role,clientId)
     }
 
-    async deleteClientWorkByWorkId( workNumber,clientId) {
+    async deleteClientWorkByWorkId( role,workNumber,clientId) {
       const workToRemove = await workRepository.deleteWorkByWorkNumber(workNumber);
   
       if (!workToRemove) {
         throw errorHandler(404, "Project entry not found");
       }
   
-      return await workRepository.findAllWorksByUserId(clientId)
+      return await workRepository.findAllWorksByUserId(role,clientId)
     }
 
-    async bookMarkHandler(developerId,workNumber){
+    async bookMarkHandler(role,developerId,workNumber){
       let work = await workRepository.findOneByWorkId(workNumber);
       if (!work) throw errorHandler(404,'work not found')
   
@@ -80,9 +80,36 @@ class workSerivice{
         status=200
         message='Bookmark removed Successfully'
       }
-      const data =await workRepository.findAllWorksByUserId(developerId)
+      const data =await workRepository.findAllWorksByUserId(role,developerId)
         return {status,message,data}
     }
+
+
+    async placeBid(role,Id,bidDetails){
+      let work = await workRepository.findOneByWorkId(bidDetails.workId);
+      if (!work) throw errorHandler(404,'work not found')
+      if(work.budget<bidDetails.bidAmount)throw errorHandler(400,'bid amount must be less than budget')
+       const updatedData= await workRepository.createBid(Id,bidDetails);
+       
+       if(!updatedData)throw errorHandler(400,'bid placing failed')
+
+      return await workRepository.findAllWorksByUserId(role,Id)
+    }
+
+    async removeBid(role,Id,workId){
+      
+      let work = await workRepository.findOneByWorkId(workId);
+      if (!work) throw errorHandler(404,'work not found')
+
+        const updatedData= await workRepository.removeBid(workId,Id);
+       
+        if(!updatedData)throw errorHandler(400,'bid removing failed')
+ 
+       return await workRepository.findAllWorksByUserId(role,Id)
+    }
+
 }
+
+    
 
 export default new workSerivice()

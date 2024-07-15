@@ -457,6 +457,47 @@ export const uploadResume = async (userId, resumeUrl) => {
     }
   }
 
+  //bid related
+  export const addBid=async(values)=>{
+
+    try{
+        const res = await axiosInstance.post(
+          `/user/bid/place`,
+          values,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+        return res
+    }catch(err){
+      console.log('placeBidErr:',err)
+      Failed(err.response ? err.response.data.message : err.message) 
+    }
+  }
+
+  export const removBid=async(workId)=>{
+
+    try{
+        const res = await axiosInstance.patch(
+          `/user/bid/remove`,
+          {workId},
+          { 
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+        return res
+    }catch(err){
+      console.log('placeBidErr:',err)
+      Failed(err.response ? err.response.data.message : err.message) 
+    }
+  }
+
   //logout
   export const userLogout =async ()=>{
 

@@ -35,7 +35,7 @@ const MiniNav = ({setMiniNavFilter}) => {
       {currentUser.data.role==='developer'?
         <>
         <select 
-        className="bg-white ml-2 text-black border border-black px-1 py-1 text-sm rounded-full "
+        className="bg-white ml-2 text-black border border-black px-1 py-1 text-sm rounded-md cursor-pointer "
         onChange={(e) => handleFilterChange(e.target.value)}
         >
             <option value="projects">Projects</option>

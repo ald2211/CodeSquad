@@ -28,11 +28,6 @@ const workSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  bidStartDate: {
-    type: Date,
-    required: true,
-    default: Date.now
-  },
   bidEndDate: {
     type: Date,
     required: true
@@ -56,7 +51,22 @@ const workSchema = new mongoose.Schema({
   bookMarks: [{
     type: String,
     ref: 'user'
-  }]
+  }],
+  bids: [
+    {
+      developer: {
+        type: String,
+        ref: 'user',
+      },
+      bidAmount: {
+        type: Number,
+      },
+      deliveryTime: {
+        type: Number,
+      },
+    },
+  ],
+
 },{timestamps:true});
 
 export default mongoose.model('Work',workSchema);
