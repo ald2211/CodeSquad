@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import { IoMdClose } from "react-icons/io";
 import { bidSchema } from "../../schemas"; // Create a schema for bid validation
 import ShowError from "../ShowError";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { processFailed, processStart, updateWorkSuccess } from "../../Redux/user/userSlice"; // Adjust redux actions
 import { Failed, Success } from "../../helper/popup";
 import { addBid } from "../../api/service";
@@ -16,6 +16,7 @@ const initialBidValues = {
 };
 
 const PlaceBidModal = ({ isOpen, handleClose, workId }) => {
+  const {currentUser}=useSelector((state)=>state.user)
   const dispatch = useDispatch();
 
   const formik = useFormik({
@@ -24,7 +25,7 @@ const PlaceBidModal = ({ isOpen, handleClose, workId }) => {
     onSubmit: async (values, actions) => {
       try {
         dispatch(processStart());
-        const res = await addBid({ ...values, workId }); // Adjust the payload as needed
+        const res = await addBid({ ...values, workId,developerPhoto: currentUser.data.avatar, developerName:currentUser.data.name}); // Adjust the payload as needed
         dispatch(updateWorkSuccess(res.data.data));
         Success(res.data.message);
         actions.resetForm();

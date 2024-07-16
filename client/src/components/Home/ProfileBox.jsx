@@ -29,8 +29,16 @@ const ProfileBox = () => {
       <div className="w-full">
         <span className="text-sm text-gray-600">Profile</span>
         <div className="bg-gray-300 h-2 rounded-full mt-1">
-          <div className="bg-blue-600 h-full rounded-full" style={{ width: progressWidth }}></div>
-        </div>
+  {currentUser.data.role ==='client' ? (
+    currentUser.data.summary==='' ? (
+      <div className="bg-blue-600 h-full rounded-full" style={{ width: '40%' }}></div>
+    ) : (
+      <div className="bg-blue-600 h-full rounded-full" style={{ width: '100%' }}></div>
+    )
+  ) : (
+    <div className="bg-blue-600 h-full rounded-full" style={{ width: progressWidth }}></div>
+  )}
+</div>
       </div>
     </div>
   );

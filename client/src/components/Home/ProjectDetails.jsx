@@ -25,6 +25,7 @@ const ProjectDetails = ({ filterSearch }) => {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [showEditProjectModal, setShowEditProjectModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [selectedWork,setSelectedWork]=useState(null)
   const [placeBid, setPlaceBid] = useState(false);
   const [projectToEdit, setProjectToEdit] = useState(null); // State for project to edit
   const [placeBidDetails, setPlaceBidDetails] = useState(null);
@@ -78,11 +79,13 @@ const ProjectDetails = ({ filterSearch }) => {
     setPlaceBidDetails(null);
   };
 
-  const handleShowBids = () => {
+  const handleShowBids = (work) => {
+    setSelectedWork(work)
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
+    setSelectedWork(null)
     setShowModal(false);
   };
 
@@ -110,7 +113,6 @@ const ProjectDetails = ({ filterSearch }) => {
   const handleBookMark = async (workNumber) => {
     try {
       const res = await handlebookMark(workNumber);
-      console.log("bookmark:", res.data);
       dispatch(updateWorkSuccess(res.data.data.data));
       Success(res.data.message);
     } catch (err) {
@@ -184,17 +186,13 @@ const ProjectDetails = ({ filterSearch }) => {
               )}
               <h3 className="text-xl font-semibold mb-4">{work.workName}</h3>
               <div className="flex justify-between text-sm text-gray-600 mb-4">
-                <span>{work.bidStartDate.split("T")[0]}</span>
-                <span>
-                  Type: {work.workType}
-                  <br />
-                  Budget: {work.budget}
-                </span>
+                <span>Type: {work.workType}</span>
+                <span> Budget: {work.budget}</span>
               </div>
               <p className="text-gray-600 mb-4 text-sm">
                 {isDescriptionExpanded
                   ? work.description
-                  : `${work.description.slice(0, 100)}...`}
+                  : `${work.description.slice(0, 100)}`}
                 {work.description.length > 100 && (
                   <button
                     onClick={toggleDescription}
@@ -220,7 +218,7 @@ const ProjectDetails = ({ filterSearch }) => {
               </div>
               <div className="flex justify-end space-x-4">
                 <button
-                  onClick={handleShowBids}
+                  onClick={()=>{handleShowBids(work)}}
                   className="bg-white text-black border border-black py-1 px-7 text-sm rounded-full hover:bg-blue-500 hover:text-white"
                 >
                   Show Bids
@@ -252,8 +250,7 @@ const ProjectDetails = ({ filterSearch }) => {
               </div>
               {showModal && (
                 <BidsModal
-                  projectName={work.workName}
-                  bidEndDate={work.bidEndDate}
+                  bidDetails={selectedWork}
                   handleCloseModal={handleCloseModal}
                 />
               )}

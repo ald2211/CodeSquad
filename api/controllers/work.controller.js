@@ -20,9 +20,7 @@ export const getClientAllWorks=async(req,res,next)=>{
       const filterSearch=req.query.filterSearch||""
       const search= req.query.search || ""
       const {data,count}=await workService.getClientWorks(req.user.role,req.user.id,page,limit,search,filterSearch,req.query.miniNavFilter)
-      console.log('filter:',filterSearch)
-      console.log('page:',page)
-      console.log('limit:',limit)
+     
       return res.status(200).json({
          success:true,
          message:' fetch success',

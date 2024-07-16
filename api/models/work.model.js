@@ -58,6 +58,15 @@ const workSchema = new mongoose.Schema({
         type: String,
         ref: 'user',
       },
+      developerName:{
+        type:String
+      },
+      developerPhoto:{
+        type:String
+      },
+      completedProjects:{
+        type:Number
+      },
       bidAmount: {
         type: Number,
       },

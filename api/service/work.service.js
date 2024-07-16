@@ -88,8 +88,9 @@ class workSerivice{
     async placeBid(role,Id,bidDetails){
       let work = await workRepository.findOneByWorkId(bidDetails.workId);
       if (!work) throw errorHandler(404,'work not found')
+      let completedWorks=await workRepository.findCompletedWorksById(Id)
       if(work.budget<bidDetails.bidAmount)throw errorHandler(400,'bid amount must be less than budget')
-       const updatedData= await workRepository.createBid(Id,bidDetails);
+       const updatedData= await workRepository.createBid(Id,bidDetails,completedWorks);
        
        if(!updatedData)throw errorHandler(400,'bid placing failed')
 

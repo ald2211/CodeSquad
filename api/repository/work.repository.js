@@ -26,7 +26,7 @@ class workRepository{
       }
     }
   }
-  console.log('mini:',miniNavFilter)
+  
   if(miniNavFilter==='recent'){
       const twoWeeksAgo = new Date();
       twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
@@ -70,9 +70,12 @@ class workRepository{
       await work.save();
     }
 
-    async createBid(id,bidDetails){
+    async createBid(id,bidDetails,completedWorks){
        const data={
           developer:id,
+          developerName:bidDetails.developerName,
+          developerPhoto:bidDetails.developerPhoto,
+          completedProjects:completedWorks,
           bidAmount:bidDetails.bidAmount,
           deliveryTime:bidDetails.deliveryTime
        }
@@ -82,6 +85,16 @@ class workRepository{
     async removeBid(workId,Id){
       
       return await Work.updateOne({ workNumber: workId },{ $pull: { bids: { developer: Id } } });
+   }
+
+   async findCompletedWorksById(id){
+     
+    return await Work.countDocuments({ 
+      $and: [
+        { workStatus: 'closed' }, 
+        { developer: id }
+      ]
+    });
    }
 }
 

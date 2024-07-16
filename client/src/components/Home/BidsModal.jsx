@@ -10,7 +10,7 @@ const bids = Array.from({ length: 25 }, (_, index) => ({
   bidAmount: `$${Math.floor(Math.random() * 1000)}`,
 }));
 
-const BidsModal = ({ projectName, bidEndDate, handleCloseModal }) => {
+const BidsModal = ({ bidDetails, handleCloseModal }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const bidsPerPage = 5; // Number of bids per page
 
@@ -19,6 +19,7 @@ const BidsModal = ({ projectName, bidEndDate, handleCloseModal }) => {
   const currentBids = bids.slice(indexOfFirstBid, indexOfLastBid);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  console.log('bidDetailsssss:',bidDetails)
 
   return (
     <Modal
@@ -31,7 +32,7 @@ const BidsModal = ({ projectName, bidEndDate, handleCloseModal }) => {
     >
       <div className="bg-white p-6 rounded-lg shadow-lg w-full h-full max-w-3xl max-h-[75vh] mt-[95px] overflow-auto">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold">Bids for {projectName}</h2>
+          <h2 className="text-2xl font-semibold">Bids for {bidDetails.workName}</h2>
           <button
             className="bg-red-500 text-white px-4 py-2 rounded"
             onClick={handleCloseModal}
@@ -39,7 +40,28 @@ const BidsModal = ({ projectName, bidEndDate, handleCloseModal }) => {
             Close
           </button>
         </div>
-        <p className="text-gray-600 mb-4">Bid End Date: {bidEndDate}</p>
+        <p className="text-gray-600 mb-4">Bid End Date: {bidDetails.bidEndDate.split('T')[0]}</p>
+        {
+          bidDetails.bids.length===0?
+          <div className="flex flex-col items-center justify-center ">
+          <svg
+            className="w-12 h-12 mb-4 text-gray-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M8 16h8M8 12h8M9 20h6a2 2 0 002-2V6a2 2 0 00-2-2H9a2 2 0 00-2 2v12a2 2 0 002 2z"
+            ></path>
+          </svg>
+          <p className="text-gray-600 text-center">No bids yet</p>
+        </div>
+        :
+        <>
         <div className="overflow-auto">
           <table className="min-w-full bg-white">
             <thead>
@@ -51,11 +73,12 @@ const BidsModal = ({ projectName, bidEndDate, handleCloseModal }) => {
               </tr>
             </thead>
             <tbody>
-              {currentBids.map((bid) => (
-                <tr key={bid.id}>
+              {
+              bidDetails.bids.map((bid) => (
+                <tr key={bid.developer}>
                   <td className="py-2 px-4 border-b text-center">{bid.developerName}</td>
                   <td className="py-2 px-4 border-b">
-                    <img src={bid.photo} alt="Developer" className="w-10 h-10 object-cover rounded-full m-auto" />
+                    <img src={bid.developerPhoto} alt="Developer" className="w-10 h-10 object-cover rounded-full m-auto" />
                   </td>
                   <td className="py-2 px-4 border-b text-center">{bid.completedProjects}</td>
                   <td className="py-2 px-4 border-b text-center">{bid.bidAmount}</td>
@@ -64,6 +87,8 @@ const BidsModal = ({ projectName, bidEndDate, handleCloseModal }) => {
             </tbody>
           </table>
         </div>
+        
+        
 
         {/* Pagination */}
         <div className="flex justify-center mt-4 space-x-1">
@@ -91,6 +116,8 @@ const BidsModal = ({ projectName, bidEndDate, handleCloseModal }) => {
             Next
           </button>
         </div>
+        </>
+        }
       </div>
     </Modal>
   );
