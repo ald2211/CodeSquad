@@ -25,7 +25,7 @@ const PlaceBidModal = ({ isOpen, handleClose, workId }) => {
     onSubmit: async (values, actions) => {
       try {
         dispatch(processStart());
-        const res = await addBid({ ...values, workId,developerPhoto: currentUser.data.avatar, developerName:currentUser.data.name}); // Adjust the payload as needed
+        const res = await addBid({ ...values, workId,developerPhoto: currentUser.data.avatar, developerName:currentUser.data.name,developerRole:currentUser.data.jobRole}); // Adjust the payload as needed
         dispatch(updateWorkSuccess(res.data.data));
         Success(res.data.message);
         actions.resetForm();

@@ -1,3 +1,6 @@
+import educationRepository from "../repository/education.repository.js";
+import experienceRepository from "../repository/experience.repository.js";
+import projectRepository from "../repository/project.repository.js";
 import userRepository from "../repository/user.repository.js";
 import UserRepository from "../repository/user.repository.js";
 import { errorHandler } from "../utils/customError.js";
@@ -26,8 +29,19 @@ class userService{
       }
 
       async getUserInfo(id){
+       
         return await userRepository.findUserById(id)
       }
+
+      async getDeveloperInfo(id){
+
+        const developerData=await userRepository.findUserById(id)
+        const developerEducation=await educationRepository.findAllByUserId(id)
+        const developerProjects=await projectRepository.findAllByUserId(id)
+        const developerExperience=await experienceRepository.findAllByUserId(id)
+        return {developerData,developerEducation,developerProjects,developerExperience}
+      }
+      
 
 }
 

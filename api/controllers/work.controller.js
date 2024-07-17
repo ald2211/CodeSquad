@@ -98,3 +98,16 @@ export const handleBookMarks= async (req, res,next) => {
      next(error)
    }
  }
+
+ export const getBidDetails=async(req,res,next)=>{
+      
+   try{
+      let {page=1,pageSize=5}=req.query
+      const data=await workService.getBidDetails(req.params.workId,page,pageSize)
+      res.status(200).json({success:true,message:'bid placed SuccessFully',data})
+    
+   } catch (error) {
+     console.log('error at get bid details:',error)
+     next(error)
+   }
+ }

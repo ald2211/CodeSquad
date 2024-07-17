@@ -497,6 +497,31 @@ export const uploadResume = async (userId, resumeUrl) => {
       Failed(err.response ? err.response.data.message : err.message) 
     }
   }
+  
+  export const getBidDetails = async (workNumber,page=1,pageSize=5) => {
+    try {
+      const res = await axiosInstance.get(`/user/bidDetails/${workNumber}`,
+        {
+          params: { page, pageSize },
+        withCredentials: true
+      });
+      return res;
+    } catch (err) {
+      Failed(err.response ? err.response.data.message : err.message);
+    }
+  };
+  //get developer details
+  export const getDeveloperDetails = async (developerId) => {
+    try {
+      const res = await axiosInstance.get(`/user/developer/${developerId}`,
+        {
+        withCredentials: true
+      });
+      return res;
+    } catch (err) {
+      Failed(err.response ? err.response.data.message : err.message);
+    }
+  };
 
   //logout
   export const userLogout =async ()=>{

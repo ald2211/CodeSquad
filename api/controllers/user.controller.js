@@ -20,12 +20,26 @@ export const getUserInfo =async (req,res,next)=>{
 
   try {
     const userInfo=await userService.getUserInfo( req.user.id)
-    console.log('userInfo:',userInfo)
+   
      res
        .status(201)
        .json({ success: true, message: "user fetched successfully", data: userInfo });
    } catch (err) {
      console.log("errorAt server:", err);
+     next(err);
+   }
+}
+
+export const getDeveloperDetails=async (req,res,next)=>{
+
+  try {
+    const data=await userService.getDeveloperInfo(req.params.devId)
+    console.log('userInfooooooooo:',data)
+     res
+       .status(200)
+       .json({ success: true, message: "user fetched successfully", data });
+   } catch (err) {
+     console.log("errorAt fetching developer details:", err);
      next(err);
    }
 }

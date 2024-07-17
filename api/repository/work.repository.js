@@ -75,6 +75,7 @@ class workRepository{
           developer:id,
           developerName:bidDetails.developerName,
           developerPhoto:bidDetails.developerPhoto,
+          developerRole:bidDetails.developerRole,
           completedProjects:completedWorks,
           bidAmount:bidDetails.bidAmount,
           deliveryTime:bidDetails.deliveryTime

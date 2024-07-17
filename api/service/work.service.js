@@ -109,6 +109,17 @@ class workSerivice{
        return await workRepository.findAllWorksByUserId(role,Id)
     }
 
+    async getBidDetails(workId,page,pageSize){
+
+      let work=await workRepository.findOneByWorkId(workId)
+      const totalBids = work.bids.length;
+      const skip = (page - 1) * pageSize;
+      const paginatedBids = work.bids.slice(skip, skip + parseInt(pageSize));
+      const data={ bids: paginatedBids, totalBids }
+      return data
+
+    }
+
 }
 
     
