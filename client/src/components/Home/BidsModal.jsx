@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import DeveloperDetailsModal from "./DeveloperDetailsModal";
-import { getBidDetails } from "../../api/service";
+import { AcceptBid, getBidDetails } from "../../api/service";
+import { IoChatboxOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 import spinner from '../../assets/loader.gif';
+import { Success } from "../../helper/popup";
+import { updateWorkSuccess } from "../../Redux/user/userSlice";
 
 const BidsModal = ({ bidDetails, handleCloseModal }) => {
   const [selectedDeveloper, setSelectedDeveloper] = useState(null);
@@ -14,6 +18,8 @@ const BidsModal = ({ bidDetails, handleCloseModal }) => {
   const [totalBids, setTotalBids] = useState(0);
   const bidsPerPage = 5; // Number of bids per page
   const { currentUser } = useSelector((state) => state.user);
+  const navigate=useNavigate()
+  const dispatch=useDispatch()
 
   useEffect(() => {
     const fetchBidDetails = async () => {
@@ -38,7 +44,17 @@ const BidsModal = ({ bidDetails, handleCloseModal }) => {
       setDeveloperModalOpen(true);
     }
   };
+  const handleBidAccept=async(developer)=>{
+     try{
+     const res=await AcceptBid(developer,bidDetails.workNumber)
+     dispatch(updateWorkSuccess(res.data.data));
+       handleCloseModal()
+       Success(res.data.message)
+     }catch(err){
+      console.log(err)
+     }
 
+  }
   const handleDeveloperModalClose = () => {
     setDeveloperModalOpen(false);
     setSelectedDeveloper(null);
@@ -102,7 +118,7 @@ const BidsModal = ({ bidDetails, handleCloseModal }) => {
                         <th className="py-2 px-4 border-b">Completed Projects</th>
                         <th className="py-2 px-4 border-b">Bid Amount</th>
                         <th></th>
-                        {currentUser.data.role === 'client' && <th className="py-2 px-4 border-b">Action</th>}
+                        {currentUser.data.role === 'client' && <th className="py-2 px-4 border-b"></th>}
                       </tr>
                     </thead>
                     <tbody>
@@ -116,7 +132,14 @@ const BidsModal = ({ bidDetails, handleCloseModal }) => {
                           <td className="py-2 px-4 border-b text-center">{bid.completedProjects}</td>
                           <td className="py-2 px-4 border-b text-center">{bid.bidAmount}</td>
                           <td onClick={() => handleViewMore(bid.developer)} className="py-2 px-4 border-b text-center text-sm text-blue-600 cursor-pointer hover:text-blue-500">View More</td>
-                          <td className="py-2 px-4 border-b text-center rounded border-[1px] hover:bg-blue-500 hover:text-white cursor-pointer">Accept</td>
+                          {currentUser.data.role==='client'&&
+                          
+                           <td onClick={()=>handleBidAccept(bid.developer)} className="py-2 px-4 border-b text-center rounded border-[1px] hover:bg-blue-500 hover:text-white cursor-pointer">Accept</td>
+                         }
+                         {currentUser.data.role==='client'&&
+                          
+                          <td  className="py-2 px-4  text-center cursor-pointer"><IoChatboxOutline className="w-5 h-5 hover:text-blue-700" /></td>
+                        }
                         </tr>
                       ))}
                     </tbody>

@@ -29,6 +29,14 @@ class workSerivice{
        return await workRepository.findAllWorksByUserId(role,clientId,page,limit,search,filterSearch,miniNavFilter)
        
     }
+
+    
+    async getAllCommittedWorks(role,clientId){
+      return await workRepository.findAllCommittedWorks(role,clientId)
+   }
+
+
+    
     
     async updateWork(role,workId,workData,clientId){
         console.log('UpdateworkData:',workData)
@@ -117,6 +125,18 @@ class workSerivice{
       const paginatedBids = work.bids.slice(skip, skip + parseInt(pageSize));
       const data={ bids: paginatedBids, totalBids }
       return data
+
+    }
+
+    async acceptDeveloperBid(role,Id,work){
+
+      let updateWorkData={
+        developerId:work.developer,
+        workStatus:'committed'
+      }
+      const updatedData=await workRepository.findByWorkIdAndUpdate(work.workNumber,updateWorkData)
+      if(!updatedData)throw errorHandler(400,'bid removing failed')
+      return await workRepository.findAllWorksByUserId(role,Id)
 
     }
 

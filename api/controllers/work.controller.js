@@ -58,6 +58,30 @@ export const deleteClientWork=async(req,res,next)=>{
    }
 }
 
+//committed works
+export const getCommittedWorks=async(req,res,next)=>{
+
+   try{
+      // const page = parseInt(req.query.page) || 1;  // Current page number, default to 1
+      // const limit = parseInt(req.query.limit)||10;  // Number of items per page
+      // const filterSearch=req.query.filterSearch||""
+      // const search= req.query.search || ""
+      const data=await workService.getAllCommittedWorks(req.user.role,req.user.id)
+     
+      return res.status(200).json({
+         success:true,
+         message:' fetch success',
+          data,
+      // totalItems:count,
+      // totalPages: Math.ceil(count / limit),
+      // currentPage: page,
+      })
+   }catch(err){
+      console.log('err at clientwork fetch:',err)
+      next(err)
+   }
+}
+
 //bookmarks
 
 export const handleBookMarks= async (req, res,next) => {
@@ -108,6 +132,17 @@ export const handleBookMarks= async (req, res,next) => {
     
    } catch (error) {
      console.log('error at get bid details:',error)
+     next(error)
+   }
+ }
+
+ export const acceptBid=async(req,res,next)=>{
+   try{
+     const {data}=await workService.acceptDeveloperBid(req.user.role,req.user.id,req.body)
+      res.status(200).json({success:true,message:'project committed Successfully',data})
+    
+   } catch (error) {
+     console.log('errorAtAcceptBid:',error)
      next(error)
    }
  }

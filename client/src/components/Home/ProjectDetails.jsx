@@ -155,7 +155,7 @@ const ProjectDetails = ({ filterSearch }) => {
         </div>
       ) : (
         <>
-          {userWorks?.map((work) => (
+          {userWorks?.filter((work)=>work.workStatus==='pending').map((work) => (
             <div
               key={work.workNumber}
               className="relative p-6 mb-6 border border-gray-300 rounded-lg bg-white shadow-md w-full max-w-4xl mx-auto"

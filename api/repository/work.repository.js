@@ -12,7 +12,7 @@ class workRepository{
     async findAllWorksByUserId(role,Id,page,limit,search,filterSearch,miniNavFilter) {
   let query = search
     ? { $or: [{ workName: new RegExp(search, 'i') }, { workType: new RegExp(search, 'i') }]}
-    : { };
+    : {};
 
   if(role==='client')query.clientId=Id;
    if(filterSearch){
@@ -53,6 +53,15 @@ class workRepository{
       return { count, data };
     }
 
+    async findAllCommittedWorks(role,Id) {
+      let query ={ workStatus:'committed'};
+    
+      if(role==='client')query.clientId=Id;
+      if(role==='developer')query.developerId=Id;
+      const data = await Work.find(query)
+          return data;
+        }
+    
     async findByWorkIdAndUpdate(workNumber, updateData) {
        return await Work.updateOne({workNumber}, { $set:updateData });
     }

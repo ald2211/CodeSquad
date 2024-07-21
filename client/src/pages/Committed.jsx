@@ -1,9 +1,10 @@
 import React from 'react'
+import CommittedProjects from '../components/committed/CommittedProjects'
 
 const Committed = () => {
   return (
-    <div>
-      committed
+    <div className='bg-gray-100'>
+      <CommittedProjects/>
     </div>
   )
 }

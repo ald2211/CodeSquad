@@ -4,7 +4,7 @@ import {getUserInfo, updateUserProfile,getDeveloperDetails} from "../controllers
 import { addEducation, deleteEducation, editEducation, getEducation } from "../controllers/education.controller.js";
 import { addExperience, deleteExperience, editExperience, getExperience } from "../controllers/experience.controller.js";
 import { addProjects, deleteProjects, editProjects, getProjects } from "../controllers/project.controller.js";
-import { createWork, getClientAllWorks,updateClientWork,deleteClientWork, handleBookMarks, placeAbid, removeAbid,getBidDetails} from "../controllers/work.controller.js";
+import { createWork, getClientAllWorks,updateClientWork,deleteClientWork, handleBookMarks, placeAbid, removeAbid,getBidDetails,acceptBid,getCommittedWorks} from "../controllers/work.controller.js";
 const router = express.Router();
 
 router.patch("/upload/:id",verifyUser(['developer','client','admin']),updateUserProfile);
@@ -36,11 +36,15 @@ router.get('/work/clientWorks',verifyUser(['client','developer']),getClientAllWo
 router.patch('/work/update/:workId',verifyUser(['client']),updateClientWork)
 router.delete('/work/delete/:workId',verifyUser(['client']),deleteClientWork)
 router.patch('/work/bookmark/:workId',verifyUser(['developer']),handleBookMarks)
+router.get('/work/committedWorks',verifyUser(['client','developer']),getCommittedWorks)
+
 
 //user Bids
 router.post('/bid/place',verifyUser(['developer']),placeAbid)
 router.patch('/bid/remove',verifyUser(['developer']),removeAbid)
 router.get('/bidDetails/:workId',verifyUser(['developer','client']),getBidDetails)
+router.patch('/bid/accept',verifyUser(['client']),acceptBid)
+
 
 //developerDetails
 router.get('/developer/:devId',verifyUser(['client','developer']),getDeveloperDetails)

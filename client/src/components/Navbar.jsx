@@ -75,7 +75,7 @@ const Navbar = () => {
           isActive ? 'block' : 'hidden'
         }`}
       ></span>
-      Projects
+      Ongoing
     </>
   )}
 </NavLink>
@@ -115,7 +115,7 @@ const Navbar = () => {
           isActive ? 'block' : 'hidden'
         }`}
       ></span>
-      Closed
+      Completed
     </>
   )}
 </NavLink>

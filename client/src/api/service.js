@@ -444,6 +444,17 @@ export const uploadResume = async (userId, resumeUrl) => {
       }
   }
 
+  export const getAllCommittedProjects=async()=>{
+    try {
+      const res = await axiosInstance.get('/user/work/committedWorks', {
+        // params: parameters,
+        withCredentials: true
+      });
+      return res;
+    } catch (err) {
+      Failed(err.response ? err.response.data.message : err.message);
+    }
+  }
   //bookmark
   export const handlebookMark=async(workId)=>{
 
@@ -510,6 +521,27 @@ export const uploadResume = async (userId, resumeUrl) => {
       Failed(err.response ? err.response.data.message : err.message);
     }
   };
+
+  //accept developer bid
+  export const AcceptBid=async(developer,workNumber)=>{
+    try{
+      const res = await axiosInstance.patch(
+        `/user/bid/accept`,
+        {developer,workNumber},
+        { 
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      return res
+  }catch(err){
+    console.log('placeBidErr:',err)
+    Failed(err.response ? err.response.data.message : err.message) 
+  }
+  }
+
   //get developer details
   export const getDeveloperDetails = async (developerId) => {
     try {
