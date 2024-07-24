@@ -33,3 +33,36 @@ export const updateUserState=async(req,res,next)=>{
         next(err)
     }
 }
+
+export const updateProjectState=async(req,res,next)=>{
+    try{
+       
+        await adminService.updateWorkStatus(req.params.id)
+        res.status(200).json({success:true,message:'Project Status updated successfully'})
+
+    }catch(err){
+        next(err)
+    }
+}
+
+
+export const findAllUserWorks=async(req,res,next)=>{
+
+    try{
+        const page = parseInt(req.query.page) || 1;  
+        const limit = parseInt(req.query.limit) || 10;  
+        const search= req.query.search || ""
+        const {count,data}=await adminService.findAllWorks(req.user.role,page,limit,search);
+        res.status(200).json({
+            success:true,
+            totalItems: count,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page,
+            data
+          });
+
+    }catch(err){
+        next(err)
+    }
+    
+}

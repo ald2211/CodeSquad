@@ -359,9 +359,9 @@ export const uploadResume = async (userId, resumeUrl) => {
       Failed(err.response ? err.response.data.message : err.message) 
     }
   }
+  
 
   export const updateUserState=async(userId,userState)=>{
-      console.log('useeeeer:',userState)
     try{
       const res = await axiosInstance.patch(
         `/admin/updateStatus/${userId}`,
@@ -379,6 +379,41 @@ export const uploadResume = async (userId, resumeUrl) => {
       Failed(err.response ? err.response.data.message : err.message) 
     }
   }
+
+  export const getAllWorksAdmin=async(page,limit,search)=>{
+
+    try{
+      const res = await axiosInstance.get(`/admin/allWorks`, {
+        params: {
+          page,
+          limit,
+          search
+        },
+        withCredentials: true
+      });
+      
+      return res
+    }catch(err){
+      Failed(err.response ? err.response.data.message : err.message) 
+    }
+  }
+
+  
+  export const updateWorkStatusAdmin=async(workNumber)=>{
+    try{
+      const res = await axiosInstance.patch(
+        `/admin/updateProjectStatus/${workNumber}`,
+        {
+          withCredentials: true,
+        }
+      );
+      return res
+    }catch(err){
+      console.log('updateWorkStatusError:',err)
+      Failed(err.response ? err.response.data.message : err.message) 
+    }
+  }
+
 
   //work
 
@@ -444,10 +479,14 @@ export const uploadResume = async (userId, resumeUrl) => {
       }
   }
 
-  export const getAllCommittedProjects=async()=>{
+  export const getAllCommittedProjects=async(page,limit,search)=>{
     try {
       const res = await axiosInstance.get('/user/work/committedWorks', {
-        // params: parameters,
+        params: {
+          page,
+          limit,
+          search
+        },
         withCredentials: true
       });
       return res;

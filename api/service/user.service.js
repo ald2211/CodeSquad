@@ -30,12 +30,15 @@ class userService{
 
       async getUserInfo(id){
        
-        return await userRepository.findUserById(id)
+        const usersInfo= await userRepository.findUserById(id)
+        const { password, ...rest } = usersInfo._doc;
+        return rest;
       }
 
       async getDeveloperInfo(id){
 
-        const developerData=await userRepository.findUserById(id)
+        const developerDataWithPassword=await userRepository.findUserById(id)
+        const { password, ...developerData } = developerDataWithPassword._doc;
         const developerEducation=await educationRepository.findAllByUserId(id)
         const developerProjects=await projectRepository.findAllByUserId(id)
         const developerExperience=await experienceRepository.findAllByUserId(id)

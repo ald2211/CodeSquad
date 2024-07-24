@@ -62,20 +62,18 @@ export const deleteClientWork=async(req,res,next)=>{
 export const getCommittedWorks=async(req,res,next)=>{
 
    try{
-      // const page = parseInt(req.query.page) || 1;  // Current page number, default to 1
-      // const limit = parseInt(req.query.limit)||10;  // Number of items per page
-      // const filterSearch=req.query.filterSearch||""
-      // const search= req.query.search || ""
-      const data=await workService.getAllCommittedWorks(req.user.role,req.user.id)
+      const page = parseInt(req.query.page) || 1;  
+      const search= req.query.search || ""
+      const limit = parseInt(req.query.limit) || 10;  
+      const {count,data}=await workService.getAllCommittedWorks(req.user.role,req.user.id,page,limit,search)
      
-      return res.status(200).json({
+      res.status(200).json({
          success:true,
-         message:' fetch success',
-          data,
-      // totalItems:count,
-      // totalPages: Math.ceil(count / limit),
-      // currentPage: page,
-      })
+         totalItems: count,
+         totalPages: Math.ceil(count / limit),
+         currentPage: page,
+         data
+       });
    }catch(err){
       console.log('err at clientwork fetch:',err)
       next(err)

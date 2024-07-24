@@ -53,13 +53,29 @@ class workRepository{
       return { count, data };
     }
 
-    async findAllCommittedWorks(role,Id) {
-      let query ={ workStatus:'committed'};
+    async findAllCommittedWorks(role,Id,page=1,limit=10,search='') {
+
+      const query=search?
+      { $or: [{ workName: new RegExp(search, 'i') }, { workType: new RegExp(search, 'i') },{ workStatus: new RegExp(search, 'i') }] }
+      :
+      {}
     
+      if(role!=='admin') query.workStatus='committed'
       if(role==='client')query.clientId=Id;
       if(role==='developer')query.developerId=Id;
-      const data = await Work.find(query)
-          return data;
+      const count=await Work.countDocuments(query)
+       const result=await Work.find(query).populate('clientId', 'name avatar email')
+        .skip((page - 1) * limit)
+        .limit(limit)
+const data = result.map(work => ({
+  ...work.toObject(),
+  clientId: {
+    name: work.clientId.name,
+    avatar: work.clientId.avatar,
+    email:work.clientId.email
+  },
+}));
+return {count,data}
         }
     
     async findByWorkIdAndUpdate(workNumber, updateData) {
@@ -85,6 +101,7 @@ class workRepository{
           developerName:bidDetails.developerName,
           developerPhoto:bidDetails.developerPhoto,
           developerRole:bidDetails.developerRole,
+          developerEmail:bidDetails.developerEmail,
           completedProjects:completedWorks,
           bidAmount:bidDetails.bidAmount,
           deliveryTime:bidDetails.deliveryTime

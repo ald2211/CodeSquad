@@ -3,7 +3,6 @@ import Modal from "react-modal";
 import { useDispatch, useSelector } from "react-redux";
 import DeveloperDetailsModal from "./DeveloperDetailsModal";
 import { AcceptBid, getBidDetails } from "../../api/service";
-import { IoChatboxOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import spinner from '../../assets/loader.gif';
 import { Success } from "../../helper/popup";
@@ -136,10 +135,7 @@ const BidsModal = ({ bidDetails, handleCloseModal }) => {
                           
                            <td onClick={()=>handleBidAccept(bid.developer)} className="py-2 px-4 border-b text-center rounded border-[1px] hover:bg-blue-500 hover:text-white cursor-pointer">Accept</td>
                          }
-                         {currentUser.data.role==='client'&&
-                          
-                          <td  className="py-2 px-4  text-center cursor-pointer"><IoChatboxOutline className="w-5 h-5 hover:text-blue-700" /></td>
-                        }
+                        
                         </tr>
                       ))}
                     </tbody>

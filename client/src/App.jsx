@@ -17,6 +17,7 @@ import Navbar from './components/Navbar'
 import NotFound from './pages/NotFound'
 import AdminOnly from './components/PrivateRoutes/AdminOnly'
 import UserManagement from './pages/UserManagement'
+import ProjectManagement from './pages/ProjectManagement'
 
 const App = () => {
   const {currentUser}=useSelector((state)=>state.user)
@@ -46,6 +47,7 @@ const App = () => {
         < Route path='/messages'  element={<Messages/>}/>
         <Route element={<AdminOnly/>}>
         <Route path='/admin/userManagement' element={<UserManagement/>}/>
+        <Route path='/admin/projectManagement' element={<ProjectManagement/>}/>
         </Route>
         </Route>
         

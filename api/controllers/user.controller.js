@@ -20,7 +20,7 @@ export const getUserInfo =async (req,res,next)=>{
 
   try {
     const userInfo=await userService.getUserInfo( req.user.id)
-   
+    console.log('infooo:',userInfo)
      res
        .status(201)
        .json({ success: true, message: "user fetched successfully", data: userInfo });

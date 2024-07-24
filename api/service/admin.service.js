@@ -1,4 +1,5 @@
 import userRepository from "../repository/user.repository.js"
+import workRepository from "../repository/work.repository.js";
 import { errorHandler } from "../utils/customError.js"
 
 class adminService{
@@ -20,6 +21,23 @@ class adminService{
           return updatedUser._doc.userState;
         
     }
+
+    async findAllWorks(role,page,limit,search){
+
+        return await workRepository.findAllCommittedWorks(role,'',page,limit,search)
+    }
+
+    async updateWorkStatus(id){
+        
+        const updatedData=await workRepository.findByWorkIdAndUpdate(id,{workStatus:'completed'})
+        if (!updatedData) {
+            throw errorHandler(404, "work not found");
+          }
+          console.log('updated:',updatedData)
+        
+    }
+    
+
 }
 
 

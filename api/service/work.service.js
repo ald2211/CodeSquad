@@ -31,8 +31,8 @@ class workSerivice{
     }
 
     
-    async getAllCommittedWorks(role,clientId){
-      return await workRepository.findAllCommittedWorks(role,clientId)
+    async getAllCommittedWorks(role,clientId,page,limit,search){
+      return await workRepository.findAllCommittedWorks(role,clientId,page,limit,search)
    }
 
 

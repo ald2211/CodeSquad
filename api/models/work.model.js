@@ -61,6 +61,9 @@ const workSchema = new mongoose.Schema({
       developerName:{
         type:String
       },
+      developerEmail:{
+        type:String
+      },
       developerPhoto:{
         type:String
       },
