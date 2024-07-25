@@ -4,6 +4,7 @@ import spinner from '../../assets/loader.gif';
 import { TbHourglassEmpty } from "react-icons/tb";
 import SearchBar from '../Home/SearchBar';
 import Pagination from '../UserTablePagination';
+import { useSelector } from 'react-redux';
 
 const CommittedProjects = () => {
     const [committed, setCommitted] = useState([]);
@@ -13,6 +14,7 @@ const CommittedProjects = () => {
     const [totalPages, setTotalPages] = useState(1); 
     const [totalItems, setTotalItems] = useState(0); 
     const itemsPerPage = 10;
+    const {currentUser}=useSelector((state)=>state.user)
 
     useEffect(() => {
         const getCommittedProjects = async () => {
@@ -38,7 +40,7 @@ const CommittedProjects = () => {
     };
 
     return (
-        <div className="max-w-6xl  mx-auto pt-11 space-y-6 mt-[90px] mb-2">
+        <div className="max-w-6xl  mx-auto pt-3 space-y-6 mt-[90px] mb-2">
             <SearchBar setSearch={setSearch} />
 
             {loading ? (
@@ -48,18 +50,19 @@ const CommittedProjects = () => {
             ) : committed?.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-[380px] text-center">
                     <TbHourglassEmpty className="w-12 h-12" />
-                    <p className="text-gray-600">You have no committed projects</p>
+                    <p className="text-gray-600"> no committed projects</p>
                 </div>
             ) : (
                 committed.map((work, index) => (
                     <div key={index} className="bg-white shadow-md rounded-lg overflow-hidden mb-6">
                         <div className="p-4">
                             <div className="flex justify-between items-center mb-4">
-                                <h2 className="text-2xl font-bold text-gray-800">{work.workName}</h2>
+                                <h2 className="text-2xl font-bold text-gray-800">{work.workName}<span className='text-sm font-normal ml-3'>({work.workNumber.toUpperCase()})</span></h2>
                                 <div className="rounded-lg bg-orange-500 px-3 py-2 text-xs font-bold uppercase text-white transition duration-200">
                                     {work.workStatus}
                                 </div>
                             </div>
+                            
                             <div className="flex justify-between mt-7">
                                 <div className="flex items-center mb-4">
                                     <img
@@ -88,11 +91,11 @@ const CommittedProjects = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex justify-between items-center mb-4">
+                            <div className="flex justify-between items-center mb-1">
                                 <p className="text-gray-600">Type: {work.workType}</p>
                                 <p className="text-gray-600">Delivery Time: {work.bids.filter((dev) => dev.developer === work.developerId)[0].deliveryTime} Days</p>
                             </div>
-                            <div className="flex justify-between items-center mb-4">
+                            <div className="flex justify-between items-center mb-1">
                                 <p className="text-gray-600">Budget: ₹{work.budget}</p>
                                 <p className="text-gray-600">Bid Amount: ₹{work.bids.filter((dev) => dev.developer === work.developerId)[0].bidAmount}</p>
                             </div>
@@ -104,11 +107,19 @@ const CommittedProjects = () => {
                                     Chat
                                 </button>
                             </div>
-                            <div className="mt-6">
+                                <div className="mt-6">
+                            {currentUser.data.role==='developer'?
+                                <>
                                 <input type="file" className="w-full mb-4 border border-gray-300 rounded-md p-2" />
                                 <button className="w-full bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600 focus:outline-none transition duration-200">
                                     Inform Complete
                                 </button>
+                                </>
+                            :
+                            <button className="w-full bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600 focus:outline-none transition duration-200">
+                             Make Payment
+                            </button>
+                            }
                             </div>
                         </div>
                     </div>

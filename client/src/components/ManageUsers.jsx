@@ -64,14 +64,12 @@ const ManageUsers = () => {
     <>
       <div className="flex flex-row mt-[80px] hide-scrollbar overflow-hidden">
         <Sidebar />
-        <div className="flex-1 -m-1.5 overflow-x-auto">
+        <div className="flex-1 -m-1.5 overflow-x-auto p-4">
           <div className="p-1.5 min-w-full inline-block align-middle">
             <div className="border rounded-lg divide-y divide-gray-200 dark:border-gray-700 dark:divide-gray-700">
+            <h1 className='text-xl font-semibold text-gray-900 p-4'>Manage Users</h1>
               <div className="py-3 px-4">
                 <div className="relative max-w-xs">
-                  <label htmlFor="hs-table-with-pagination-search" className="sr-only">
-                    Search
-                  </label>
                   <input
                     type="text"
                     name="hs-table-with-pagination-search"

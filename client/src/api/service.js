@@ -397,7 +397,24 @@ export const uploadResume = async (userId, resumeUrl) => {
       Failed(err.response ? err.response.data.message : err.message) 
     }
   }
+  
+  export const getAllCompletedWorksAdmin=async(page,limit,search)=>{
 
+    try{
+      const res = await axiosInstance.get(`/admin/completedWorks`, {
+        params: {
+          page,
+          limit,
+          search
+        },
+        withCredentials: true
+      });
+      
+      return res
+    }catch(err){
+      Failed(err.response ? err.response.data.message : err.message) 
+    }
+  }
   
   export const updateWorkStatusAdmin=async(workNumber)=>{
     try{
@@ -494,6 +511,22 @@ export const uploadResume = async (userId, resumeUrl) => {
       Failed(err.response ? err.response.data.message : err.message);
     }
   }
+
+  export const getAllCompletedProjects=async(page,limit,search)=>{
+    try {
+      const res = await axiosInstance.get('/user/work/completedWorks', {
+        params: {
+          page,
+          limit,
+          search
+        },
+        withCredentials: true
+      });
+      return res;
+    } catch (err) {
+      Failed(err.response ? err.response.data.message : err.message);
+    }
+  }
   //bookmark
   export const handlebookMark=async(workId)=>{
 
@@ -562,7 +595,7 @@ export const uploadResume = async (userId, resumeUrl) => {
   };
 
   //accept developer bid
-  export const AcceptBid=async(developer,workNumber)=>{
+  export const AcceptBid=async(developer,workNumber,workType)=>{
     try{
       const res = await axiosInstance.patch(
         `/user/bid/accept`,
@@ -594,6 +627,25 @@ export const uploadResume = async (userId, resumeUrl) => {
     }
   };
 
+  
+  export const handleUpi=async(paymentId,upi)=>{
+    try{
+      const res = await axiosInstance.patch(
+        `/payment/updateUpi`,
+        {paymentId,upi},
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      return res
+    }catch(err){
+      console.log('updateStatusError:',err)
+      Failed(err.response ? err.response.data.message : err.message) 
+    }
+  }
   //logout
   export const userLogout =async ()=>{
 

@@ -57,8 +57,6 @@ const AdminProfile = () => {
         try {
           const res = await uploadImage(currentUser.data._id, imageUrl);
           const data = res.data;
-          console.log('dataaaaaaaaa:',data);
-          console.log("serverImg:", data.message);
           dispatch(updateUserSuccess(data));
           Success("profile image updated Successfully");
           

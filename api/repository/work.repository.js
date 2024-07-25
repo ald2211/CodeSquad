@@ -78,6 +78,31 @@ const data = result.map(work => ({
 return {count,data}
         }
     
+        async findAllCompletedWorks(role,Id,page=1,limit=10,search='') {
+
+          const query=search?
+          { $or: [{ workName: new RegExp(search, 'i') }, { workType: new RegExp(search, 'i') },{ workStatus: new RegExp(search, 'i') }] }
+          :
+          {workStatus:'completed'}
+        
+          if(role==='client')query.clientId=Id;
+          if(role==='developer')query.developerId=Id;
+          const count=await Work.countDocuments(query)
+           const result=await Work.find(query).populate('clientId', 'name avatar email').populate('paymentId')
+            .skip((page - 1) * limit)
+            .limit(limit)
+    const data = result.map(work => ({
+      ...work.toObject(),
+      clientId: {
+        name: work.clientId.name,
+        avatar: work.clientId.avatar,
+        email:work.clientId.email
+      },
+      paymentId:work.paymentId
+    }));
+    return {count,data}
+            }
+    
     async findByWorkIdAndUpdate(workNumber, updateData) {
        return await Work.updateOne({workNumber}, { $set:updateData });
     }
@@ -118,7 +143,7 @@ return {count,data}
      
     return await Work.countDocuments({ 
       $and: [
-        { workStatus: 'closed' }, 
+        { workStatus: 'completed' }, 
         { developer: id }
       ]
     });

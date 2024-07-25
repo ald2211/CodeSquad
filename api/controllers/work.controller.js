@@ -80,6 +80,27 @@ export const getCommittedWorks=async(req,res,next)=>{
    }
 }
 
+export const getCompletedWorks=async(req,res,next)=>{
+
+   try{
+      const page = parseInt(req.query.page) || 1;  
+      const search= req.query.search || ""
+      const limit = parseInt(req.query.limit) || 10;  
+      const {count,data}=await workService.getAllCompletedWorks(req.user.role,req.user.id,page,limit,search)
+     
+      res.status(200).json({
+         success:true,
+         totalItems: count,
+         totalPages: Math.ceil(count / limit),
+         currentPage: page,
+         data
+       });
+   }catch(err){
+      console.log('err at clientwork fetch:',err)
+      next(err)
+   }
+}
+
 //bookmarks
 
 export const handleBookMarks= async (req, res,next) => {

@@ -112,3 +112,13 @@ today.setHours(0, 0, 0, 0);
     .max(360, 'Delivery time must be less than a year')
   });
   
+  export const upiValidationSchema = Yup.object().shape({
+    upiId: Yup.string().required('UPI ID is required'),
+  });
+
+  export const reviewValidationSchema = Yup.object().shape({
+    rating: Yup.number()
+      .min(1, 'Rating must be at least 1')
+      .max(5, 'Rating cannot be more than 5'),
+    review: Yup.string().required('Review is required'),
+  });

@@ -7,7 +7,7 @@ import Profile from './pages/Profile'
 import Home from './pages/Home'
 import Footer from './components/Footer'
 import Committed from './pages/Committed'
-import Closed from './pages/Closed'
+import Closed from './pages/Completed'
 import Info from './pages/Info'
 import Notification from './pages/Notification'
 import Messages from './pages/Messages'
@@ -18,6 +18,7 @@ import NotFound from './pages/NotFound'
 import AdminOnly from './components/PrivateRoutes/AdminOnly'
 import UserManagement from './pages/UserManagement'
 import ProjectManagement from './pages/ProjectManagement'
+import PaymentManagement from './pages/PaymentManagement'
 
 const App = () => {
   const {currentUser}=useSelector((state)=>state.user)
@@ -48,6 +49,7 @@ const App = () => {
         <Route element={<AdminOnly/>}>
         <Route path='/admin/userManagement' element={<UserManagement/>}/>
         <Route path='/admin/projectManagement' element={<ProjectManagement/>}/>
+        <Route path='/admin/paymentManagement' element={<PaymentManagement/>}/>
         </Route>
         </Route>
         

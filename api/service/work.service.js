@@ -1,4 +1,5 @@
 import { generateUniqueWorkId } from "../helpers/workIdGenerator.js";
+import paymentRepository from "../repository/payment.repository.js";
 import workRepository from "../repository/work.repository.js";
 import { errorHandler } from "../utils/customError.js";
 
@@ -34,6 +35,11 @@ class workSerivice{
     async getAllCommittedWorks(role,clientId,page,limit,search){
       return await workRepository.findAllCommittedWorks(role,clientId,page,limit,search)
    }
+
+   async getAllCompletedWorks(role,clientId,page,limit,search){
+    return await workRepository.findAllCompletedWorks(role,clientId,page,limit,search)
+ }
+
 
 
     
@@ -98,6 +104,7 @@ class workSerivice{
       if (!work) throw errorHandler(404,'work not found')
       let completedWorks=await workRepository.findCompletedWorksById(Id)
       if(work.budget<bidDetails.bidAmount)throw errorHandler(400,'bid amount must be less than budget')
+
        const updatedData= await workRepository.createBid(Id,bidDetails,completedWorks);
        
        if(!updatedData)throw errorHandler(400,'bid placing failed')
@@ -129,10 +136,20 @@ class workSerivice{
     }
 
     async acceptDeveloperBid(role,Id,work){
+      console.log('weeee:',work)
+      let finalAmount;
+        if(work.workType==='hourly'){
+        
+          finalAmount=work.developer.bidAmount*8*work.developer.deliveryTime
+        }else{
+          finalAmount=work.developer.bidAmount
+        }
+        const paymentData=await paymentRepository.createPayment(finalAmount)
 
       let updateWorkData={
-        developerId:work.developer,
-        workStatus:'committed'
+        developerId:work.developer.devId,
+        workStatus:'committed',
+        paymentId:paymentData._id
       }
       const updatedData=await workRepository.findByWorkIdAndUpdate(work.workNumber,updateWorkData)
       if(!updatedData)throw errorHandler(400,'bid removing failed')

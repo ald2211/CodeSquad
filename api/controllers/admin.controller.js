@@ -64,5 +64,24 @@ export const findAllUserWorks=async(req,res,next)=>{
     }catch(err){
         next(err)
     }
-    
+}
+
+export const findAllCompletedWorks=async(req,res,next)=>{
+
+    try{
+        const page = parseInt(req.query.page) || 1;  
+        const limit = parseInt(req.query.limit) || 10;  
+        const search= req.query.search || ""
+        const {count,data}=await adminService.findCompletedWorks(req.user.role,page,limit,search);
+        res.status(200).json({
+            success:true,
+            totalItems: count,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page,
+            data
+          });
+
+    }catch(err){
+        next(err)
+    }
 }

@@ -45,7 +45,7 @@ const BidsModal = ({ bidDetails, handleCloseModal }) => {
   };
   const handleBidAccept=async(developer)=>{
      try{
-     const res=await AcceptBid(developer,bidDetails.workNumber)
+     const res=await AcceptBid(developer,bidDetails.workNumber,bidDetails.workType)
      dispatch(updateWorkSuccess(res.data.data));
        handleCloseModal()
        Success(res.data.message)
@@ -115,6 +115,7 @@ const BidsModal = ({ bidDetails, handleCloseModal }) => {
                         <th className="py-2 px-4 border-b">Photo</th>
                         <th className="py-2 px-4 border-b">Role</th>
                         <th className="py-2 px-4 border-b">Completed Projects</th>
+                        <th className="py-2 px-4 border-b">Deliverd In</th>
                         <th className="py-2 px-4 border-b">Bid Amount</th>
                         <th></th>
                         {currentUser.data.role === 'client' && <th className="py-2 px-4 border-b"></th>}
@@ -129,11 +130,12 @@ const BidsModal = ({ bidDetails, handleCloseModal }) => {
                           </td>
                           <td className="py-2 px-4 border-b text-center">{bid.developerRole}</td>
                           <td className="py-2 px-4 border-b text-center">{bid.completedProjects}</td>
+                          <td className="py-2 px-4 border-b text-center">{bid.deliveryTime}</td>
                           <td className="py-2 px-4 border-b text-center">{bid.bidAmount}</td>
                           <td onClick={() => handleViewMore(bid.developer)} className="py-2 px-4 border-b text-center text-sm text-blue-600 cursor-pointer hover:text-blue-500">View More</td>
                           {currentUser.data.role==='client'&&
                           
-                           <td onClick={()=>handleBidAccept(bid.developer)} className="py-2 px-4 border-b text-center rounded border-[1px] hover:bg-blue-500 hover:text-white cursor-pointer">Accept</td>
+                           <td onClick={()=>handleBidAccept({devId:bid.developer,bidAmount:bid.bidAmount,deliveryTime:bid.deliveryTime})} className="py-2 px-4 border-b text-center rounded border-[1px] hover:bg-blue-500 hover:text-white cursor-pointer">Accept</td>
                          }
                         
                         </tr>

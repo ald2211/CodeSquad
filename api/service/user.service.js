@@ -8,7 +8,6 @@ import { errorHandler } from "../utils/customError.js";
 class userService{
 
     async updateUserProfile(userId, profileData) {
-        console.log('profile DAta:',profileData)
         const updateData = {
           avatar: profileData.avatar,
           rph: profileData.rph,

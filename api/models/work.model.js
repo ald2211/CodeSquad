@@ -81,6 +81,10 @@ const workSchema = new mongoose.Schema({
       },
     },
   ],
+  paymentId:{
+    type:String,
+    ref:'Payment'
+  }
 
 },{timestamps:true});
 

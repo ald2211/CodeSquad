@@ -27,6 +27,11 @@ class adminService{
         return await workRepository.findAllCommittedWorks(role,'',page,limit,search)
     }
 
+    async findCompletedWorks(role,page,limit,search){
+
+        return await workRepository.findAllCompletedWorks(role,'',page,limit,search)
+    }
+
     async updateWorkStatus(id){
         
         const updatedData=await workRepository.findByWorkIdAndUpdate(id,{workStatus:'completed'})
