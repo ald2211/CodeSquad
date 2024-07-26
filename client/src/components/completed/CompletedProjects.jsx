@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getAllCompletedProjects, handleUpi } from '../../api/service';
+import { getAllCompletedProjects, handleReview, handleUpi } from '../../api/service';
 import spinner from '../../assets/loader.gif';
 import { TbHourglassEmpty } from "react-icons/tb";
 import SearchBar from '../Home/SearchBar';
@@ -16,9 +16,10 @@ const CompletedProjects = () => {
     const [totalItems, setTotalItems] = useState(0); 
     const [showPaymentField, setShowPaymentField] = useState(false);
     const [upiId, setUpiId] = useState("");
-    const [rating, setRating] = useState(0);
+    const [rating, setRating] = useState();
     const [review, setReview] = useState("");
-    const [showError,setShowError]=useState('')
+    const [upiError,setUpiError]=useState('')
+    const [ratingError,setRatingError]=useState('')
     const itemsPerPage = 10;
     const { currentUser } = useSelector((state) => state.user);
 
@@ -52,7 +53,7 @@ const CompletedProjects = () => {
             // Regex pattern for UPI ID
             const upiRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+$/;
             if (!upiRegex.test(upiId)){
-                setShowError('invalid UPI ID')
+                setUpiError('invalid UPI ID')
                 return;
             }
             setShowPaymentField(!showPaymentField)
@@ -71,9 +72,46 @@ const CompletedProjects = () => {
 
    
 
-    const handleSubmitReview = () => {
+    const handleSubmitReview = async(clientId,developerId,workId,key) => {
         let role = currentUser.data.role;
-        // Handle review submission
+        let userId,reviewer;
+        if(role==='client'){
+            userId=developerId
+            reviewer=clientId
+        }else{
+            userId=clientId,
+            reviewer=developerId
+        }
+        let reviewData={
+            userId,
+            reviewer,
+            rating,
+            review
+        }
+
+        try {
+            // Regex pattern for rating
+            const ratingRegex = /^(?:[1-5])$/;
+            if (!ratingRegex.test(rating)){
+                setRatingError('Please enter a rating between 1 and 5')
+                return;
+            }
+            const res = await handleReview(reviewData,workId);
+            
+            if (res.data.success) {
+                 const updatedWorkData = [...completed];
+                 if(role==='client'){
+                    updatedWorkData[key].clientReview = 'reveiw added';
+                 }else{
+                    updatedWorkData[key].developerReview = 'reveiw added';
+                 }
+               
+                setCompleted(updatedWorkData);
+                 Success(res.data.message);
+            }
+        } catch (err) {
+            console.log('err at review:', err);
+        }
     };
 
     return (
@@ -170,7 +208,7 @@ const CompletedProjects = () => {
                                             placeholder="UPI ID"
                                             onChange={(e) => {setUpiId(e.target.value);setShowError('')}}
                                         />
-                                       { showError!==''&&<p className='text-sm text-red-600 mb-[5px]'>{showError}</p>}
+                                       { upiError!==''&&<p className='text-sm text-red-600 mb-[5px]'>{upiError}</p>}
                                         <button
                                             className="w-full bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none transition duration-200"
                                             onClick={() => handleRequestPayment(work.paymentId, index)}
@@ -185,29 +223,36 @@ const CompletedProjects = () => {
                         </div>
 
                         {/* Review Section */}
+                       { 
+                        (currentUser.data.role==='client'&&work.clientReview)?
+                        <p></p>
+                        :
+                        (currentUser.data.role==='developer'&&work.developerReview)?
+                        <p></p>
+                        :
                         <div className="p-6">
                             <textarea
                                 className="w-full border border-gray-300 rounded-md p-2 mb-2"
                                 placeholder="Write a review..."
-                                value={review}
                                 onChange={(e) => setReview(e.target.value)}
                             />
                             <input
                                 type="number"
                                 className="w-full border border-gray-300 rounded-md p-2 mb-2"
                                 placeholder="Rating (1-5)"
-                                value={rating}
+                                min='1'
+                                max='5'
                                 onChange={(e) => setRating(e.target.value)}
-                                min="1"
-                                max="5"
+                               
                             />
+                            { ratingError!==''&&<p className='text-sm text-red-600 mb-[5px]'>{ratingError}</p>}
                             <button
                                 className="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none transition duration-200"
-                                onClick={() => handleSubmitReview()}
+                                onClick={() => handleSubmitReview(work.clientId._id,work.developerId,work.workNumber,index)}
                             >
                                 Submit Review
                             </button>
-                        </div>
+                        </div>}
                     </div>
                 ))
             )}

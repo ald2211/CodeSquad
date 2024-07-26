@@ -88,12 +88,13 @@ return {count,data}
           if(role==='client')query.clientId=Id;
           if(role==='developer')query.developerId=Id;
           const count=await Work.countDocuments(query)
-           const result=await Work.find(query).populate('clientId', 'name avatar email').populate('paymentId')
+           const result=await Work.find(query).populate('clientId', '_id name avatar email').populate('paymentId')
             .skip((page - 1) * limit)
             .limit(limit)
     const data = result.map(work => ({
       ...work.toObject(),
       clientId: {
+        _id:work.clientId._id,
         name: work.clientId.name,
         avatar: work.clientId.avatar,
         email:work.clientId.email

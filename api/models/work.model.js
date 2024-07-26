@@ -84,7 +84,15 @@ const workSchema = new mongoose.Schema({
   paymentId:{
     type:String,
     ref:'Payment'
-  }
+  },
+  clientReview:{
+    type:String,
+    ref:'review'
+  },
+  developerReview:{
+    type:String,
+    ref:'review'
+  },
 
 },{timestamps:true});
 

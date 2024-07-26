@@ -646,6 +646,28 @@ export const uploadResume = async (userId, resumeUrl) => {
       Failed(err.response ? err.response.data.message : err.message) 
     }
   }
+
+
+  export const handleReview=async(review,workId)=>{
+    try{
+      const res = await axiosInstance.post(
+        '/user/review',
+        {review,workId},
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      return res
+    }catch(err){
+      console.log('updateStatusError:',err)
+      Failed(err.response ? err.response.data.message : err.message) 
+    }
+  }
+
+
   //logout
   export const userLogout =async ()=>{
 
