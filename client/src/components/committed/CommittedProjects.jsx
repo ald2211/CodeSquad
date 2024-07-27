@@ -6,6 +6,8 @@ import SearchBar from '../Home/SearchBar';
 import Pagination from '../UserTablePagination';
 import { useSelector } from 'react-redux';
 import { Failed, Success } from '../../helper/popup';
+import PaymentSuccess from '../PaymentSuccess';
+import PaymentFailed from '../PaymentFailed';
 
 const CommittedProjects = () => {
     const [committed, setCommitted] = useState([]);
@@ -14,6 +16,8 @@ const CommittedProjects = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1); 
     const [totalItems, setTotalItems] = useState(0); 
+    const [paymentSuccessOpen,setPaymentSuccessOpen]=useState(false)
+    const [paymentFailedOpen,setPaymentFailedOpen]=useState(false)
     const itemsPerPage = 10;
     const {currentUser}=useSelector((state)=>state.user)
 
@@ -54,9 +58,9 @@ const CommittedProjects = () => {
                     const updatedWorkData = [...committed];
                     updatedWorkData[key].paymentId.clientPayment = "recieved";
                     setCommitted(updatedWorkData)
-                    Success('payment recieved')
+                    setPaymentSuccessOpen(true)
                 }else{
-                    Failed('payment failed')
+                    setPaymentFailedOpen(true)
                 }
             },
             prefill:{
@@ -177,6 +181,13 @@ const CommittedProjects = () => {
                 currentPage={currentPage}
                 onPageChange={handlePageChange}
               />
+            {/* Payment Success Modal */}
+            {currentUser.data.role==='client'&&
+            <>
+      <PaymentSuccess isOpen={paymentSuccessOpen} onClose={() => setPaymentSuccessOpen(false)} />
+      <PaymentFailed isOpen={paymentFailedOpen} onClose={() => setPaymentFailedOpen(false)} />
+      </>
+            }
         </div>
     );
 };
