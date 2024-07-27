@@ -2,7 +2,13 @@ import mongoose from "mongoose";
 
 const paymentSchema = new mongoose.Schema({
 
-  paymentId: {
+  razorpayOrderId:{
+    type:String,
+  },
+  razorpayPaymentId: {
+    type: String,
+  },
+  razorpaySignature: {
     type: String,
   },
   clientPayment: {

@@ -667,6 +667,41 @@ export const uploadResume = async (userId, resumeUrl) => {
     }
   }
 
+  export const makePayment=async(amount,currency,receipt)=>{
+    try{
+      const res=await axiosInstance.post('/payment/order',
+        {amount,receipt,currency},
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      )
+      return res
+    }catch(err){
+      console.log('updateStatusError:',err)
+      Failed(err.response ? err.response.data.message : err.message) 
+    }
+  }
+
+  export const verifyPayment=async(razorpayPaymentId,razorpayOrderId,razorpaySignature,paymentId)=>{
+    try{
+      const res=await axiosInstance.post('/payment/verifyPayment',
+        {razorpayPaymentId,razorpayOrderId,razorpaySignature,paymentId},
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      )
+      return res
+    }catch(err){
+      console.log('verifiePaymentError:',err)
+      // Failed(err.response ? err.response.data.message : err.message) 
+    }
+  }
 
   //logout
   export const userLogout =async ()=>{

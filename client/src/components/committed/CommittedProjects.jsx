@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { getAllCommittedProjects } from '../../api/service';
+import { getAllCommittedProjects, makePayment, verifyPayment } from '../../api/service';
 import spinner from '../../assets/loader.gif';
 import { TbHourglassEmpty } from "react-icons/tb";
 import SearchBar from '../Home/SearchBar';
 import Pagination from '../UserTablePagination';
 import { useSelector } from 'react-redux';
+import { Failed, Success } from '../../helper/popup';
 
 const CommittedProjects = () => {
     const [committed, setCommitted] = useState([]);
@@ -39,6 +40,38 @@ const CommittedProjects = () => {
       setCurrentPage(page);
     };
 
+    const handlePayment=async(amount,paymentId,key)=>{
+        const currency = 'INR';
+        const res=await makePayment(amount, currency, paymentId);
+
+        const options={
+            key:import.meta.env.VITE_RAZORPAY_ID_KEY,
+            order_id:res.data.order.id,
+            image:'http://localhost:5173/codeSquadLogo.png',
+            handler:async function(response){
+                const res=await verifyPayment(response.razorpay_payment_id,response.razorpay_order_id,response.razorpay_signature,paymentId)
+                if(res.data.success){
+                    const updatedWorkData = [...committed];
+                    updatedWorkData[key].paymentId.clientPayment = "recieved";
+                    setCommitted(updatedWorkData)
+                    Success('payment recieved')
+                }else{
+                    Failed('payment failed')
+                }
+            },
+            prefill:{
+                name:'CodeSquad',
+                email:import.meta.env.VITE_RAZORPAY_EMAIL,
+                contact:import.meta.env.VITE_RAZORPAY_NUMBER
+            },
+            theme:{
+                color:'#F37254'
+            }
+        }
+        const rzpi=new window.Razorpay(options)
+        rzpi.open()
+    }
+
     return (
         <div className="max-w-6xl  mx-auto pt-3 space-y-6 mt-[90px] mb-2">
             <SearchBar setSearch={setSearch} />
@@ -62,6 +95,14 @@ const CommittedProjects = () => {
                                     {work.workStatus}
                                 </div>
                             </div>
+                            
+                                {
+                                    currentUser.data.role==='client'&&
+                                    <div className={`rounded-lg text-center px-3 py-2 text-xs font-bold uppercase text-white transition duration-200 ${work.paymentId.clientPayment==='recieved'?'bg-green-500':'bg-yellow-500'}`}>
+                                    Payment {work.paymentId.clientPayment.toUpperCase()}
+                                </div>
+                                }
+                  
                             
                             <div className="flex justify-between mt-7">
                                 <div className="flex items-center mb-4">
@@ -107,20 +148,26 @@ const CommittedProjects = () => {
                                     Chat
                                 </button>
                             </div>
-                                <div className="mt-6">
-                            {currentUser.data.role==='developer'?
-                                <>
-                                <input type="file" className="w-full mb-4 border border-gray-300 rounded-md p-2" />
-                                <button className="w-full bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600 focus:outline-none transition duration-200">
-                                    Inform Complete
-                                </button>
-                                </>
-                            :
-                            <button className="w-full bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600 focus:outline-none transition duration-200">
-                             Make Payment
-                            </button>
-                            }
-                            </div>
+                            <div className="mt-6">
+    {currentUser.data.role === 'developer' ? (
+        <>
+            <input type="file" className="w-full mb-4 border border-gray-300 rounded-md p-2" />
+            <button className="w-full bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600 focus:outline-none transition duration-200">
+                Inform Complete
+            </button>
+        </>
+    ) : (
+        work.paymentId.clientPayment === 'pending' && (
+            <button
+                onClick={() => handlePayment(work.paymentId.finalAmount, work.paymentId._id,index)}
+                className="w-full bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600 focus:outline-none transition duration-200"
+            >
+                Make Payment
+            </button>
+        )
+    )}
+</div>
+
                         </div>
                     </div>
                 ))

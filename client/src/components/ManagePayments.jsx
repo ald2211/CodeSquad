@@ -44,8 +44,8 @@ const ManagePayments = () => {
   return (
     <div className="flex flex-row mt-[80px] overflow-hidden">
       <Sidebar />
-      <div className="flex-1 p-4">
-        <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+      <div className="flex-1 p-4 overflow-x-auto">
+        <div className="shadow overflow-x-auto border-b border-gray-200 sm:rounded-lg">
           <div className="flex justify-between items-center p-4 bg-white">
             <h1 className="text-2xl font-semibold text-gray-900">Manage Payments</h1>
             <div className="relative max-w-xs">
@@ -217,12 +217,12 @@ const ManagePayments = () => {
                           </span>
                         
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center pt-[75px]">
+                      <td className="px-6 py-4 flex flex-col whitespace-nowrap text-xs text-gray-500 text-center mt-[95px]">
                         {work.paymentId.upi || "-"}
                         {work.paymentId.upi && (
                           <button
                             onClick={() =>handlePaymentForward(work.paymentId._id,key)}
-                            className="ml-2 px-3 py-1 text-white bg-blue-600 hover:bg-blue-700 rounded"
+                            className="ml-2 px-3 py-1 text-white bg-blue-600 hover:bg-blue-700 rounded mt-2"
                           >
                             Forward Payment
                           </button>

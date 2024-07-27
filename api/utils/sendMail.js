@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer'
-import jwt from 'jsonwebtoken'
+
 
 
 const verifyEmail=async(email,link,name)=>{

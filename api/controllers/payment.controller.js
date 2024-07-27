@@ -1,5 +1,7 @@
 import paymentService from "../service/payment.service.js"
 
+
+
 export const updateUpi=async(req,res,next)=>{
 
     try {
@@ -12,3 +14,28 @@ export const updateUpi=async(req,res,next)=>{
        }
 
 }
+
+
+export const createRazorpayOrder=async(req,res,next)=>{
+  const {amount,currency,receipt}=req.body
+  try{
+    const order=await paymentService.createOrder(amount,currency,receipt)
+    console.log('order:',order)
+    res.json({success:true,order})
+  }catch(err){
+    console.log('error at order:',err)
+  }
+}
+
+export const verifyRazorpayPayment=async(req,res,next)=>{
+  try{
+    const {razorpayPaymentId,razorpayOrderId,razorpaySignature,paymentId}=req.body
+    const paymentDetails=await paymentService.verifyPayment(razorpayPaymentId,razorpayOrderId,razorpaySignature,paymentId)
+    res.status(200).json(paymentDetails) 
+  }catch(err){
+    console.log('error:',err)
+    next(err)
+  }
+}
+
+

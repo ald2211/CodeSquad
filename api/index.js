@@ -17,7 +17,7 @@ const corsOptions = {                             // Configure CORS to allow req
     credentials: true ,                          // Allow credentials (cookies)
     allowedHeaders: ['Content-Type', 'Authorization'],
   };
-
+ 
 const app=express()
 app.use(cors(corsOptions));                      
 app.use(cookieParser())
