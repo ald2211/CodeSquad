@@ -5,8 +5,10 @@ import { TbHourglassEmpty } from "react-icons/tb";
 import SearchBar from '../Home/SearchBar';
 import Pagination from '../UserTablePagination';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const CommittedProjects = () => {
+    const navigate=useNavigate()
     const [committed, setCommitted] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
@@ -37,6 +39,13 @@ const CommittedProjects = () => {
     const handlePageChange = (page) => {
       setCurrentPage(page);
     };
+
+    const handleVideoCallJoin=(work)=>{
+        const id=work.workNumber
+        let user=currentUser.data._id
+        let userName=currentUser.data.name
+        window.open(`/room/${id}/${user}/${userName}`,'_blank')
+    }
 
     return (
         <div className="max-w-6xl mx-auto pt-3 space-y-6 mt-[90px] mb-2">
@@ -102,7 +111,7 @@ const CommittedProjects = () => {
                                 <p className="text-gray-600">Bid Amount: ₹{work.bids.find((dev) => dev.developer === work.developerId)?.bidAmount}</p>
                             </div>
                             <div className="flex justify-between items-center mt-4 mb-4">
-                                <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none transition duration-200">
+                                <button onClick={()=>handleVideoCallJoin(work)} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none transition duration-200">
                                     Video Call
                                 </button>
                                 <button className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none transition duration-200">

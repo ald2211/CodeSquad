@@ -19,6 +19,7 @@ import AdminOnly from './components/PrivateRoutes/AdminOnly'
 import UserManagement from './pages/UserManagement'
 import ProjectManagement from './pages/ProjectManagement'
 import PaymentManagement from './pages/PaymentManagement'
+import VideoCall from './components/VideoCall'
 
 const App = () => {
   const {currentUser}=useSelector((state)=>state.user)
@@ -46,6 +47,7 @@ const App = () => {
         < Route path='/info'  element={<Info/>}/>
         < Route path='/notification'  element={<Notification/>}/>
         < Route path='/messages'  element={<Messages/>}/>
+        < Route path='/room/:roomId/:userId/:userName' element={<VideoCall/>}/>
         <Route element={<AdminOnly/>}>
         <Route path='/admin/userManagement' element={<UserManagement/>}/>
         <Route path='/admin/projectManagement' element={<ProjectManagement/>}/>

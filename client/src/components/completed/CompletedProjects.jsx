@@ -258,19 +258,20 @@ const CompletedProjects = () => {
                                 </>
                                }
                                {
-                               ( currentUser.data.role==='client'&&work.paymentId.clientPayment === 'pending')
-                                     ? (
-                                        <button
-                                            onClick={() => handlePayment(work.paymentId.finalAmount, work.paymentId._id, index)}
-                                            className="w-full bg-indigo-500 mt-3 text-white px-4 py-2 rounded-md hover:bg-indigo-600 focus:outline-none transition duration-200"
-                                        >
-                                            Make Payment
-                                        </button>
-                                    )
-                                    :
-                                    <PaymentIdCard paymentId={work.paymentId.razorpayPaymentId} />
-                                
-                               }
+    currentUser.data.role === 'client' && (
+        work.paymentId.clientPayment === 'pending' ? (
+            <button
+                onClick={() => handlePayment(work.paymentId.finalAmount, work.paymentId._id, index)}
+                className="w-full bg-indigo-500 mt-3 text-white px-4 py-2 rounded-md hover:bg-indigo-600 focus:outline-none transition duration-200"
+            >
+                Make Payment
+            </button>
+        ) : (
+            <PaymentIdCard paymentId={work.paymentId.razorpayPaymentId} />
+        )
+    )
+}
+
                             </div>
                         </div>
 
