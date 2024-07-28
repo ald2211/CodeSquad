@@ -112,13 +112,14 @@ today.setHours(0, 0, 0, 0);
     .max(360, 'Delivery time must be less than a year')
   });
   
-  export const upiValidationSchema = Yup.object().shape({
-    upiId: Yup.string().required('UPI ID is required'),
-  });
 
-  export const reviewValidationSchema = Yup.object().shape({
-    rating: Yup.number()
-      .min(1, 'Rating must be at least 1')
-      .max(5, 'Rating cannot be more than 5'),
-    review: Yup.string().required('Review is required'),
+
+  export const videoConferenceInputSchema = Yup.object({
+    name: Yup.string()
+      .required('Name is required')
+      .min(2,"minimum two letters required").max(15,"maximum limit exceeds")
+      .matches(/^[A-Za-zÀ-ÖØ-öø-ÿ'][A-Za-zÀ-ÖØ-öø-ÿ' -]{1,49}$/,'invalid name format'),
+    workNumber: Yup.string()
+      .required('Work Number is required')
+      .matches(/^WORK\d{4}$/, 'Invalid Work Number'),
   });

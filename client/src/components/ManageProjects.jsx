@@ -107,7 +107,7 @@ const ManageProjects = () => {
                   {userWorks.map((work, key) => (
                     <tr key={work._id} className="hover:bg-gray-100">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{work.workName}</div>
+                        <div className="text-sm text-gray-900">{work.workName}<span className="text-xs pl-1 font-normal text-gray-700">({work.workNumber.toUpperCase()})</span></div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
@@ -164,7 +164,7 @@ const ManageProjects = () => {
                             </div>
                           </div>
                         ) : (
-                          <div className="text-sm text-gray-500">-</div>
+                          <div className="text-sm text-gray-500 ml-8">-</div>
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -189,7 +189,7 @@ const ManageProjects = () => {
                             : ""}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                         {work.bids.find(
                           (dev) => dev.developer === work.developerId
                         )?.deliveryTime || "-"}
