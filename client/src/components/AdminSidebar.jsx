@@ -12,6 +12,7 @@ import { Failed } from '../helper/popup';
 import { userLogout } from '../api/service';
 import { LiaToggleOffSolid ,LiaToggleOnSolid} from "react-icons/lia";
 import { PiVideoConferenceLight } from "react-icons/pi";
+import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -92,7 +93,16 @@ const Sidebar = () => {
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
                 <PiVideoConferenceLight className="flex-shrink-0 w-7 h-7 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
-                <span className="flex-1 ms-3 whitespace-nowrap">Video Conference</span>
+                <span className="flex-1 ms-3 whitespace-nowrap">Conference Room</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to='/admin/chat'
+                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+              >
+                <HiOutlineChatBubbleLeftRight  className="flex-shrink-0 w-7 h-7 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
+                <span className="flex-1 ms-3 whitespace-nowrap">Chat Room</span>
               </Link>
             </li>
             <li>

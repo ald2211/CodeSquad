@@ -44,6 +44,10 @@ class userService{
         return {developerData,developerEducation,developerProjects,developerExperience}
       }
       
+      async getAdmin(){
+
+        return await userRepository.getAdminId()
+      }
 
 }
 

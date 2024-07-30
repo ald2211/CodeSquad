@@ -3,7 +3,6 @@ import { errorHandler } from "../utils/customError.js";
 
 export const updateUserProfile = async (req, res, next) => {
   if (req.user.id !== req.params.id)return next(errorHandler("401", "unAuthorized"));
-  console.log('reached')
 
   try {
    const updatedUserProfile=await userService.updateUserProfile( req.params.id,req.body)
@@ -20,7 +19,6 @@ export const getUserInfo =async (req,res,next)=>{
 
   try {
     const userInfo=await userService.getUserInfo( req.user.id)
-    console.log('infooo:',userInfo)
      res
        .status(201)
        .json({ success: true, message: "user fetched successfully", data: userInfo });
@@ -34,7 +32,6 @@ export const getDeveloperDetails=async (req,res,next)=>{
 
   try {
     const data=await userService.getDeveloperInfo(req.params.devId)
-    console.log('userInfooooooooo:',data)
      res
        .status(200)
        .json({ success: true, message: "user fetched successfully", data });

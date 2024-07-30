@@ -1,12 +1,33 @@
 import React, {useState } from "react";
 import { Link,NavLink, useLocation, useNavigate } from "react-router-dom";
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
+import { userLogout } from "../api/service";
+import { processFailed, processStart, signoutSuccess } from "../Redux/user/userSlice";
+import { Failed } from "../helper/popup";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate=useNavigate()
   const location=useLocation()
   const {currentUser}=useSelector((state)=>state.user)
+  const dispatch=useDispatch()
+
+  const handleSignOut = async () => {
+    try {
+      dispatch(processStart());
+      const res = await userLogout();
+      if (!res.data.success) {
+        dispatch(processFailed());
+        Failed('Some error occurred');
+        return;
+      }
+      dispatch(signoutSuccess());
+    } catch (err) {
+      console.log('signout err:', err);
+      dispatch(processFailed());
+      Failed('Signout failed');
+    }
+  };
   return (
     <>
       <header className={`fixed w-full top-[0] mb-4  pb-2  z-[2] bg-white lg:pb-0 ${currentUser.data.role==='admin'&& 'border-[1px]'}`}>
@@ -205,7 +226,7 @@ const Navbar = () => {
 
           {/* <!-- xs to lg --> */}
           <nav
-            className={`transition-all duration-500 ease-in-out max-h-80 overflow-hidden pt-4 pb-6 bg-white border border-gray-200 rounded-md shadow-md lg:hidden absolute w-95  z-[1]   ${
+            className={`transition-all duration-1000 ease-in-out max-h-[410px] overflow-hidden pt-4 pb-6 bg-white border border-gray-200 rounded-md shadow-md lg:hidden absolute w-95  z-[1]   ${
               menuOpen ? "block" : "hidden"
             }`}
           >
@@ -239,7 +260,7 @@ const Navbar = () => {
                   <>
                 
                 <Link
-                  to='/admin/managePayment'
+                  to='/admin/paymentManagement'
                   onClick={()=>setMenuOpen(!menuOpen)}
                   className="inline-flex py-2 text-base font-medium text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"
                 >
@@ -247,21 +268,33 @@ const Navbar = () => {
                 </Link>
                   </>
                 }
-                <Link
-                  to='/messages'
-                  onClick={()=>setMenuOpen(!menuOpen)}
-                  className="inline-flex py-2 text-base font-medium text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"
-                >
-                  Messages
-                </Link>
+               
                 <Link
                   to='/notification'
                   onClick={()=>setMenuOpen(!menuOpen)}
                   className="inline-flex py-2 text-base font-medium text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"
                 >
-       
                   Notification
                 </Link>
+                {
+                    currentUser.data.role==='admin' &&
+                    <>
+                    <Link 
+                  to='/admin/videoConference'
+                  onClick={()=>setMenuOpen(!menuOpen)}
+                  className="inline-flex py-2 text-base font-medium text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"
+                >
+                  Conference Room
+                </Link>
+                     <Link 
+                  to='/admin/chat'
+                  onClick={()=>setMenuOpen(!menuOpen)}
+                  className="inline-flex py-2 text-base font-medium text-black transition-all duration-200 hover:text-blue-600 focus:text-blue-600"
+                >
+                  Chat Room
+                </Link>
+                    </>
+                  }
                 <Link
                   to='/profile'
                   onClick={()=>setMenuOpen(!menuOpen)}
@@ -271,6 +304,7 @@ const Navbar = () => {
                 </Link>
                 <button
                   type="button"
+                  onClick={handleSignOut}
                   className="flex py-2 justify-center rounded-lg font-medium text-white transition-all duration-200 bg-black hover:bg-blue-600"
                 >
                   SignOut

@@ -7,6 +7,7 @@ import { store } from "./Redux/store.js";
 import { Provider } from "react-redux";
 import AppInitializer from "./components/AppInitializer.jsx";
 import { ToastContainer } from "react-toastify";
+import { SocketContextProvider } from "./context/socketContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
@@ -14,7 +15,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <BrowserRouter>
         <ToastContainer />
         <AppInitializer>
+          <SocketContextProvider>
           <App />
+          </SocketContextProvider>
         </AppInitializer>
       </BrowserRouter>
     </React.StrictMode>

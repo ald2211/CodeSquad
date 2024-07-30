@@ -21,6 +21,7 @@ import ProjectManagement from './pages/ProjectManagement'
 import PaymentManagement from './pages/PaymentManagement'
 import VideoCall from './components/VideoCall'
 import AdminVideoConference from './components/AdminVideoConference'
+import AdminChat from './components/AdminChat'
 
 const App = () => {
   const {currentUser}=useSelector((state)=>state.user)
@@ -54,6 +55,7 @@ const App = () => {
         <Route path='/admin/projectManagement' element={<ProjectManagement/>}/>
         <Route path='/admin/paymentManagement' element={<PaymentManagement/>}/>
         <Route path='/admin/videoConference' element={<AdminVideoConference/>}/>
+        <Route path='/admin/chat' element={<AdminChat/>}/>
         </Route>
         </Route>
         

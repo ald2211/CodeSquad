@@ -1,3 +1,4 @@
+import userService from "../service/user.service.js"
 import workService from "../service/work.service.js"
 
 export const createWork =async(req,res,next)=>{
@@ -66,13 +67,15 @@ export const getCommittedWorks=async(req,res,next)=>{
       const search= req.query.search || ""
       const limit = parseInt(req.query.limit) || 10;  
       const {count,data}=await workService.getAllCommittedWorks(req.user.role,req.user.id,page,limit,search)
+      const admin=await userService.getAdmin()
      
       res.status(200).json({
          success:true,
          totalItems: count,
          totalPages: Math.ceil(count / limit),
          currentPage: page,
-         data
+         data,
+         adminId:admin._id
        });
    }catch(err){
       console.log('err at clientwork fetch:',err)

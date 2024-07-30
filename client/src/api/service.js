@@ -703,6 +703,38 @@ export const uploadResume = async (userId, resumeUrl) => {
     }
   }
 
+  //handle chat
+  
+  export const sendMessage=async(receiverId,values)=>{
+    try{
+      const res = await axiosInstance.post(
+        `/message/send/${receiverId}`,
+        values,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      return res
+    }catch(err){
+      Failed(err.response?err.response.data.message:err.message)
+    }
+  }
+
+    export const getAllMessages = async (receieverId) => {
+      try {
+        const res = await axiosInstance.get(`/message/${receieverId}`,
+          {
+          withCredentials: true
+        });
+        return res;
+      } catch (err) {
+        Failed(err.response ? err.response.data.message : err.message);
+      }
+    };
+  
   //logout
   export const userLogout =async ()=>{
 

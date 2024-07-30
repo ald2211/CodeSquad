@@ -89,6 +89,10 @@ class userRepository{
         async findUserById(id){
           return User.findById(id)
         }
+
+        async getAdminId(){
+          return User.findOne({role:'admin'})
+        }
 }
 
 export default new userRepository()
