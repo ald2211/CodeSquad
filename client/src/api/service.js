@@ -1,16 +1,14 @@
 import axiosInstance from "../../interceptors/axiosInterceptor";
 import { Failed } from "../helper/popup";
 
-
+const defaultHeaders = {
+  'Content-Type': 'application/json',
+  withCredentials: true
+};
 export const userLogin = async (values) => {
     try {
         console.log('values:', values);
-        const res = await axiosInstance.post('/auth/signin', values, {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            withCredentials: true
-        });
+        const res = await axiosInstance.post('/auth/signin', values, {headers:defaultHeaders});
         return { success: true, data: res.data };
     } catch (err) {
       Failed(err.response ? err.response.data.message : err.message) 
@@ -47,12 +45,7 @@ export const updateUser = async (userId, values) => {
         const res = await axiosInstance.patch(
             `/user/upload/${userId}`,
             values,
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                withCredentials: true,
-            }
+            {headers:defaultHeaders}
         );
         return { success: true, data: res.data};
     } catch (err) {
@@ -66,12 +59,7 @@ export const uploadImage=async (userId,imageUrl)=>{
         const res = await axiosInstance.patch(
           `/user/upload/${userId}`,
           { avatar: imageUrl },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            withCredentials: true,
-          }
+          {headers:defaultHeaders}
         );
         console.log('res:',res)
         return res
@@ -116,12 +104,7 @@ export const uploadResume = async (userId, resumeUrl) => {
          let res = await axiosInstance.patch(
           `/user/education/edit/${selectedEducationId}/${userId}`,
           values,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            withCredentials: true,
-          }
+          {headers:defaultHeaders}
         );
         return res
       
@@ -138,12 +121,7 @@ export const uploadResume = async (userId, resumeUrl) => {
       const res = await axiosInstance.post(
         `/user/education/add/${userId}`,
         values,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
+        {headers:defaultHeaders}
       );
       return res
     }catch(err){
@@ -184,12 +162,7 @@ export const uploadResume = async (userId, resumeUrl) => {
          let res = await axiosInstance.patch(
           `/user/experience/edit/${exp_id}/${userId}`,
           values,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            withCredentials: true,
-          }
+          {headers:defaultHeaders}
         );
         return res
       
@@ -206,12 +179,7 @@ export const uploadResume = async (userId, resumeUrl) => {
       const res = await axiosInstance.post(
         `/user/experience/add/${userId}`,
         values,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
+        {headers:defaultHeaders}
       );
       return res
     }catch(err){
@@ -252,12 +220,7 @@ export const uploadResume = async (userId, resumeUrl) => {
          let res = await axiosInstance.patch(
           `/user/projects/edit/${proj_id}/${userId}`,
           values,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            withCredentials: true,
-          }
+         {headers:defaultHeaders}
         );
         return res
       
@@ -274,12 +237,7 @@ export const uploadResume = async (userId, resumeUrl) => {
       const res = await axiosInstance.post(
         `/user/projects/add/${userId}`,
         values,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
+         {headers:defaultHeaders}
       );
       return res
     }catch(err){
@@ -307,12 +265,7 @@ export const uploadResume = async (userId, resumeUrl) => {
       const res = await axiosInstance.patch(
         `/user/upload/${userId}`,
         {skills:skills},
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
+        {headers:defaultHeaders}
       );
       return res
     }catch(err){
@@ -327,12 +280,7 @@ export const uploadResume = async (userId, resumeUrl) => {
       const res = await axiosInstance.patch(
         `/user/upload/${userId}`,
         values,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
+         {headers:defaultHeaders}
       );
       return res
     }catch(err){
@@ -349,7 +297,7 @@ export const uploadResume = async (userId, resumeUrl) => {
         params: {
           page,
           limit,
-          search
+          search,
         },
         withCredentials: true
       });
@@ -366,12 +314,7 @@ export const uploadResume = async (userId, resumeUrl) => {
       const res = await axiosInstance.patch(
         `/admin/updateStatus/${userId}`,
         {userState},
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
+         {headers:defaultHeaders}
       );
       return res
     }catch(err){
@@ -420,9 +363,7 @@ export const uploadResume = async (userId, resumeUrl) => {
     try{
       const res = await axiosInstance.patch(
         `/admin/updateProjectStatus/${workNumber}`,
-        {
-          withCredentials: true,
-        }
+         {headers:defaultHeaders}
       );
       return res
     }catch(err){
@@ -440,12 +381,7 @@ export const uploadResume = async (userId, resumeUrl) => {
         const res = await axiosInstance.post(
           `/user/work/add`,
           values,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            withCredentials: true,
-          }
+           {headers:defaultHeaders}
         );
         return res
     }catch(err){
@@ -471,12 +407,7 @@ export const uploadResume = async (userId, resumeUrl) => {
       const res = await axiosInstance.patch(
         `/user/work/update/${workId}`,
         values,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
+         {headers:defaultHeaders}
       );
       return res
     }catch(err){
@@ -547,12 +478,7 @@ export const uploadResume = async (userId, resumeUrl) => {
         const res = await axiosInstance.post(
           `/user/bid/place`,
           values,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            withCredentials: true,
-          }
+           {headers:defaultHeaders}
         );
         return res
     }catch(err){
@@ -567,12 +493,7 @@ export const uploadResume = async (userId, resumeUrl) => {
         const res = await axiosInstance.patch(
           `/user/bid/remove`,
           {workId},
-          { 
-            headers: {
-              "Content-Type": "application/json",
-            },
-            withCredentials: true,
-          }
+           {headers:defaultHeaders}
         );
         return res
     }catch(err){
@@ -600,12 +521,7 @@ export const uploadResume = async (userId, resumeUrl) => {
       const res = await axiosInstance.patch(
         `/user/bid/accept`,
         {developer,workNumber},
-        { 
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
+         {headers:defaultHeaders}
       );
       return res
   }catch(err){
@@ -633,12 +549,7 @@ export const uploadResume = async (userId, resumeUrl) => {
       const res = await axiosInstance.patch(
         `/payment/updateUpi`,
         {paymentId,upi},
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
+         {headers:defaultHeaders}
       );
       return res
     }catch(err){
@@ -653,12 +564,7 @@ export const uploadResume = async (userId, resumeUrl) => {
       const res = await axiosInstance.post(
         '/user/review',
         {review,workId},
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
+        {headers:defaultHeaders}
       );
       return res
     }catch(err){
@@ -671,12 +577,7 @@ export const uploadResume = async (userId, resumeUrl) => {
     try{
       const res=await axiosInstance.post('/payment/order',
         {amount,receipt,currency},
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
+         {headers:defaultHeaders}
       )
       return res
     }catch(err){
@@ -689,17 +590,26 @@ export const uploadResume = async (userId, resumeUrl) => {
     try{
       const res=await axiosInstance.post('/payment/verifyPayment',
         {razorpayPaymentId,razorpayOrderId,razorpaySignature,paymentId},
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
+         {headers:defaultHeaders}
       )
       return res
     }catch(err){
       console.log('verifiePaymentError:',err)
-      // Failed(err.response ? err.response.data.message : err.message) 
+      Failed(err.response ? err.response.data.message : err.message) 
+    }
+  }
+
+  export const updatePaymentStatusAdmin=async(paymentId)=>{
+    try{
+      const res = await axiosInstance.patch(
+        `/payment/updatePaymentStatus`,
+        {paymentId},
+        {headers:defaultHeaders}
+      );
+      return res
+    }catch(err){
+      console.log('updateStatusError:',err)
+      Failed(err.response ? err.response.data.message : err.message) 
     }
   }
 
@@ -710,12 +620,7 @@ export const uploadResume = async (userId, resumeUrl) => {
       const res = await axiosInstance.post(
         `/message/send/${receiverId}`,
         values,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
+         {headers:defaultHeaders}
       );
       return res
     }catch(err){
@@ -723,9 +628,27 @@ export const uploadResume = async (userId, resumeUrl) => {
     }
   }
 
+  // /paymentStatus
+
+  //chat related
     export const getAllMessages = async (receieverId) => {
       try {
         const res = await axiosInstance.get(`/message/${receieverId}`,
+          {
+          withCredentials: true
+        });
+        return res;
+      } catch (err) {
+        Failed(err.response ? err.response.data.message : err.message);
+      }
+    };
+
+
+    //get status box data
+    
+    export const getStatusBoxData = async (developerId,role) => {
+      try {
+        const res = await axiosInstance.get(`/user/work/statusBoxData/${developerId}/${role}`,
           {
           withCredentials: true
         });

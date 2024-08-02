@@ -6,6 +6,9 @@ import SearchBar from '../Home/SearchBar';
 import Pagination from '../UserTablePagination';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { PiVideoConferenceLight } from "react-icons/pi";
+import { BsChatSquareDots } from "react-icons/bs";
+import { FiHelpCircle } from "react-icons/fi";
 import ChatBox from './ChatBox';
 
 
@@ -130,22 +133,31 @@ const CommittedProjects = () => {
               </div>
               <div className="flex justify-between items-center mt-4 mb-4">
                 <button onClick={() => handleVideoCallJoin(work)} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none transition duration-200">
-                  Video Call
+                  <PiVideoConferenceLight className='w-8 h-8 text-center' />
                 </button>
                 <button onClick={()=>handleChatClick('',work.developerId,work.clientId._id)} className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none transition duration-200">
-                  Chat
+                <BsChatSquareDots className='w-8 h-8' />
                 </button>
               </div>
               {/* Section 3: Payment Details */}
               <div className="mt-6">
-                {currentUser.data.role === 'developer' && (
+                {currentUser.data.role === 'developer' ?(
                   <>
-                    <input type="file" className="w-full mb-4 border border-gray-300 rounded-md p-2" />
-                    <button onClick={()=>handleChatClick('admin')} className="w-full bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600 focus:outline-none transition duration-200">
+                    <input type="file" className="w-3/4 mb-4 border border-gray-300 rounded-md p-2" />
+                    <button onClick={()=>handleChatClick('admin')} className=" ml-[120px] bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-500 focus:outline-none transition duration-200">
                       Inform Complete
                     </button>
                   </>
-                )}
+                )
+                :
+                (
+                  <div className='w-full flex justify-end'>
+                  <button onClick={()=>handleChatClick('admin')} className=" bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-500 focus:outline-none transition duration-200">
+                  <FiHelpCircle className='w-8 h-8' />
+                    </button>
+                    </div>
+                )
+              }
               </div>
             </div>
           </div>

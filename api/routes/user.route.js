@@ -4,7 +4,7 @@ import {getUserInfo, updateUserProfile,getDeveloperDetails} from "../controllers
 import { addEducation, deleteEducation, editEducation, getEducation } from "../controllers/education.controller.js";
 import { addExperience, deleteExperience, editExperience, getExperience } from "../controllers/experience.controller.js";
 import { addProjects, deleteProjects, editProjects, getProjects } from "../controllers/project.controller.js";
-import { createWork, getClientAllWorks,updateClientWork,deleteClientWork, handleBookMarks, placeAbid, removeAbid,getBidDetails,acceptBid,getCommittedWorks, getCompletedWorks} from "../controllers/work.controller.js";
+import { createWork, getClientAllWorks,updateClientWork,deleteClientWork, handleBookMarks, placeAbid, removeAbid,getBidDetails,acceptBid,getCommittedWorks, getCompletedWorks,getStatusBoxData} from "../controllers/work.controller.js";
 import { submitReview } from "../controllers/review.controller.js";
 const router = express.Router();
 
@@ -37,6 +37,7 @@ router.get('/work/clientWorks',verifyUser(['client','developer']),getClientAllWo
 router.patch('/work/update/:workId',verifyUser(['client']),updateClientWork)
 router.delete('/work/delete/:workId',verifyUser(['client']),deleteClientWork)
 router.patch('/work/bookmark/:workId',verifyUser(['developer']),handleBookMarks)
+router.get('/work/statusBoxData/:id/:role',verifyUser(['developer','client']),getStatusBoxData)
 router.get('/work/committedWorks',verifyUser(['client','developer']),getCommittedWorks)
 router.get('/work/completedWorks',verifyUser(['client','developer']),getCompletedWorks)
 

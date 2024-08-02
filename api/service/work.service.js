@@ -25,9 +25,9 @@ class workSerivice{
         return await workRepository.findAllWorksByUserId(role,clientId);
     }
 
-    async getClientWorks(role,clientId,page,limit,search,filterSearch,miniNavFilter){
+    async getClientWorks(role,clientId,page,limit,search,filterSearch,miniNavFilter,sortSearch){
 
-       return await workRepository.findAllWorksByUserId(role,clientId,page,limit,search,filterSearch,miniNavFilter)
+       return await workRepository.findAllWorksByUserId(role,clientId,page,limit,search,filterSearch,miniNavFilter,sortSearch)
        
     }
 
@@ -155,6 +155,13 @@ class workSerivice{
       if(!updatedData)throw errorHandler(400,'bid removing failed')
       return await workRepository.findAllWorksByUserId(role,Id)
 
+    }
+
+    
+    async getUserWorkStatus(id,role){
+
+      return await workRepository.findWorkByDeveloperId(id,role)
+      
     }
 
 }

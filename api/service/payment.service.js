@@ -58,6 +58,15 @@ class paymentService{
       }
     
     }
+
+    async updateThePaymentStatus(paymentId){
+      
+      let updateData={
+        developerPayment:'completed'
+      }
+      return await paymentRepository.findByPaymentIdAndUpdate(paymentId,updateData)
+    
+    }
 }
 
 export default new paymentService()

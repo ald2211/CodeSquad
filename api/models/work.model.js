@@ -41,6 +41,13 @@ const workSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  requiredSkills:{
+    type:[String],
+    default:[]
+},
+expectedDelivery:{
+  type:String,
+},
   attachMents: {
     type: String
   },

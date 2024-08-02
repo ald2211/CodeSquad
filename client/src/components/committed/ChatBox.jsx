@@ -37,7 +37,7 @@ const ChatBox = ({ receiver, close }) => {
       .catch((err) => {
         Failed(err.message);
       });
-  }, [receiver]);
+  }, []);
 
   useEffect(() => {
     setTimeout(() => {
@@ -80,7 +80,7 @@ const ChatBox = ({ receiver, close }) => {
             return (
               <div
                 key={index}
-                className={`max-w-xs px-4 py-2 rounded-lg ${
+                className={` px-4 py-2 rounded-lg ${
                   message.sender === currentUser.data._id
                     ? 'bg-indigo-100 self-end text-right ml-auto max-w-fit'
                     : 'bg-gray-200 self-start text-left max-w-fit'
@@ -119,4 +119,4 @@ const ChatBox = ({ receiver, close }) => {
   );
 };
 
-export default ChatBox;
+export default React.memo(ChatBox);

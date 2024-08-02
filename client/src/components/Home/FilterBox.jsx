@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { FaFilter } from "react-icons/fa6";
 
-const FilterBox = ({ setSearch }) => {
+const FilterBox = ({ setSearch, setSort }) => {
     const { currentUser } = useSelector((state) => state.user);
     const [showHourlyInputs, setShowHourlyInputs] = useState(false);
     const [showFixedInputs, setShowFixedInputs] = useState(false);
@@ -9,6 +10,9 @@ const FilterBox = ({ setSearch }) => {
     const [hourlyTo, setHourlyTo] = useState('');
     const [fixedFrom, setFixedFrom] = useState('');
     const [fixedTo, setFixedTo] = useState('');
+
+    const [sortByPrice, setSortByPrice] = useState(false);
+    const [sortByRecent, setSortByRecent] = useState(false);
 
     const handleHourlyCheckboxChange = () => {
         setShowHourlyInputs(!showHourlyInputs);
@@ -25,23 +29,41 @@ const FilterBox = ({ setSearch }) => {
         let searchCriteria = '';
 
         if (showHourlyInputs) {
-            searchCriteria += `hourly--${hourlyFrom}--${hourlyTo}`;
+            searchCriteria += `hourly--${hourlyFrom}--${hourlyTo}&`;
         }
 
         if (showFixedInputs) {
-            searchCriteria += `fixed--${fixedFrom}--${fixedTo}`;
+            searchCriteria += `fixed--${fixedFrom}--${fixedTo}&`;
         }
-
-        // Trim the trailing '&' if any
         searchCriteria = searchCriteria.replace(/&$/, '');
 
-        // Pass search criteria to parent component
         setSearch(searchCriteria);
     };
 
+    const handleSort = () => {
+        let sortCriteria = '';
+
+        if (sortByPrice) {
+            sortCriteria += 'price--';
+        }
+
+        if (sortByRecent) {
+            sortCriteria += 'recent--';
+        }
+
+        // Trim the trailing '--' if any
+        sortCriteria = sortCriteria.replace(/--$/, '');
+
+        setSort(sortCriteria);
+    };
+
+    useEffect(() => {
+        handleSort();
+    }, [sortByPrice, sortByRecent]);
+
     return (
         <div className="bg-white p-4 rounded shadow">
-            <h2 className="text-xl font-semibold mb-4">Filter</h2>
+            <h2 className="text-xl font-bold mb-4 flex"><FaFilter className='w-5 h-5 mt-[5px] mr-2' />Filters</h2>
             <div className="mb-4">
                 <h3 className="text-lg font-semibold mb-2">{currentUser.data.role === 'developer' ? 'Project' : 'Payment'} Type</h3>
                 <div className="flex items-center mb-2">
@@ -106,6 +128,30 @@ const FilterBox = ({ setSearch }) => {
                 >
                     Apply Filters
                 </button>
+            </div>
+
+            <h3 className="text-lg font-semibold mb-2">Sort by</h3>
+            <div className="mb-4">
+                <div className="flex items-center mb-2">
+                    <input
+                        type="checkbox"
+                        id="sortByPrice"
+                        className="mr-2"
+                        onChange={() => setSortByPrice(!sortByPrice)}
+                        checked={sortByPrice}
+                    />
+                    <label htmlFor="sortByPrice">Price (Higher to Lower)</label>
+                </div>
+                <div className="flex items-center mb-2">
+                    <input
+                        type="checkbox"
+                        id="sortByRecent"
+                        className="mr-2"
+                        onChange={() => setSortByRecent(!sortByRecent)}
+                        checked={sortByRecent}
+                    />
+                    <label htmlFor="sortByRecent">Recent</label>
+                </div>
             </div>
         </div>
     );

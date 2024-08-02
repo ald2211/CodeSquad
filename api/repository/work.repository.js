@@ -1,4 +1,5 @@
 import Work from "../models/work.model.js";
+import userRepository from "./user.repository.js";
 class workRepository{
 
     async create(newWork) {
@@ -9,12 +10,18 @@ class workRepository{
     async findWorkById(id){
       return await Work.findOne({workNumber:id})
     }
-    async findAllWorksByUserId(role,Id,page,limit,search,filterSearch,miniNavFilter) {
+    async findAllWorksByUserId(role,Id,page,limit,search,filterSearch,miniNavFilter,sortBy) {
   let query = search
     ? { $or: [{ workName: new RegExp(search, 'i') }, { workType: new RegExp(search, 'i') }]}
     : {};
 
   if(role==='client')query.clientId=Id;
+  if(role==='developer'){
+    let developer= await userRepository.findUserById(Id)
+    if(developer&&developer.skills){
+      query.skills = { $in: developer.skills };
+    }
+  }
    if(filterSearch){
     let filterData=filterSearch.split('--')
     query={
@@ -26,7 +33,18 @@ class workRepository{
       }
     }
   }
-  
+  let Sort = {};
+    if (sortBy.length>0) {
+        const sortOptions = sortBy.split('--');
+        sortOptions.forEach(option => {
+            if (option === 'price') {
+                Sort.budget = -1; // Assuming higher to lower price
+            } else if (option === 'recent') {
+                Sort.createdAt = -1;
+            }
+        });
+    }
+  console.log('sorttttttt:',Sort)
   if(miniNavFilter==='recent'){
       const twoWeeksAgo = new Date();
       twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
@@ -46,9 +64,9 @@ class workRepository{
     
     const count = await Work.countDocuments(query);
     const data = await Work.find(query)
-      .sort({ createdAt: -1 })
+      .sort(Sort)
       .skip((page - 1) * limit)
-      .limit(limit);
+      .limit(limit)
 
       return { count, data };
     }
@@ -82,17 +100,31 @@ return {count,data}
     
         async findAllCompletedWorks(role,Id,page=1,limit=10,search='') {
 
-          const query=search?
-          { $or: [{ workName: new RegExp(search, 'i') }, { workType: new RegExp(search, 'i') },{ workStatus: new RegExp(search, 'i') }] }
-          :
-          {workStatus:'completed'}
-        
-          if(role==='client')query.clientId=Id;
-          if(role==='developer')query.developerId=Id;
-          const count=await Work.countDocuments(query)
-           const result=await Work.find(query).populate('clientId', '_id name avatar email').populate('paymentId')
+          const query = {
+            workStatus: 'completed'
+          };
+          
+          if (search) {
+            query.$or = [
+              { workName: new RegExp(search, 'i') },
+              { workType: new RegExp(search, 'i') },
+            ];
+          }
+          
+          if (role === 'client') {
+            query.clientId = Id;
+          } else if (role === 'developer') {
+            query.developerId = Id;
+          } 
+          
+          const count = await Work.countDocuments(query);
+          
+          const result = await Work.find(query)
+            .populate('clientId', '_id name avatar email')
+            .populate('paymentId')
             .skip((page - 1) * limit)
-            .limit(limit)
+            .limit(limit);
+          
     const data = result.map(work => ({
       ...work.toObject(),
       clientId: {
@@ -116,6 +148,35 @@ return {count,data}
 
     async findOneByWorkId(workNumber){
       return await Work.findOne({workNumber})
+    }
+
+    async findWorkByDeveloperId(id,role){
+      let query={}
+    
+       if(role==='client'){
+        query.clientId=id
+       }else{
+        query.developerId=id
+       }
+      const stats = await Work.aggregate([
+        {
+          $match: query,
+        },
+        {
+          $group: {
+            _id: null,
+            committedProjects: { $sum: 1 },
+            completedProjects: {
+              $sum: {
+                $cond: { if: { $eq: ["$workStatus", "completed"] }, then: 1, else: 0 }
+              }
+            }
+          }
+        }
+      ]);
+      return stats.length > 0 ? stats[0] : { committedProjects: 0, completedProjects: 0 };
+    
+
     }
     
     async saveBookMarkChanges(work){

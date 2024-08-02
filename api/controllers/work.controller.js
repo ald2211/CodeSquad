@@ -19,9 +19,11 @@ export const getClientAllWorks=async(req,res,next)=>{
       const page = parseInt(req.query.page) || 1;  // Current page number, default to 1
       const limit = parseInt(req.query.limit)||10;  // Number of items per page
       const filterSearch=req.query.filterSearch||""
+      const sortSearch=req.query.sortSearch||""
       const search= req.query.search || ""
-      const {data,count}=await workService.getClientWorks(req.user.role,req.user.id,page,limit,search,filterSearch,req.query.miniNavFilter)
-     
+      const {data,count}=await workService.getClientWorks(req.user.role,req.user.id,page,limit,search,filterSearch,req.query.miniNavFilter,sortSearch)
+     console.log('dataaa feetet:',data)
+     console.log('sortSearch:',sortSearch)
       return res.status(200).json({
          success:true,
          message:' fetch success',
@@ -104,12 +106,30 @@ export const getCompletedWorks=async(req,res,next)=>{
    }
 }
 
+
+//status box data
+
+
+export const getStatusBoxData=async(req,res,next)=>{
+
+   try{
+      
+      const data=await workService.getUserWorkStatus(req.params.id,req.params.role)
+     
+      res.status(200).json({
+         success:true,
+         data,
+       });
+   }catch(err){
+      console.log('err at statusBox data  fetch:',err)
+      next(err)
+   }
+}
 //bookmarks
 
 export const handleBookMarks= async (req, res,next) => {
  
    try {
-      console.log('req.user.id:',req.user.id,'req.params.id:',req.params.workId)
       const {status,message,data}=await workService.bookMarkHandler(req.user.role,req.user.id,req.params.workId)
       res.status(200).json({success:status,message,data})
     

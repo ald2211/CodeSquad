@@ -10,7 +10,6 @@ import Committed from './pages/Committed'
 import Closed from './pages/Completed'
 import Info from './pages/Info'
 import Notification from './pages/Notification'
-import Messages from './pages/Messages'
 import ProtectedRoute from './components/PrivateRoutes/ProtectedRoute'
 import { useSelector } from 'react-redux'
 import Navbar from './components/Navbar'
@@ -48,7 +47,6 @@ const App = () => {
         < Route path='/closed'  element={<Closed/>}/>
         < Route path='/info'  element={<Info/>}/>
         < Route path='/notification'  element={<Notification/>}/>
-        < Route path='/messages'  element={<Messages/>}/>
         < Route path='/room/:roomId/:userId/:userName' element={<VideoCall/>}/>
         <Route element={<AdminOnly/>}>
         <Route path='/admin/userManagement' element={<UserManagement/>}/>

@@ -141,25 +141,6 @@ const Navbar = () => {
   )}
 </NavLink>
 
-<NavLink
-  to="/messages"
-  className={({ isActive }) =>
-    `relative text-base font-medium transition-all duration-200 hover:text-blue-600 ${
-      !isActive ? 'text-black' : 'text-blue-600'
-    }`
-  }
->
-  {({ isActive }) => (
-    <>
-      <span
-        className={`absolute bottom-[-8px] left-0 w-full h-[2px] rounded-lg bg-black ${
-          isActive ? 'block' : 'hidden'
-        }`}
-      ></span>
-      messages
-    </>
-  )}
-</NavLink>
             </div>
             }
 

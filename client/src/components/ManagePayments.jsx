@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "./AdminSidebar";
-import { getAllCompletedWorksAdmin, updateWorkStatusAdmin } from "../api/service";
+import { getAllCompletedWorksAdmin, updatePaymentStatusAdmin, updateWorkStatusAdmin } from "../api/service";
 import Pagination from "./UserTablePagination";
 import { Success } from "../helper/popup";
 
@@ -30,10 +30,10 @@ const ManagePayments = () => {
   };
 
   const handlePaymentForward = async (paymentId, key) => {
-    const res = await updateWorkStatusAdmin(workNumber);
+    const res = await updatePaymentStatusAdmin(paymentId);
     if (res.data.success) {
       const updatedWorkData = [...userWorks];
-      updatedWorkData[key].clientId.developerPayment = "completed";
+      updatedWorkData[key].paymentId.developerPayment = "completed";
       setUserWorks(updatedWorkData);
       Success(res.data.message);
     }
@@ -189,39 +189,39 @@ const ManagePayments = () => {
                         {work.budget}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center pt-[75px]">
-                        {work.paymentId.finalAmount || "-"}
+                        {work.paymentId?.finalAmount || "-"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center pt-[75px]">
                         <span className={`px-3 py-[2px] inline-flex text-xs leading-5 font-semibold rounded-full 
                           ${
-                            work.paymentId.clientPayment === "pending"
+                            work.paymentId?.clientPayment === "pending"
                               ? "bg-yellow-100 text-yellow-800"
                               : 
                               "bg-green-100 text-green-800"
                           }`}>
-                            {work.paymentId.clientPayment}
+                            {work.paymentId?.clientPayment}
                           </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center pt-[75px]">
                         <span className={`px-3 py-[2px] inline-flex text-xs leading-5 font-semibold rounded-full 
                           ${
-                            work.paymentId.developerPayment === "pending"
+                            work.paymentId?.developerPayment === "pending"
                               ? "bg-yellow-100 text-yellow-800"
-                              : work.paymentId.developerPayment === "initiated"
+                              : work.paymentId?.developerPayment === "initiated"
                               ? "bg-orange-100 text-orange-800"
-                              : work.paymentId.developerPayment === "completed"
+                              : work.paymentId?.developerPayment === "completed"
                               ? "bg-green-100 text-green-800"
                               : ""
                           }`}>
-                            {work.paymentId.developerPayment}
+                            {work.paymentId?.developerPayment}
                           </span>
                         
                       </td>
                       <td className="px-6 py-4 flex flex-col whitespace-nowrap text-xs text-gray-500 text-center mt-[95px]">
-                        {work.paymentId.upi || "-"}
-                        {work.paymentId.upi && (
+                        {work.paymentId?.upi || "-"}
+                        {(work.paymentId?.upi && work?.paymentId?.developerPayment!=='completed')&&(
                           <button
-                            onClick={() =>handlePaymentForward(work.paymentId._id,key)}
+                            onClick={() =>handlePaymentForward(work?.paymentId?._id,key)}
                             className="ml-2 px-3 py-1 text-white bg-blue-600 hover:bg-blue-700 rounded mt-2"
                           >
                             Forward Payment

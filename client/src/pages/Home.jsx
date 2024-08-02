@@ -10,6 +10,7 @@ import StatsBox from "../components/Home/StatsBox";
 const Home = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [search,setSearch]=useState('')
+  const [sortBy ,setSortBy]=useState('')
 
   return (
     <>
@@ -26,12 +27,12 @@ const Home = () => {
 
     {/* Left Section */}
     <div className="w-full lg:w-1/4 p-4 order-2">
-      <FilterBox setSearch={setSearch} />
+      <FilterBox setSearch={setSearch} setSort={setSortBy} />
     </div>
 
     {/* Middle Section */}
     <div className="w-full lg:w-2/4 p-4 order-3">
-      <ProjectDetails filterSearch={search} />
+      <ProjectDetails filterSearch={search} sortSearch={sortBy} />
     </div>
   </div>
 </div>

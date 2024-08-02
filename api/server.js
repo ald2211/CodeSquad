@@ -37,10 +37,19 @@ app.use('/api/v1/message',messageRouter);
 
 
 //connect mongodb
-mongoose.connect(process.env.MONGO)
-.then(()=>console.log('db connected succefully'))
-.catch((err)=>console.log(err))
 
+const connectWithRetry = () => {
+  console.log('Attempting to connect to MongoDB...');
+  mongoose.connect(process.env.MONGO)
+  .then(()=>console.log('db connected succefully'))
+  .catch((err) => {
+      console.error('DB connection error:', err);
+      console.log('Retrying in 5 seconds...');
+      setTimeout(connectWithRetry, 5000); // Retry after 5 seconds
+    });
+};
+
+connectWithRetry();
 //error handling
 // Catch-all route for undefined routes
 app.use((req, res, next) => {

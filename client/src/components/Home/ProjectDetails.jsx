@@ -20,7 +20,7 @@ import SearchBar from "./SearchBar";
 import MiniNav from "./MiniNav";
 import PlaceBidModal from "./PlaceABidModal";
 
-const ProjectDetails = ({ filterSearch }) => {
+const ProjectDetails = ({ filterSearch,sortSearch }) => {
   const { currentUser, userWorks } = useSelector((state) => state.user);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [showEditProjectModal, setShowEditProjectModal] = useState(false);
@@ -53,6 +53,7 @@ const ProjectDetails = ({ filterSearch }) => {
       limit: itemsPerPage,
       filterSearch,
       miniNavFilter,
+      sortSearch
     });
     dispatch(updateWorkSuccess(res.data.data));
     setTotalPages(res.data.totalPages);
@@ -62,7 +63,7 @@ const ProjectDetails = ({ filterSearch }) => {
   useEffect(() => {
     fetchWorks();
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [currentPage, search, filterSearch, miniNavFilter]); // Removed dispatch from dependencies
+  }, [currentPage, search, filterSearch, miniNavFilter,sortSearch]); // Removed dispatch from dependencies
 
   const handleShowEditProject = (project) => {
     setProjectToEdit(project);

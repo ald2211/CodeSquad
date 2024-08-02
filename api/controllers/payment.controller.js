@@ -16,6 +16,21 @@ export const updateUpi=async(req,res,next)=>{
 }
 
 
+export const updatePaymentStatus=async(req,res,next)=>{
+
+  try {
+      await paymentService.updateThePaymentStatus(req.body.paymentId)
+      
+  res.status(201).json({success:true,message:'payment Forwarded Successfully'})
+     } catch (err) {
+       console.log("errorAt payment status change:", err);
+       next(err);
+     }
+
+}
+
+
+
 export const createRazorpayOrder=async(req,res,next)=>{
   const {amount,currency,receipt}=req.body
   try{
