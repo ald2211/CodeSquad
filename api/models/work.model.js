@@ -46,7 +46,7 @@ const workSchema = new mongoose.Schema({
     default:[]
 },
 expectedDelivery:{
-  type:String,
+  type:Number,
 },
   attachMents: {
     type: String

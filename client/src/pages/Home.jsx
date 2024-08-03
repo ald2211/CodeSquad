@@ -17,7 +17,7 @@ const Home = () => {
       {currentUser.data.role === "admin" ? (
         <AdminHome />
       ) : (
-       <div className="min-h-screen bg-gray-100 p-4 mt-[90px]">
+       <div className="min-h-screen bg-gray-100 p-4 mt-[90px] ">
   <div className="flex flex-col lg:flex-row">
     {/* Right Section */}
     <div className="w-full lg:w-1/4 p-4 order-1">

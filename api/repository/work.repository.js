@@ -18,8 +18,9 @@ class workRepository{
   if(role==='client')query.clientId=Id;
   if(role==='developer'){
     let developer= await userRepository.findUserById(Id)
-    if(developer&&developer.skills){
-      query.skills = { $in: developer.skills };
+    console.log('developer:',developer)
+    if(developer&&developer.skills.length>0){
+      query.requiredSkills = { $in: developer.skills };
     }
   }
    if(filterSearch){
@@ -34,8 +35,8 @@ class workRepository{
     }
   }
   let Sort = {};
-    if (sortBy.length>0) {
-        const sortOptions = sortBy.split('--');
+  const sortOptions = sortBy?.split('--');
+    if (sortOptions?.length>0) {
         sortOptions.forEach(option => {
             if (option === 'price') {
                 Sort.budget = -1; // Assuming higher to lower price

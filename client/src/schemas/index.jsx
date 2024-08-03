@@ -99,6 +99,13 @@ today.setHours(0, 0, 0, 0);
     .min(today, "End Date must be later than today"),
     description: Yup.string()
       .required("Description is required"),
+    expectedDelivery: Yup.number()
+      .min(1, 'Expected delivery must be at least 1 day')
+      .required('Expected delivery is required'),
+    requiredSkills: Yup.array()
+      .of(Yup.string().min(1, 'Skill cannot be empty'))
+      .min(3, 'At least one skill is required')
+      .required('skills are required'),
     attachment: Yup.mixed()
       .nullable()
       .notRequired(),

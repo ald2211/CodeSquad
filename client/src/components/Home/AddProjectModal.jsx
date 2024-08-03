@@ -10,28 +10,31 @@ import { Failed, Success } from "../../helper/popup";
 import { addWork, updateClientWork } from "../../api/service";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { app } from "../../firebase/firebase";
+
 const initialAddValues = {
   projectName: "",
   type: "fixed",
   budget: "",
   endDate: "",
   description: "",
+  expectedDelivery:"",
+  requiredSkills: [],
   attachment: null,
 };
 
-
 const AddProjectModal = ({ isOpen, handleClose, isAddMode, selectedWork }) => {
-  console.log('selected:',selectedWork)
-  const initialValuesForEdit=selectedWork?{
-    projectName:selectedWork.workName,
-    type:selectedWork.workType,
+  const dispatch = useDispatch();
+
+  const initialValuesForEdit = selectedWork ? {
+    projectName: selectedWork.workName,
+    type: selectedWork.workType,
     budget: selectedWork.budget,
     endDate: selectedWork.bidEndDate.split('T')[0],
     description: selectedWork.description,
+    expectedDelivery: selectedWork.expectedDelivery,
+    requiredSkills: selectedWork.requiredSkills || [],
     attachment: selectedWork.attachMents,
-  }:initialAddValues
-  console.log('editValues:',isAddMode)
-  const dispatch = useDispatch();
+  } : initialAddValues;
 
   const formik = useFormik({
     initialValues: isAddMode ? initialAddValues : initialValuesForEdit,
@@ -44,11 +47,9 @@ const AddProjectModal = ({ isOpen, handleClose, isAddMode, selectedWork }) => {
           const fileName = `${new Date().getTime()}_${values.attachment.name}`; 
           const storageRef = ref(storage, `attachments/${fileName}`); 
 
-          // Upload file to Firebase Storage
           const snapshot = await uploadBytes(storageRef, values.attachment);
           const attachmentUrl = await getDownloadURL(snapshot.ref); 
 
-          // Update form values to include the resumeUrl with original filename
           values.attachment = `${attachmentUrl}___${values.attachment.name}`;
         }
         if (isAddMode) {
@@ -56,7 +57,7 @@ const AddProjectModal = ({ isOpen, handleClose, isAddMode, selectedWork }) => {
           dispatch(updateWorkSuccess(res.data.data));
           Success(res.data.message);
         } else {
-          const res = await updateClientWork(values,selectedWork.workNumber);
+          const res = await updateClientWork(values, selectedWork.workNumber);
           dispatch(updateWorkSuccess(res.data.data));
           Success(res.data.message);
         }
@@ -70,18 +71,32 @@ const AddProjectModal = ({ isOpen, handleClose, isAddMode, selectedWork }) => {
     },
   });
 
- 
+  useEffect(() => {
+    formik.setValues(isAddMode ? initialAddValues : initialValuesForEdit);
+  }, [isAddMode, selectedWork]);
+
+  const handleAddSkill = (e) => {
+    if (e.key === "Enter" && e.target.value.trim()) {
+      formik.setFieldValue("requiredSkills", [...formik.values.requiredSkills, e.target.value.trim()]);
+      e.target.value = "";
+    }
+  };
+
+  const handleRemoveSkill = (skill) => {
+    formik.setFieldValue("requiredSkills", formik.values.requiredSkills.filter(s => s !== skill));
+  };
+
   return (
     <Modal
       isOpen={isOpen}
       onRequestClose={handleClose}
       contentLabel="Add Project Modal"
-      className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center"
+      className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center scroll-m-1"
       overlayClassName="fixed inset-0 bg-gray-800 bg-opacity-75"
       shouldCloseOnOverlayClick={true}
       ariaHideApp={false}
     >
-      <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl max-h-[80vh] mt-[78px] overflow-auto">
+      <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl max-h-[80vh] mt-[78px] overflow-auto  scrollbar-thumb-gray-500 scrollbar-medium scrollbar-thin scrollbar-track-gray-100">
         <button
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
           onClick={handleClose}
@@ -127,11 +142,11 @@ const AddProjectModal = ({ isOpen, handleClose, isAddMode, selectedWork }) => {
               </select>
             </div>
             <div>
-              <label htmlFor="fixedPrice" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="budget" className="block text-sm font-medium text-gray-700">
                 Price
               </label>
               <input
-                id="fixedPrice"
+                id="budget"
                 name="budget"
                 type="number"
                 onChange={formik.handleChange}
@@ -141,7 +156,6 @@ const AddProjectModal = ({ isOpen, handleClose, isAddMode, selectedWork }) => {
               />
               {formik.errors.budget && formik.touched.budget && <ShowError Error={formik.errors.budget} />}
             </div>
-
             <div>
               <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">
                 End Date
@@ -172,21 +186,58 @@ const AddProjectModal = ({ isOpen, handleClose, isAddMode, selectedWork }) => {
               />
               {formik.errors.description && formik.touched.description && <ShowError Error={formik.errors.description} />}
             </div>
-            <div className="">
+            <div>
+              <label htmlFor="expectedDelivery" className="block text-sm font-medium text-gray-700">
+                Expected Delivery (days)
+              </label>
+              <input
+                id="expectedDelivery"
+                name="expectedDelivery"
+                type="number"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.expectedDelivery}
+                className="mt-1 block w-full border border-gray-600 p-1 rounded-md shadow-sm"
+              />
+              {formik.errors.expectedDelivery && formik.touched.expectedDelivery && <ShowError Error={formik.errors.expectedDelivery} />}
+            </div>
+            <div className="col-span-2">
+              <label htmlFor="requiredSkills" className="block text-sm font-medium text-gray-700">
+                Required Skills
+              </label>
+              <div className="mt-1 flex flex-wrap items-center border border-gray-600 rounded-md p-2">
+                {formik.values.requiredSkills.map((skill, index) => (
+                  <div key={index} className="flex items-center bg-gray-200 rounded-lg px-3 py-2 mr-2 mb-2">
+                    <span className="text-gray-700">{skill}</span>
+                    <button
+                      type="button"
+                      className="ml-2 text-red-500 hover:text-red-700"
+                      onClick={() => handleRemoveSkill(skill)}
+                    >
+                      x
+                    </button>
+                  </div>
+                ))}
+                <input
+                  type="text"
+                  placeholder="Add a skill"
+                  className="flex-1 p-1"
+                  onKeyDown={handleAddSkill}
+                />
+              </div>
+              {formik.errors.requiredSkills && formik.touched.requiredSkills && <ShowError Error={formik.errors.requiredSkills} />}
+            </div>
+            <div className="col-span-2">
               <label htmlFor="attachment" className="block text-sm font-medium text-gray-700">
                 Attachment
               </label>
-              {formik.values.attachment ? ( // Check if there is an attachment
-                <div className="flex items-center mt-1">
-                  <p className="text-gray-900">
-                    {formik.values.attachment instanceof File
-                      ? formik.values.attachment.name
-                      : formik.values.attachment.split("___")[1]}
-                  </p>
+              {formik.values.attachment ? (
+                <div className="mt-2 flex items-center">
+                  <span className="text-gray-700">{typeof formik.values.attachment === "string" ? formik.values.attachment.split("___")[1] : formik.values.attachment.name}</span>
                   <button
                     type="button"
-                    className="ml-2 text-sm text-red-500 hover:text-red-700"
-                    onClick={() => formik.setFieldValue("attachment", null)} // Clear attachment
+                    className="ml-2 text-red-500 hover:text-red-700"
+                    onClick={() => formik.setFieldValue("attachment", null)}
                   >
                     Remove
                   </button>
@@ -196,18 +247,25 @@ const AddProjectModal = ({ isOpen, handleClose, isAddMode, selectedWork }) => {
                   id="attachment"
                   name="attachment"
                   type="file"
-                  className="mt-1 block w-full text-gray-900"
-                  onChange={(event) => {
-                    formik.setFieldValue("attachment", event.currentTarget.files[0]);
-                  }}
-                  onBlur={formik.handleBlur}
+                  className="mt-1 p-1 block w-full border border-gray-600 rounded-md shadow-sm"
+                  onChange={(event) => formik.setFieldValue("attachment", event.target.files[0])}
                 />
               )}
             </div>
           </div>
           <div className="flex justify-end">
-            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-              {isAddMode ? "Place Project" : "Update Project"}
+            <button
+              type="button"
+              className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded mr-2"
+              onClick={handleClose}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              {isAddMode ? "Add Project" : "Update Project"}
             </button>
           </div>
         </form>

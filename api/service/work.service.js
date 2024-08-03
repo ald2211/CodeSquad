@@ -17,7 +17,9 @@ class workSerivice{
           budget:workData.budget,
           bidEndDate:workData.endDate,
           description:workData.description,
-          attachMents:workData?.attachment
+          attachMents:workData?.attachment,
+          expectedDelivery:workData.expectedDelivery,
+          requiredSkills:workData.requiredSkills
 
         };
     
@@ -52,7 +54,9 @@ class workSerivice{
           budget:workData.budget,
           bidEndDate:workData.endDate,
           description:workData.description,
-          attachMents:workData.attachment
+          attachMents:workData.attachment,
+          expectedDelivery:workData.expectedDelivery,
+          requiredSkills:workData.requiredSkills
       };
       
       const updatedUser = await workRepository.findByWorkIdAndUpdate(workId, updateWorkData);
@@ -104,6 +108,7 @@ class workSerivice{
       if (!work) throw errorHandler(404,'work not found')
       let completedWorks=await workRepository.findCompletedWorksById(Id)
       if(work.budget<bidDetails.bidAmount)throw errorHandler(400,'bid amount must be less than budget')
+      if(work.expectedDelivery<bidDetails.deliveryTime)throw errorHandler(400,`project should be delivered in ${work.expectedDelivery} days`)
 
        const updatedData= await workRepository.createBid(Id,bidDetails,completedWorks);
        

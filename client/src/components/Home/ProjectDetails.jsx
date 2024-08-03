@@ -203,6 +203,15 @@ const ProjectDetails = ({ filterSearch,sortSearch }) => {
                   </button>
                 )}
               </p>
+          <div className="flex flex-wrap space-x-2 space-y-2">
+          {work?.requiredSkills?.map((skill, index) => (
+            <span key={index} className="bg-gray-200 px-3 py-1 rounded-md text-xs text-gray-700">
+              {skill.toUpperCase()}
+            </span>
+          ))}
+        </div>
+      
+          
               {work.attachMents && (
                 <p
                   className="text-sm text-blue-500 hover:underline cursor-pointer mb-1"
@@ -213,10 +222,11 @@ const ProjectDetails = ({ filterSearch,sortSearch }) => {
                   Attachment
                 </p>
               )}
-              <div className="flex justify-between text-sm text-gray-600 mb-4">
+              <div className="flex justify-between text-sm text-gray-600 mb-4 mt-4">
                 <p>Bid Ends: {work.bidEndDate.split("T")[0]}</p>
                 <p>Total Bids: {work?.bids?.length||0}</p>
               </div>
+              <p className="text-sm text-gray-600">delivery expected in {work?.expectedDelivery}</p>
               <div className="flex justify-end space-x-4">
                 <button
                   onClick={()=>{handleShowBids(work)}}
