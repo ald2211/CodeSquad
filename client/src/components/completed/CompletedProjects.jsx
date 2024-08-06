@@ -9,6 +9,7 @@ import { Success } from '../../helper/popup';
 import PaymentSuccess from '../PaymentSuccess';
 import PaymentFailed from '../PaymentFailed';
 import PaymentIdCard from '../PaymentIdCard';
+import WorkDetails from './workDetails';
 
 const CompletedProjects = () => {
     const [completed, setCompleted] = useState([]);
@@ -208,9 +209,7 @@ const CompletedProjects = () => {
                                     </div>
                                 
                                 </div>
-                                <p className="text-gray-600 ">Type: {work.workType}</p>
-                                <p className="text-gray-600 ">Delivered in {work.bids.find((dev) => dev.developer === work.developerId)?.deliveryTime} Days</p>
-                                <p className="text-gray-600 ">Budget: ₹{work.budget}</p>
+                                <WorkDetails work={work}/>
                             </div>
                             
                             {/* Payment Details */}

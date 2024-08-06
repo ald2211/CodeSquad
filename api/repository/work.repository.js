@@ -34,12 +34,12 @@ class workRepository{
       }
     }
   }
-  let Sort = {};
+  let Sort = {budget:1};
   const sortOptions = sortBy?.split('--');
     if (sortOptions?.length>0) {
         sortOptions.forEach(option => {
             if (option === 'price') {
-                Sort.budget = -1; // Assuming higher to lower price
+                Sort.budget = -1; 
             } else if (option === 'recent') {
                 Sort.createdAt = -1;
             }

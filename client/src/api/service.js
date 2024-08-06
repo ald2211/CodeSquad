@@ -458,6 +458,22 @@ export const uploadResume = async (userId, resumeUrl) => {
       Failed(err.response ? err.response.data.message : err.message);
     }
   }
+
+  export const uploadProjectFile = async (workId, projectUrl) => {
+    try {
+  
+      const res = await axiosInstance.patch(`/user/work/updateProjectLink/${workId}`, 
+        {projectLink:projectUrl}
+      , {
+        withCredentials: true
+      });
+  
+      return res;
+    } catch (err) {
+      console.error('Error updating project link:', err);
+      Failed(err.response ? err.response.data.message : err.message) 
+    }
+  };
   //bookmark
   export const handlebookMark=async(workId)=>{
 

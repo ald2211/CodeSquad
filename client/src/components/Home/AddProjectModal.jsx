@@ -23,6 +23,7 @@ const initialAddValues = {
 };
 
 const AddProjectModal = ({ isOpen, handleClose, isAddMode, selectedWork }) => {
+  const [newSkill, setNewSkill] = useState('');
   const dispatch = useDispatch();
 
   const initialValuesForEdit = selectedWork ? {
@@ -75,10 +76,10 @@ const AddProjectModal = ({ isOpen, handleClose, isAddMode, selectedWork }) => {
     formik.setValues(isAddMode ? initialAddValues : initialValuesForEdit);
   }, [isAddMode, selectedWork]);
 
-  const handleAddSkill = (e) => {
-    if (e.key === "Enter" && e.target.value.trim()) {
-      formik.setFieldValue("requiredSkills", [...formik.values.requiredSkills, e.target.value.trim()]);
-      e.target.value = "";
+  const handleAddSkill = () => {
+    if (newSkill && !formik.values.requiredSkills.includes(newSkill)) {
+      formik.setFieldValue('requiredSkills', [...formik.values.requiredSkills, newSkill]);
+      setNewSkill('');
     }
   };
 
@@ -222,8 +223,16 @@ const AddProjectModal = ({ isOpen, handleClose, isAddMode, selectedWork }) => {
                   type="text"
                   placeholder="Add a skill"
                   className="flex-1 p-1"
-                  onKeyDown={handleAddSkill}
+                  value={newSkill}
+                  onChange={(e) => setNewSkill(e.target.value)}
                 />
+                 <button
+      type="button"
+      className="ml-2 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-700"
+      onClick={handleAddSkill}
+    >
+      Add
+    </button>
               </div>
               {formik.errors.requiredSkills && formik.touched.requiredSkills && <ShowError Error={formik.errors.requiredSkills} />}
             </div>

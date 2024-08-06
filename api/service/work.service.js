@@ -169,6 +169,13 @@ class workSerivice{
       
     }
 
+    async updateTheProjectLink(id,projectLink){
+      let updateWorkData={
+        projectLink
+      }
+      return await workRepository.findByWorkIdAndUpdate(id,updateWorkData)
+    }
+
 }
 
     

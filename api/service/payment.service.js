@@ -48,7 +48,7 @@ class paymentService{
           razorpayPaymentId,
           razorpayOrderId,
           razorpaySignature,
-          clientPayment:'recieved',
+          clientPayment:'received',
           developerPayment:'initiated'
         }
         const paymentData=await paymentRepository.findByPaymentIdAndUpdate(paymentId,updateData)
