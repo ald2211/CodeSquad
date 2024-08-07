@@ -13,6 +13,7 @@ import spinner from '../assets/loader.gif'
 import { userLogout } from '../api/service'
 import Sidebar from '../components/AdminSidebar'
 import AdminProfile from '../components/profile/AdminProfile'
+import ShowReviews from '../components/profile/ShowReviews'
 
 const Profile = () => {
 
@@ -43,7 +44,7 @@ const Profile = () => {
         <>
         {
           currentUser.data.role!=='admin'?
-          <div className=" p-4 bg-gray-200 min-h-screen ">
+          <div className=" p-4 bg-gray-200 min-h-screen">
         <div className="flex justify-end mb-4">
           <button
             onClick={handleSignOut}
@@ -65,9 +66,9 @@ const Profile = () => {
         <EducationSection/>
         <ExperienceSection/>
         <ProjectsSection/>
-  
         </>
         }
+        <ShowReviews/>
       </div>
       :
       <div className=" w-full mt-[82px] flex">

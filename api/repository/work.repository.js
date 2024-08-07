@@ -18,7 +18,6 @@ class workRepository{
   if(role==='client')query.clientId=Id;
   if(role==='developer'){
     let developer= await userRepository.findUserById(Id)
-    console.log('developer:',developer)
     if(developer&&developer.skills.length>0){
       query.requiredSkills = { $in: developer.skills };
     }
@@ -45,7 +44,6 @@ class workRepository{
             }
         });
     }
-  console.log('sorttttttt:',Sort)
   if(miniNavFilter==='recent'){
       const twoWeeksAgo = new Date();
       twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);

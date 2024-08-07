@@ -22,7 +22,6 @@ export const getClientAllWorks=async(req,res,next)=>{
       const sortSearch=req.query.sortSearch||""
       const search= req.query.search || ""
       const {data,count}=await workService.getClientWorks(req.user.role,req.user.id,page,limit,search,filterSearch,req.query.miniNavFilter,sortSearch)
-     console.log('dataaa feetet:',data)
      console.log('sortSearch:',sortSearch)
       return res.status(200).json({
          success:true,

@@ -3,15 +3,30 @@ import Modal from "react-modal";
 import spinner from '../../assets/loader.gif';
 import { getDeveloperDetails } from "../../api/service";
 import { ImFileEmpty } from "react-icons/im";
+import { FaStar } from "react-icons/fa";
 const DeveloperDetailsModal = ({ developer, isOpen, onClose }) => {
   const [developerDetails, setDeveloperDetails] = useState({});
   const [loading, setLoading] = useState(false);
+
+  const renderStars = (rating) => {
+    const totalStars = 5;
+    return (
+      <div className="flex">
+        {Array.from({ length: totalStars }, (_, index) => (
+          <FaStar
+            key={index}
+            className={index < rating ? "text-yellow-400" : "text-gray-300"}
+          />
+        ))}
+      </div>
+    );
+  };
 
   useEffect(() => {
     const fetchDeveloperDetails = async () => {
       setLoading(true);
       try {
-        if (developer) { // Check if developer is valid
+        if (developer) { 
           const res = await getDeveloperDetails(developer);
           setDeveloperDetails(res.data.data);
           console.log('dataaaa:',res.data.data)
@@ -119,6 +134,42 @@ const DeveloperDetailsModal = ({ developer, isOpen, onClose }) => {
               <div className=" flex flex-col items-center justify-center p-4 bg-gray-100 rounded-lg shadow-md">
               <ImFileEmpty className="w-7 h-7"/>
               <p className="mt-2">No Experience Added</p> 
+              </div>
+              }
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-semibold text-gray-800 mb-2">Reviews</h3>
+              <div className="space-y-4">
+                {developerDetails?.developerReviews?.length>0?
+                developerDetails?.developerReviews?.map((review, index) => (
+                  <div
+                  key={review?.id}
+                  className="bg-gray-100 p-4 rounded-lg shadow-md mb-4 hover:shadow-lg transition-shadow duration-300"
+                >
+                  <div className="flex items-center mb-2">
+                    <img
+                      src={review?.reviewerDetails?.authorPhoto}
+                      alt={review?.reviewerDetails?.author}
+                      className="w-10 h-10 rounded-full mr-4 object-cover"
+                    />
+                    <div>
+                      <p className="text-lg font-semibold">{review?.reviewerDetails?.author}</p>
+                      <p className="text-sm text-gray-500">{review?.reviewerDetails?.authorJob}</p>
+                    </div>
+                  </div>
+                  <p className="text-gray-700 mb-2">{review?.content}</p>
+                  <div className="mt-2 flex justify-between items-center text-sm text-gray-500">
+                    {renderStars(review?.rating)}
+                    <span>{new Date(review?.date).toLocaleDateString()}</span>
+                  </div>
+                </div>
+                ))
+              :
+              <div className=" flex flex-col items-center justify-center p-4 bg-gray-100 rounded-lg shadow-md">
+              <ImFileEmpty className="w-7 h-7"/>
+              <p className="mt-2">No Reviews </p> 
               </div>
               }
               </div>

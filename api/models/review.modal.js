@@ -4,11 +4,10 @@ export const reviewSchema=new mongoose.Schema({
 
     userId:{
         type:String,
-        ref:"user"
     },
     reviewer:{
         type:String,
-        ref:"user"
+        ref:"User"
     },
     rating:{
         type:Number,
@@ -17,6 +16,6 @@ export const reviewSchema=new mongoose.Schema({
     review:{
         type:String
     }
-})
+},{timestamps:true})
 
 export default mongoose.model('review',reviewSchema)

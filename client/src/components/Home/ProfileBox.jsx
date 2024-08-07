@@ -1,20 +1,37 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { getProfileData } from '../../api/service';
 
 const ProfileBox = () => {
   const navigate = useNavigate();
-  const { currentUser, currentEducation , currentExperience, currentProjects} = useSelector((state) => state.user);
-  
-  let count=0
-  if (currentEducation?.data?.length > 0) count+=1;
-  if (currentProjects?.data?.length > 0) count+=1;
-  if (currentExperience?.data?.length > 0) count+=1;
+  const [profileData,setProfileData]=useState([])
+  const { currentUser} = useSelector((state) => state.user);
 
-  let progressWidth = '40%'; // Default to 40% if count is 0
-  if (count === 1) progressWidth = '60%';
-  if (count === 2) progressWidth = '80%';
-  if (count === 3) progressWidth = '100%';
+  useEffect(()=>{
+     getProfileData(currentUser.data._id)
+     .then((res)=>setProfileData(res.data.count))
+     .catch((err)=>console.log(err))
+  },[])
+
+  let progressWidth;
+  switch (parseInt(profileData)) {
+    case 1:
+      progressWidth = '40%';
+      break;
+    case 2:
+      progressWidth = '60%';
+      break;
+    case 3:
+      progressWidth = '80%';
+      break;
+    case 4:
+      progressWidth = '100%';
+      break;
+    default:
+      progressWidth = '20%'; 
+      break;
+  }
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md mb-6 flex flex-col items-center">

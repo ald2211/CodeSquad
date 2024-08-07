@@ -150,13 +150,13 @@ const DeveloperProfile = () => {
 
           {/* Right div */}
           <div className="flex flex-col lg:items-center lg:mr-0 md:mr-0 m-auto  md:items-end md:w-1/2 p-4">
-            <StarRating rating={currentUser?.data?.averageRating}/>
-            {
+            <StarRating/>
+            {/* {
               currentUser.data.role=='developer'&&
               <p className="text-gray-600 text-xl text-center  md:text-3xl md:mr-[41px] lg:text-4xl lg:ml-7 md:text-right">
               {`₹${currentUser?.data?.rph}/hr`}
             </p>
-            }
+            } */}
           </div>
           <div className="flex space-x-2 ml-auto md:mb-auto lg:mb-auto">
             <FiEdit
@@ -194,7 +194,7 @@ const DeveloperProfile = () => {
                     <ShowError Error={errors.userRole} />
                   ) : null}
                 </div>
-               {
+               {/* {
                 currentUser.data.role=='developer'&&
                 <div className="mb-4">
                 <label
@@ -216,7 +216,7 @@ const DeveloperProfile = () => {
                   <ShowError Error={errors.rph} />
                 ) : null}
               </div>
-               }
+               } */}
                 <div className="flex justify-end space-x-2">
                   <button
                     type="button"

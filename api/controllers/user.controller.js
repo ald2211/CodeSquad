@@ -40,3 +40,16 @@ export const getDeveloperDetails=async (req,res,next)=>{
      next(err);
    }
 }
+
+export const getProfileData=async (req,res,next)=>{
+
+  try {
+    const count=await userService.getUserProfileStatus(req.params.id)
+     res
+       .status(200)
+       .json({ success: true, message: "user fetched successfully", count });
+   } catch (err) {
+     console.log("errorAt fetching user profile status:", err);
+     next(err);
+   }
+}

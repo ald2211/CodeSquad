@@ -574,6 +574,7 @@ export const uploadResume = async (userId, resumeUrl) => {
     }
   }
 
+//reviews
 
   export const handleReview=async(review,workId)=>{
     try{
@@ -588,6 +589,19 @@ export const uploadResume = async (userId, resumeUrl) => {
       Failed(err.response ? err.response.data.message : err.message) 
     }
   }
+
+      
+      export const getReviews = async (id) => {
+        try {
+          const res = await axiosInstance.get(`/user/getAllReviews/${id}`,
+            {
+            withCredentials: true
+          });
+          return res;
+        } catch (err) {
+          console.log('review err:',err)
+        }
+      };
 
   export const makePayment=async(amount,currency,receipt)=>{
     try{
@@ -674,6 +688,19 @@ export const uploadResume = async (userId, resumeUrl) => {
       }
     };
   
+    //get profile data
+    export const getProfileData = async (id) => {
+      try {
+        const res = await axiosInstance.get(`/user/profileData/${id}`,
+          {
+          withCredentials: true
+        });
+        return res;
+      } catch (err) {
+        Failed(err.response ? err.response.data.message : err.message);
+      }
+    };
+
   //logout
   export const userLogout =async ()=>{
 

@@ -16,7 +16,7 @@ const WorkDetails = ({ work }) => {
           }
         className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg shadow cursor-pointer"
       >
-        Download Project
+        Project Link
       </a>
      :
      <span className='w-[240px] bg-gray-200 p-2 rounded-md text-gray-500 text-md'>once payment is done you can download your project here</span>  

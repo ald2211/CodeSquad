@@ -1,6 +1,7 @@
 import educationRepository from "../repository/education.repository.js";
 import experienceRepository from "../repository/experience.repository.js";
 import projectRepository from "../repository/project.repository.js";
+import reviewRepository from "../repository/review.repository.js";
 import userRepository from "../repository/user.repository.js";
 import UserRepository from "../repository/user.repository.js";
 import { errorHandler } from "../utils/customError.js";
@@ -30,7 +31,11 @@ class userService{
       async getUserInfo(id){
        
         const usersInfo= await userRepository.findUserById(id)
+        const userRating=await reviewRepository.findAverageRatingByUserId(id)
+
         const { password, ...rest } = usersInfo._doc;
+        rest.averageRating=userRating;
+        console.log('avgRating:',rest.averageRating)
         return rest;
       }
 
@@ -41,13 +46,25 @@ class userService{
         const developerEducation=await educationRepository.findAllByUserId(id)
         const developerProjects=await projectRepository.findAllByUserId(id)
         const developerExperience=await experienceRepository.findAllByUserId(id)
-        return {developerData,developerEducation,developerProjects,developerExperience}
+        const developerReviews=await reviewRepository.findAllReviewsByUserId(id)
+        return {developerData,developerEducation,developerProjects,developerExperience,developerReviews}
       }
       
       async getAdmin(){
 
         return await userRepository.getAdminId()
       }
+
+      async getUserProfileStatus(id){
+
+        const usersInfo= await userRepository.findUserById(id)
+        const eduCount=await educationRepository.findAllByUserId(id)
+        const projCount=await projectRepository.findAllByUserId(id)
+        const expCount=await experienceRepository.findAllByUserId(id)
+        return (eduCount.length>0)+(projCount.length>0)+(expCount.length>0)+(usersInfo.summary?1:0)
+      }
+
+      
 
 }
 

@@ -1,11 +1,11 @@
 import express from "express";
 import { verifyUser } from "../utils/verifyUser.js";
-import {getUserInfo, updateUserProfile,getDeveloperDetails} from "../controllers/user.controller.js";
+import {getUserInfo, updateUserProfile,getDeveloperDetails,getProfileData} from "../controllers/user.controller.js";
 import { addEducation, deleteEducation, editEducation, getEducation } from "../controllers/education.controller.js";
 import { addExperience, deleteExperience, editExperience, getExperience } from "../controllers/experience.controller.js";
 import { addProjects, deleteProjects, editProjects, getProjects } from "../controllers/project.controller.js";
 import { createWork, getClientAllWorks,updateClientWork,deleteClientWork, handleBookMarks, placeAbid, removeAbid,getBidDetails,acceptBid,getCommittedWorks, getCompletedWorks,getStatusBoxData,updateProjectLink} from "../controllers/work.controller.js";
-import { submitReview } from "../controllers/review.controller.js";
+import { submitReview,getAllReviews } from "../controllers/review.controller.js";
 const router = express.Router();
 
 router.patch("/upload/:id",verifyUser(['developer','client','admin']),updateUserProfile);
@@ -52,7 +52,9 @@ router.patch('/bid/accept',verifyUser(['client']),acceptBid)
 
 //developerDetails
 router.get('/developer/:devId',verifyUser(['client','developer']),getDeveloperDetails)
+router.get('/profileData/:id',verifyUser(['client','developer']),getProfileData)
 
 //user reviews
 router.post('/review',verifyUser(['developer','client']),submitReview)
+router.get('/getAllReviews/:id',verifyUser(['developer','client']),getAllReviews)
 export default router;
