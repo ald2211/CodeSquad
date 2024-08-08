@@ -84,6 +84,7 @@ class workRepository{
        const result=await Work.find(query).populate('clientId', ' _id name avatar email').populate('paymentId')
         .skip((page - 1) * limit)
         .limit(limit)
+        .sort({updatedAt:-1})
 const data = result.map(work => ({
   ...work.toObject(),
   clientId: {
@@ -122,7 +123,8 @@ return {count,data}
             .populate('clientId', '_id name avatar email')
             .populate('paymentId')
             .skip((page - 1) * limit)
-            .limit(limit);
+            .limit(limit)
+            .sort({updatedAt:-1})
           
     const data = result.map(work => ({
       ...work.toObject(),
@@ -211,6 +213,80 @@ return {count,data}
       ]
     });
    }
+
+   async findTotalWorks(){
+    return await Work.find().count()
 }
 
+  async findTopThreeClientsAndDevelopers(){
+    const topClients = await Work.aggregate([
+      { $group: { _id: "$clientId", projectCount: { $sum: 1 } } },
+      { $sort: { projectCount: -1 } },
+      { $limit: 3 },
+      { $addFields: { 
+        _id: { $toObjectId: "$_id" }
+      }
+    },
+      { $lookup: {
+          from: 'users',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'clientDetails'
+        }
+      },
+      { $unwind: '$clientDetails' },
+      { $project: {
+          _id: 0,
+          clientId: '$_id',
+          projectCount: 1,
+          clientName: '$clientDetails.name',
+          clientEmail: '$clientDetails.email',
+          clientPhoto: '$clientDetails.avatar'
+        }
+      }
+    ]);
+
+    // Aggregate top 3 developers
+    const topDevelopers = await Work.aggregate([
+      { $match: { developerId: {$exists: true} } },
+      
+      { $group: { _id: "$developerId", projectCount: { $sum: 1 } } },
+      
+      { $sort: { projectCount: -1 } },
+      
+      { $limit: 3 },
+
+      { $addFields: { 
+        _id: { $toObjectId: "$_id" }
+      }
+    },
+      { $lookup: {
+          from: 'users',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'developerDetails'
+        }
+      },
+     
+      { $unwind: '$developerDetails' },
+      
+      { $project: {
+          _id: 0,
+          developerId: '$_id',
+          projectCount: 1,
+          developerName: '$developerDetails.name',
+          developerEmail: '$developerDetails.email',
+          developerPhoto: '$developerDetails.avatar'
+        }
+      }
+    ]);
+
+
+    return {
+      topClients,
+      topDevelopers
+    };
+  }
+
+}
 export default new workRepository()

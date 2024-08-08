@@ -130,3 +130,7 @@ today.setHours(0, 0, 0, 0);
       .required('Work Number is required')
       .matches(/^WORK\d{4}$/, 'Invalid Work Number'),
   });
+
+  export const projectLinkSchema =  Yup.object({
+    projectLink: Yup.string().url('Invalid URL').required('Project link is required')
+  })

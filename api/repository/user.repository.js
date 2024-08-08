@@ -83,6 +83,7 @@ class userRepository{
          const users=await User.find(query)
           .skip((page - 1) * limit)
           .limit(limit)
+          .sort({updatedAt:-1})
           return {count,users}
         }
 
@@ -93,6 +94,39 @@ class userRepository{
         async getAdminId(){
           return User.findOne({role:'admin'})
         }
+
+        async findCountOfUsers(){
+          return await User.aggregate([
+            {
+              $match: {
+                userState: true
+              }
+            },
+            {
+              $group: {
+                _id: '$role',
+                count: { $sum: 1 }
+              }
+            }
+          ]);
+         }
+         
+         async getDataForChart(){
+          return await User.aggregate([
+            {
+              $group: {
+                _id: {
+                  $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }
+                },
+                count: { $sum: 1 }
+              }
+            },
+            {
+              $sort: { _id: 1 } 
+            }
+          ]);
+         }
+    
 }
 
 export default new userRepository()

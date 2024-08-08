@@ -31,11 +31,7 @@ class userService{
       async getUserInfo(id){
        
         const usersInfo= await userRepository.findUserById(id)
-        const userRating=await reviewRepository.findAverageRatingByUserId(id)
-
         const { password, ...rest } = usersInfo._doc;
-        rest.averageRating=userRating;
-        console.log('avgRating:',rest.averageRating)
         return rest;
       }
 

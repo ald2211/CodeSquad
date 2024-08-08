@@ -217,11 +217,11 @@ const CompletedProjects = () => {
                                 {
                                     currentUser.data.role==='developer'?
                                     <p className={`rounded-lg px-3 py-1 text-xs font-bold uppercase text-white text-center ${
-                                        work.paymentId?.developerPayment === 'Completed' ? 'bg-green-500' :work.paymentId.developerPayment==='initiated'?'bg-orange-500': 'bg-yellow-500'
+                                        work.paymentId?.developerPayment === 'completed' ? 'bg-green-500' :work.paymentId.developerPayment==='initiated'?'bg-orange-500': 'bg-yellow-500'
                                     }`}>Payment {work.paymentId?.developerPayment}</p>
                                     :
                                     <p className={`rounded-lg px-3 py-1 text-xs font-bold uppercase text-white text-center ${
-                                        work.paymentId?.clientPayment === 'recieved' ? 'bg-green-500': 'bg-yellow-500'
+                                        work.paymentId?.clientPayment === 'received' ? 'bg-green-500': 'bg-yellow-500'
                                     }`}>Payment {work.paymentId?.clientPayment}</p>
                                 }
                                 <p className="text-gray-600 mt-2">Bid Amount: ₹{work.bids.find((dev) => dev.developer === work.developerId)?.bidAmount}</p>

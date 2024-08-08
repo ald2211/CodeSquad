@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getAllCommittedProjects, uploadProjectFile } from '../../api/service';
+import { getAllCommittedProjects } from '../../api/service';
 import spinner from '../../assets/loader.gif';
 import { TbHourglassEmpty } from "react-icons/tb";
 import SearchBar from '../Home/SearchBar';
@@ -9,10 +9,8 @@ import { PiVideoConferenceLight } from "react-icons/pi";
 import { BsChatSquareDots } from "react-icons/bs";
 import { FiHelpCircle } from "react-icons/fi";
 import ChatBox from './ChatBox';
-import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
-import { app } from '../../firebase/firebase';
-import { Success } from '../../helper/popup';
 import { CiCircleAlert } from "react-icons/ci";
+import AddCompletedProjectLinkModal from './AddCompletedProjectLinkModal';
 
 const CommittedProjects = () => {
   const [committed, setCommitted] = useState([]);
@@ -28,33 +26,9 @@ const CommittedProjects = () => {
   const itemsPerPage = 10;
   const { currentUser } = useSelector((state) => state.user);
   const [isDescriptionExpanded,setIsDescriptionExpanded]=useState(false)
-  const [selectedWork,setSelectedWork]=useState(null)
-
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      try {
-        setUploading(true);
-        const storage = getStorage(app);
-        const fileName = `${new Date().getTime()}_${file.name}`;
-        const storageRef = ref(storage, `finalLinks/${fileName}`);
-        const snapShot=await uploadBytes(storageRef, file)
-        const projectUrl=await getDownloadURL(snapShot.ref)
-        const res=await uploadProjectFile(selectedWork.workNumber,projectUrl+'___'+file.name)
-        if (res.data.success) {
-          const updatedWorkData = [...committed];
-          updatedWorkData[selectedWork.key].projectLink =res.data.projectLink
-          setCommitted(updatedWorkData);
-      }
-        
-        Success('Project link updated successfully');
-      } catch (err) {
-        console.error('Error updating resume:', err);
-      }finally {
-        setUploading(false);
-      }
-    }
-  };
+  const [workDetails, setWorkDetails] = useState({}); 
+  const [addLink,setAddLink]=useState(false)
+  const [copied, setCopied] = useState(false);
 
   const toggleDescription = () => {
     setIsDescriptionExpanded(!isDescriptionExpanded);
@@ -100,7 +74,25 @@ const CommittedProjects = () => {
     setChatBoxVisible(true);
   };
 
+  const handleCloseAddProjectLinkModal = () => {
+    setAddLink(false);
+    setWorkDetails(null);
+  };
+  const handleCopyLink = (link) => {
+    if (link) {
+      navigator.clipboard.writeText(link)
+        .then(() => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 1000);
+        })
+        .catch(err => {
+          console.error('Failed to copy: ', err);
+        });
+    }
+  };
+
   return (
+    <>
     <div className="max-w-6xl mx-auto pt-3 space-y-6 mt-[90px] mb-2">
       <SearchBar setSearch={setSearch} />
 
@@ -150,7 +142,17 @@ const CommittedProjects = () => {
 
     <div className="flex items-center justify-between text-gray-600">
       <p className="font-semibold text-lg">Attachment:</p>
-      <p className="mt-1">{work.attachment || 'No attachment'}</p>
+      {work?.attachMents?<p
+                  className="text-sm text-blue-500 hover:underline cursor-pointer mt-1 mb-1"
+                  onClick={() =>
+                    window.open(`${work.attachMents.split("__")[0]}`)
+                  }
+                >
+                  Attachment
+                </p>
+                :
+                <p>no attachments</p>
+              }
     </div>
 
     <div className="flex items-center justify-between text-gray-600">
@@ -231,27 +233,37 @@ const CommittedProjects = () => {
               </div>
            { currentUser?.data?.role==='developer'&&
            <>
-           <div className="flex items-center mt-4">
-            <input
-              type="file"
-              id="projectLink"
-              name='projectLink'
-              accept=".pdf,.doc,.docx"
-              onChange={handleFileChange}
-              onClick={()=>setSelectedWork({workNumber:work.workNumber,key:index})}
-              className="hidden"
-            />
-            <label
-      htmlFor="projectLink"
-      className={`cursor-pointer bg-blue-500 hover:bg-blue-600 ml-0 text-white py-2 px-4 rounded-sm ${uploading ? 'opacity-50 cursor-not-allowed' : ''}`}
-      style={{ pointerEvents: uploading ? 'none' : 'auto' }}
-    >
-      {uploading ? 'Uploading...' : `${work?.projectLink ? 'Update' : 'Upload'} Project link`}
-    </label>
-            {work?.projectLink && (
-              <span className="ml-4">{work?.projectLink?.slice(-6)}</span>
-            )}
-          </div>
+          <div className="flex flex-col sm:flex-row items-center mt-4 space-y-4 sm:space-y-0 sm:space-x-4">
+  <button
+     onClick={() => {
+      setAddLink(true);
+      setWorkDetails({workNumber:work.workNumber,key:index});
+    }}
+    className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700   disabled:opacity-50 disabled:cursor-not-allowed"
+    disabled={uploading}
+  >
+    {uploading ? 'Submitting...' : work?.projectLink ? 'Update Project Link' : 'Submit Project Link'}
+  </button>
+   <div className="relative">
+      {work?.projectLink && (
+        <div className="flex items-center space-x-2 p-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm">
+          <span
+            className="text-sm text-gray-700 truncate cursor-pointer hover:text-blue-500"
+            onClick={()=>handleCopyLink(work?.projectLink)}
+            title="Click to copy link"
+          >
+            {work.projectLink.length > 30 ? `${work.projectLink.slice(0, 30)}...` : work.projectLink}
+          </span>
+         
+        </div>
+      )}
+      {copied && (
+        <div className="absolute top-0 left-0 right-0 px-4 py-2  text-center text-white bg-green-500 rounded-md">
+          copied
+        </div>
+      )}
+    </div>
+</div>
           </>
           }
             </div>
@@ -284,6 +296,15 @@ const CommittedProjects = () => {
         </div>
       )}
     </div>
+    <AddCompletedProjectLinkModal
+    isOpen={addLink}
+    work={workDetails}
+    committed={committed}
+    setCommitted={setCommitted}
+    setUploading={setUploading}
+    handleClose={handleCloseAddProjectLinkModal}
+  />
+    </>
   );
 };
 

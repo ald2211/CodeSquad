@@ -25,6 +25,13 @@ class reviewService{
       
       return await reviewRepository.findAllReviewsByUserId(userId)
   }
+
+  
+  async getUserAvgRating(userId){
+      
+   return await reviewRepository.findAverageRatingByUserId(userId)
+}
+
 }
 
 export default new reviewService()

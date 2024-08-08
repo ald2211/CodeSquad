@@ -150,7 +150,7 @@ const DeveloperProfile = () => {
 
           {/* Right div */}
           <div className="flex flex-col lg:items-center lg:mr-0 md:mr-0 m-auto  md:items-end md:w-1/2 p-4">
-            <StarRating/>
+            <StarRating rating={currentUser?.data?.averageRating}/>
             {/* {
               currentUser.data.role=='developer'&&
               <p className="text-gray-600 text-xl text-center  md:text-3xl md:mr-[41px] lg:text-4xl lg:ml-7 md:text-right">

@@ -108,8 +108,9 @@ export const getCompletedWorks=async(req,res,next)=>{
 export const updateProjectLink=async(req,res)=>{
 
    try{
-      const data=await workService.updateTheProjectLink(req.params.workId,req.body.projectLink)
-      res.status(200).json({success:true,projectLink:data.projectLink})
+      await workService.updateTheProjectLink(req.params.workId,req.body.projectLink)
+     
+      res.status(200).json({success:true})
    }catch(err){
       console.log('err at update project link:',err)
       next(err)

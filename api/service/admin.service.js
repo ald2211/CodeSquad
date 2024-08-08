@@ -27,6 +27,17 @@ class adminService{
         return await workRepository.findAllCommittedWorks(role,'',page,limit,search)
     }
 
+    
+    async getDashboardDetails(){
+
+        const usersCount= await userRepository.findCountOfUsers()
+        const projectsCount=await workRepository.findTotalWorks()
+        const chartData=await userRepository.getDataForChart()
+        const {topClients,topDevelopers}=await workRepository.findTopThreeClientsAndDevelopers()
+        return {usersCount,projectsCount,chartData,topClients,topDevelopers}
+
+    }
+
     async findCompletedWorks(role,page,limit,search){
 
         return await workRepository.findAllCompletedWorks(role,'',page,limit,search)
@@ -40,8 +51,7 @@ class adminService{
           }
           console.log('updated:',updatedData)
         
-    }
-    
+    }   
 
 }
 

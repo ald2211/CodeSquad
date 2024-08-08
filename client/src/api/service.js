@@ -288,6 +288,18 @@ export const uploadResume = async (userId, resumeUrl) => {
     }
   }
 
+  //rating
+  export const getAvgRating =async (id)=>{
+
+    try{
+      const res=axiosInstance.get(`/user/review/avgRating/${id}`,{
+        withCredentials:true
+      })
+      return res
+    }catch(err){
+      Failed(err.response ? err.response.data.message : err.message) 
+    }
+  }
   //admin 
 
   export const getAllUsers=async(page,limit,search)=>{
@@ -308,7 +320,18 @@ export const uploadResume = async (userId, resumeUrl) => {
     }
   }
   
+  export const getDashBoardData=async()=>{
 
+    try{
+      const res = await axiosInstance.get(`/admin/dashBoardData`, {
+        withCredentials: true
+      });
+      return res
+    }catch(err){
+      Failed(err.response ? err.response.data.message : err.message) 
+    }
+  }
+  
   export const updateUserState=async(userId,userState)=>{
     try{
       const res = await axiosInstance.patch(

@@ -4,8 +4,8 @@ import adminService from "../service/admin.service.js";
 export const getAllUsers=async(req,res,next)=>{
 
     try{
-        const page = parseInt(req.query.page) || 1;  // Current page number, default to 1
-        const limit = parseInt(req.query.limit) || 10;  // Number of items per page, default to 10
+        const page = parseInt(req.query.page) || 1;  
+        const limit = parseInt(req.query.limit) || 10;  
         const search= req.query.search || ""
         const {count,users}=await adminService.findAllUsers(page,limit,search);
         res.status(200).json({
@@ -20,6 +20,7 @@ export const getAllUsers=async(req,res,next)=>{
     }
     
 }
+
 
 export const updateUserState=async(req,res,next)=>{
 
@@ -65,6 +66,22 @@ export const findAllUserWorks=async(req,res,next)=>{
         next(err)
     }
 }
+
+export const getDashBoardData=async(req,res,next)=>{
+
+    try{
+        const dashboardData=await adminService.getDashboardDetails();
+        console.log('dassss:',dashboardData)
+        res.status(200).json({
+            success:true,
+            dashboardData
+          });
+
+    }catch(err){
+        next(err)
+    }
+}
+
 
 export const findAllCompletedWorks=async(req,res,next)=>{
 

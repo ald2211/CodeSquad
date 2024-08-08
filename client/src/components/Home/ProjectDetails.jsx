@@ -214,7 +214,7 @@ const ProjectDetails = ({ filterSearch,sortSearch }) => {
           
               {work.attachMents && (
                 <p
-                  className="text-sm text-blue-500 hover:underline cursor-pointer mb-1"
+                  className="text-sm text-blue-500 hover:underline cursor-pointer mb-1 mt-5"
                   onClick={() =>
                     window.open(`${work.attachMents.split("__")[0]}`)
                   }
