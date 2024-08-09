@@ -5,7 +5,7 @@ import { addEducation, deleteEducation, editEducation, getEducation } from "../c
 import { addExperience, deleteExperience, editExperience, getExperience } from "../controllers/experience.controller.js";
 import { addProjects, deleteProjects, editProjects, getProjects } from "../controllers/project.controller.js";
 import { createWork, getClientAllWorks,updateClientWork,deleteClientWork, handleBookMarks, placeAbid, removeAbid,getBidDetails,acceptBid,getCommittedWorks, getCompletedWorks,getStatusBoxData,updateProjectLink} from "../controllers/work.controller.js";
-import { submitReview,getAllReviews,getAvgRating } from "../controllers/review.controller.js";
+import { submitReview,getAllReviews,getAvgRating,editReviewAndRating,deleteReviewAndRating} from "../controllers/review.controller.js";
 const router = express.Router();
 
 router.patch("/upload/:id",verifyUser(['developer','client','admin']),updateUserProfile);
@@ -56,6 +56,9 @@ router.get('/profileData/:id',verifyUser(['client','developer']),getProfileData)
 
 //user reviews
 router.post('/review',verifyUser(['developer','client']),submitReview)
+router.patch('/review/editReviewAndRating',verifyUser(['developer','client']),editReviewAndRating)
+router.patch('/review/deleteReviewAndRating',verifyUser(['developer','client']),deleteReviewAndRating)
 router.get('/getAllReviews/:id',verifyUser(['developer','client']),getAllReviews)
 router.get('/review/avgRating/:id',verifyUser(['developer','client']),getAvgRating)
+
 export default router;

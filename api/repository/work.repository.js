@@ -122,6 +122,7 @@ return {count,data}
           const result = await Work.find(query)
             .populate('clientId', '_id name avatar email')
             .populate('paymentId')
+            .populate(`${role==='client'?'clientReview':'developerReview'}`)
             .skip((page - 1) * limit)
             .limit(limit)
             .sort({updatedAt:-1})

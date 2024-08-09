@@ -10,6 +10,10 @@ import PaymentSuccess from '../PaymentSuccess';
 import PaymentFailed from '../PaymentFailed';
 import PaymentIdCard from '../PaymentIdCard';
 import WorkDetails from './workDetails';
+import { CiEdit } from "react-icons/ci";
+import { MdDeleteOutline } from "react-icons/md";
+import EditReviewModal from './EditReviewModal';
+import ReviewDisplay from './ReviewDisplay';
 
 const CompletedProjects = () => {
     const [completed, setCompleted] = useState([]);
@@ -107,9 +111,9 @@ const CompletedProjects = () => {
             if (res.data.success) {
                  const updatedWorkData = [...completed];
                  if(role==='client'){
-                    updatedWorkData[key].clientReview = 'reveiw added';
+                    updatedWorkData[key].clientReview = res.data.data;
                  }else{
-                    updatedWorkData[key].developerReview = 'reveiw added';
+                    updatedWorkData[key].developerReview = res.data.data;
                  }
                
                 setCompleted(updatedWorkData);
@@ -275,36 +279,34 @@ const CompletedProjects = () => {
                         </div>
 
                         {/* Review Section */}
-                       { 
-                        (currentUser.data.role==='client'&&work.clientReview)?
-                        <p></p>
-                        :
-                        (currentUser.data.role==='developer'&&work.developerReview)?
-                        <p></p>
-                        :
-                        <div className="p-6">
-                            <textarea
-                                className="w-full border border-gray-300 rounded-md p-2 mb-2"
-                                placeholder="Write a review..."
-                                onChange={(e) => setReview(e.target.value)}
-                            />
-                            <input
-                                type="number"
-                                className="w-full border border-gray-300 rounded-md p-2 mb-2"
-                                placeholder="Rating (1-5)"
-                                min='1'
-                                max='5'
-                                onChange={(e) => setRating(e.target.value)}
-                               
-                            />
-                            { ratingError!==''&&<p className='text-sm text-red-600 mb-[5px]'>{ratingError}</p>}
-                            <button
-                                className="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none transition duration-200"
-                                onClick={() => handleSubmitReview(work.clientId._id,work.developerId,work.workNumber,index)}
-                            >
-                                Submit Review
-                            </button>
-                        </div>}
+                        {(currentUser.data.role === 'client' && work.clientReview) || 
+(currentUser.data.role === 'developer' && work.developerReview) ? (
+    <ReviewDisplay work={work} completed={completed} setCompleted={setCompleted} uniqueId={index} />
+) : (
+    <div className="p-6">
+        <textarea
+            className="w-full border border-gray-300 rounded-md p-2 mb-2"
+            placeholder="Write a review..."
+            onChange={(e) => setReview(e.target.value)}
+        />
+        <input
+            type="number"
+            className="w-full border border-gray-300 rounded-md p-2 mb-2"
+            placeholder="Rating (1-5)"
+            min="1"
+            max="5"
+            onChange={(e) => setRating(e.target.value)}
+        />
+        {ratingError !== '' && <p className="text-sm text-red-600 mb-[5px]">{ratingError}</p>}
+        <button
+            className="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none transition duration-200"
+            onClick={() => handleSubmitReview(work.clientId._id, work.developerId, work.workNumber, index)}
+        >
+            Submit Review
+        </button>
+    </div>
+)}
+
                     </div>
                 ))
             )}

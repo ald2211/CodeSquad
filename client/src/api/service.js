@@ -626,6 +626,35 @@ export const uploadResume = async (userId, resumeUrl) => {
         }
       };
 
+      export const editReviewAndRating=async(reviewId,editedReview,editedRating)=>{
+        try{
+          const res = await axiosInstance.patch(
+            '/user/review/editReviewAndRating',
+            {reviewId,editedReview,editedRating},
+            {headers:defaultHeaders}
+          );
+          return res
+        }catch(err){
+          console.log('edit review error:',err)
+          Failed(err.response ? err.response.data.message : err.message) 
+        }
+      }
+
+      
+      export const deleteReviewAndRating=async(reviewId,workNumber)=>{
+        try{
+          const res = await axiosInstance.patch(
+            '/user/review/deleteReviewAndRating',
+            {reviewId,workNumber},
+            {headers:defaultHeaders}
+          );
+          return res
+        }catch(err){
+          console.log('edit review error:',err)
+          Failed(err.response ? err.response.data.message : err.message) 
+        }
+      }
+
   export const makePayment=async(amount,currency,receipt)=>{
     try{
       const res=await axiosInstance.post('/payment/order',

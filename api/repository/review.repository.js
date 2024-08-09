@@ -1,5 +1,5 @@
 import Review from "../models/review.modal.js";
-
+import mongoose from 'mongoose'; 
 class reviewRepository{
     async create(reviewData) {
         const newReview = new Review(reviewData);
@@ -42,6 +42,20 @@ class reviewRepository{
         ]);
     
         return results.length > 0 ? results[0].averageRating : 0;
+    }
+
+    
+    async findByReviewIdAndUpdate(reviewId, updatedData) {
+      return await Review.findByIdAndUpdate(
+        reviewId,
+        { $set: updatedData },
+        { new: true }
+      );
+    }
+
+    async findByReviewIdAndDelete(reviewId){
+      
+       await Review.findByIdAndDelete(reviewId);
     }
     
 }
