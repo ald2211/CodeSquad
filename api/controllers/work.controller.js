@@ -105,7 +105,7 @@ export const getCompletedWorks=async(req,res,next)=>{
    }
 }
 
-export const updateProjectLink=async(req,res)=>{
+export const updateProjectLink=async(req,res,next)=>{
 
    try{
       await workService.updateTheProjectLink(req.params.workId,req.body.projectLink)

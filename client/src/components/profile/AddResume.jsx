@@ -26,7 +26,6 @@ const ResumeUpload = () => {
         const storageRef = ref(storage, `resumes/${fileName}`);
         const snapShot=await uploadBytes(storageRef, file)
         const resumeUrl=await getDownloadURL(snapShot.ref)
-        console.log('fileName:',file.name)
         const res=await uploadResume(currentUser.data._id,resumeUrl+'___'+file.name)
         const data = res.data
         dispatch(updateUserSuccess(data));
