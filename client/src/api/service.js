@@ -28,6 +28,32 @@ export const OAuthLogin=async(user_details)=>{
   }
 }
 
+export const forgotPassword=async(mail)=>{
+  try{
+     const res=await axiosInstance.post(`/auth/forgotPassword`,{mail}, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return res
+  }catch(err){
+    Failed(err.response ? err.response.data.message : err.message) 
+  }
+}
+
+export const resetPassword=async(token,newPassword)=>{
+  try{
+     const res=await axiosInstance.post(`/auth/resetPassword/${token}`,{newPassword}, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return res
+  }catch(err){
+    Failed(err.response ? err.response.data.message : err.message) 
+  }
+}
+
 //fetch user info
 
 export const fetchUser=async ()=>{

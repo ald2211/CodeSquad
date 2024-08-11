@@ -16,7 +16,6 @@ const ManagePayments = () => {
     getAllCompletedWorksAdmin(currentPage, itemsPerPage, search)
       .then((res) => {
         const { data, totalPages, totalItems } = res.data;
-        console.log('dataaaaaaaaasss:',data)
         setUserWorks(data);
         setTotalPages(totalPages);
         setTotalItems(totalItems);

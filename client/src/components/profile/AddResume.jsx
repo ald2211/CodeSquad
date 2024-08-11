@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateUserSuccess } from '../../Redux/user/userSlice';
-import spinner from "../../assets/loader.gif";
+import { ThreeDots } from 'react-loader-spinner';
 import { Failed, Success } from '../../helper/popup';
 import { app } from '../../firebase/firebase';
 import { getDownloadURL, getStorage,ref, uploadBytes } from 'firebase/storage';
@@ -69,7 +68,13 @@ const ResumeUpload = () => {
           </div>
           :
           <div className="w-full h-full flex items-center justify-center">
-            <img className="w-[60px] bg-blend-multiply bg-red-50" src={spinner} alt="spinner" />
+            <ThreeDots
+          visible={true}
+          height="80"
+          width="80"
+          color="#3333ff"
+          ariaLabel="three-dots-loading"
+        />
           </div>
       }
     </div>

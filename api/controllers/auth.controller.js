@@ -104,3 +104,31 @@ export const tokenRefresh = async (req, res, next) => {
       return next(errorHandler(403, 'Forbidden'));
   }
 };
+
+
+export const forgotPassword=async(req,res,next)=>{
+  const { mail } = req.body;
+  try{
+    await authService.handleForgotPassword(mail)
+    
+    res.status(200).json({ message: 'Password reset link sent to your email' });
+  }catch(err){
+    console.log('err at forgot password:',err)
+    next(err)
+  }
+}
+
+export const resetPassword=async(req,res,next)=>{
+
+  try{
+    const { token } = req.params;
+  const { newPassword } = req.body;
+    await authService.handleResetPassword(token,newPassword)
+    
+    res.status(200).json({ success:true,message: 'Password changed successfully' });
+  }catch(err){
+    console.log('err at reset password:',err)
+    if (err.name === 'TokenExpiredError')err.message='Token has expired, please request a new reset link'
+    next(err)
+  }
+}

@@ -1,5 +1,5 @@
 import express from 'express';
-import { signup,activate, signin,OAuthSignin, signout, tokenRefresh} from '../controllers/auth.controller.js';
+import { signup,activate, signin,OAuthSignin, signout, tokenRefresh,forgotPassword,resetPassword} from '../controllers/auth.controller.js';
 
 const router=express.Router()
 
@@ -20,6 +20,10 @@ router.get('/signout',signout)
 
 //token refresh
 router.get('/refreshToken',tokenRefresh);
+
+router.post('/forgotPassword',forgotPassword)
+
+router.post('/resetPassword/:token',resetPassword)
 
 
 export default router

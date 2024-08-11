@@ -134,3 +134,18 @@ today.setHours(0, 0, 0, 0);
   export const projectLinkSchema =  Yup.object({
     projectLink: Yup.mixed().required('Project link is required')
   })
+
+  export const forgotPasswordSchema=Yup.object({
+    email: Yup.string().email("Invalid email format").required('email is required'),
+})
+
+
+  export const resetPasswordSchema=Yup.object({
+    newPassword:Yup.string().required('password is required')
+    .min(8,"password must be at leaset 8 characters")
+    .matches(/[!@#$%^&*(),.?":{}|<>]/,'atleast one symbol required')
+    .matches(/[0-9]/,"atleast one number required")
+    .matches(/[A-Z]/,"atleast one uppercase letter required")
+    .matches(/[a-z]/,"atleast one lowercase letter required"),
+    confirmNewPassword:Yup.string().oneOf([Yup.ref("newPassword")],"password must match").required("confirmpassword is required"),
+})

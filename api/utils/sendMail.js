@@ -2,14 +2,15 @@ import nodemailer from 'nodemailer'
 
 
 
-const verifyEmail=async(email,link,name)=>{
+const verifyEmail=async(email,link,name,htmlContent,subject)=>{
     try{
         const mailConfigurations = {
 
             from:process.env.USER,
             to: email,
-            subject: 'Account Verification',
-            html:`
+            subject: subject||'Account Verification',
+            html:
+            htmlContent||`
            <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,7 +81,7 @@ const verifyEmail=async(email,link,name)=>{
             
         </div>
         <div class="button">
-            <a href=${link}>Verify Email</a>
+            <a href=${link}  target="_blank">Verify Email</a>
         </div>
         <div class="content">
             <p>If you did not sign up for this account, you can ignore this email.</p>

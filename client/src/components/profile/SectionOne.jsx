@@ -21,10 +21,12 @@ import {
 import spinner from "../../assets/loader.gif";
 import StarRating from "./StarRating";
 import { updateUser, uploadImage } from "../../api/service";
+import { ThreeDots } from 'react-loader-spinner';
 
 const DeveloperProfile = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { currentUser, loading } = useSelector((state) => state.user);
+  const [dataLoading,setDataLoading]=useState(false)
   const fileRef = useRef(null);
   const [file, setFile] = useState(undefined);
   const dispatch = useDispatch();
@@ -41,7 +43,7 @@ const DeveloperProfile = () => {
       onSubmit: async (values, action) => {
         try {
           closeEditModal();
-          dispatch(processStart());
+          setDataLoading(true)
           const res = await updateUser(currentUser.data._id,values)
           const data = res.data;
           console.log(data);
@@ -52,8 +54,10 @@ const DeveloperProfile = () => {
           
         } catch (err) {
           
-          dispatch(processFailed());
           Failed(err.response ? err.response.data.message : err.message);
+        }
+        finally{
+          setDataLoading(false)
         }
       },
     });
@@ -122,7 +126,7 @@ const DeveloperProfile = () => {
   return (
     <section className="relative  flex flex-col md:flex-row items-center p-4 bg-gray-100 rounded-lg shadow-md">
       {/* Left div */}
-      {!loading ? 
+      {!dataLoading ? 
         <>
           <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div className="text-center flex">
@@ -151,12 +155,7 @@ const DeveloperProfile = () => {
           {/* Right div */}
           <div className="flex flex-col lg:items-center lg:mr-0 md:mr-0 m-auto  md:items-end md:w-1/2 p-4">
             <StarRating rating={currentUser?.data?.averageRating}/>
-            {/* {
-              currentUser.data.role=='developer'&&
-              <p className="text-gray-600 text-xl text-center  md:text-3xl md:mr-[41px] lg:text-4xl lg:ml-7 md:text-right">
-              {`₹${currentUser?.data?.rph}/hr`}
-            </p>
-            } */}
+           
           </div>
           <div className="flex space-x-2 ml-auto md:mb-auto lg:mb-auto">
             <FiEdit
@@ -194,29 +193,6 @@ const DeveloperProfile = () => {
                     <ShowError Error={errors.userRole} />
                   ) : null}
                 </div>
-               {/* {
-                currentUser.data.role=='developer'&&
-                <div className="mb-4">
-                <label
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                  htmlFor="hourlyPay"
-                >
-                  Hourly Pay
-                </label>
-                <input
-                  id="rph"
-                  name="rph"
-                  type="number"
-                  value={values.rph}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                />
-                {errors.rph && touched.rph ? (
-                  <ShowError Error={errors.rph} />
-                ) : null}
-              </div>
-               } */}
                 <div className="flex justify-end space-x-2">
                   <button
                     type="button"
@@ -238,7 +214,15 @@ const DeveloperProfile = () => {
         </>
       : 
           <div className="w-full h-full flex items-center justify-center">
-            <img className="w-[60px]" src={spinner} alt="spinner" />
+            {/* <img className="w-[60px]" src={spinner} alt="spinner" /> */}
+            
+        <ThreeDots
+          visible={true}
+          height="80"
+          width="80"
+          color="#3333ff"
+          ariaLabel="three-dots-loading"
+        />
           </div>
       }
     </section>

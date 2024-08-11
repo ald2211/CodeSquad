@@ -21,6 +21,7 @@ import PaymentManagement from './pages/PaymentManagement'
 import VideoCall from './components/VideoCall'
 import AdminVideoConference from './components/AdminVideoConference'
 import AdminChat from './components/AdminChat'
+import ResetPassword from './components/ResetPassword'
 
 const App = () => {
   const {currentUser}=useSelector((state)=>state.user)
@@ -37,6 +38,7 @@ const App = () => {
         < Route path='/' element={<Public />}/>
         < Route path='/signup' element={<Signup />}/>
         < Route path='/login' element={<Login />}/>
+        < Route path='/resetPassword/:token' element={<ResetPassword/>}/>
         </>
         }
 

@@ -33,15 +33,18 @@ class workRepository{
       }
     }
   }
-  let Sort = {budget:1};
+  let Sort = {};
   const sortOptions = sortBy?.split('--');
     if (sortOptions?.length>0) {
         sortOptions.forEach(option => {
+
+          if (option === 'recent') {
+            Sort.createdAt = -1;
+        }
             if (option === 'price') {
                 Sort.budget = -1; 
-            } else if (option === 'recent') {
-                Sort.createdAt = -1;
-            }
+            } 
+            
         });
     }
   if(miniNavFilter==='recent'){

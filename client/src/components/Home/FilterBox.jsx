@@ -132,6 +132,18 @@ const FilterBox = ({ setSearch, setSort }) => {
 
             <h3 className="text-lg font-semibold mb-2">Sort by</h3>
             <div className="mb-4">
+
+            <div className="flex items-center mb-2">
+                    <input
+                        type="checkbox"
+                        id="sortByRecent"
+                        className="mr-2"
+                        onChange={() => setSortByRecent(!sortByRecent)}
+                        checked={sortByRecent}
+                    />
+                    <label htmlFor="sortByRecent">Recent</label>
+                </div>
+
                 <div className="flex items-center mb-2">
                     <input
                         type="checkbox"
@@ -142,16 +154,7 @@ const FilterBox = ({ setSearch, setSort }) => {
                     />
                     <label htmlFor="sortByPrice">Price (Higher to Lower)</label>
                 </div>
-                <div className="flex items-center mb-2">
-                    <input
-                        type="checkbox"
-                        id="sortByRecent"
-                        className="mr-2"
-                        onChange={() => setSortByRecent(!sortByRecent)}
-                        checked={sortByRecent}
-                    />
-                    <label htmlFor="sortByRecent">Recent</label>
-                </div>
+                
             </div>
         </div>
     );
