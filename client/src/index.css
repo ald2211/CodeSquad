@@ -8,17 +8,7 @@ html::-webkit-scrollbar {
     height: 8px; /* Thin scrollbar height for horizontal scrollbars */
   }
   
-  /* Scrollbar track styling */
-  html::-webkit-scrollbar-track {
-    background: #f7f4ed; /* Track color */
-    border-radius: 8px; /* Rounded corners for the track */
-  }
   
-  /* Scrollbar thumb styling */
-  html::-webkit-scrollbar-thumb {
-    background: #f3f4f6; /* Thumb color */
-    border: 2px solid #f6f7ed; /* Border around the thumb */
-  }
   
   /* Thumb hover styling */
   html::-webkit-scrollbar-thumb:hover {

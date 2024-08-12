@@ -7,6 +7,19 @@ class messageReopository{
         const newMessage= new Message(messageData)
         return await newMessage.save();
     }
+
+    async updateMany(messageIds,userId){
+        return  await Message.updateMany(
+            { _id: { $in: messageIds }, receiverId: userId, read: false },
+            { $set: { read: true } }
+        );
+    }
+
+    async findByMessageIdAndUpdate(id){
+
+        return await Message.findByIdAndUpdate(id,{read:true},{ new: true })
+        
+    }
 }
 
 

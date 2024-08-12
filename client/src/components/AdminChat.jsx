@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Sidebar from './AdminSidebar';
-import { getAllMessages, getAllUsers, sendMessage } from '../api/service';
+import { getAllMessages, getAllUsers, getUnreadMessages, markRead, sendMessage } from '../api/service';
 import { Failed } from '../helper/popup';
 import { useSelector } from 'react-redux';
 import { useSocketContext } from '../context/socketContext';
 import Pagination from './UserTablePagination';
+import { Discuss } from 'react-loader-spinner';
 
 const AdminChat = () => {
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState('null');
   const { currentUser } = useSelector((state) => state.user);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
@@ -18,18 +19,48 @@ const AdminChat = () => {
   const [totalItems, setTotalItems] = useState(0);
   const itemsPerPage = 10;
   const lastMessageRef = useRef();
+  const [unread, setUnread] = useState([]);
   const { socket, onlineUsers } = useSocketContext();
+  const [messageLoading, setMessageLoading] = useState(false);
 
   useEffect(() => {
     socket?.on('newMessage', (newMessage) => {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: newMessage.message, sender: newMessage.senderId, time: new Date(newMessage.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) },
-      ]);
+      console.log('selected:',selectedUser._id,':',newMessage.senderId)
+      if (selectedUser && newMessage.senderId === selectedUser._id) {
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            text: newMessage.message,
+            sender: newMessage.senderId,
+            time: new Date(newMessage.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          },
+        ]);
+      } if (selectedUser && newMessage.senderId !== selectedUser._id) {
+        
+        setUnread((prevUnread) => {
+          return prevUnread.map((conv) => {
+            if (conv.participants.includes(newMessage.senderId)) {
+              return {
+                ...conv,
+                unreadCount: {
+                  ...conv.unreadCount,
+                  [currentUser.data._id]: (conv.unreadCount[currentUser.data._id] || 0) + 1,
+                },
+              };
+            }
+            return conv;
+          });
+        });
+      } 
+  
+      // Mark the message as read if it’s relevant
+      if (selectedUser?._id === newMessage.senderId) {
+        markRead(newMessage._id);
+      }
     });
 
     return () => socket?.off('newMessage');
-  }, [socket,messages,setMessages]);
+  }, [socket, messages, setMessages]);
 
   useEffect(() => {
     getAllUsers(currentPage, itemsPerPage, search)
@@ -50,7 +81,7 @@ const AdminChat = () => {
         top: 0,
         behavior: 'smooth',
       });
-  
+
       // Scroll the child element (or the container) to the bottom
       const childElement = lastMessageRef.current;
       childElement.scrollIntoView({
@@ -60,11 +91,21 @@ const AdminChat = () => {
     }
   }, [messages]);
 
+  useEffect(() => {
+    getUnreadMessages()
+      .then((res) => {
+        setUnread(res?.data.unreadMessages);
+      })
+      .catch((err) => {
+        console.log('noti err:', err);
+      });
+  }, [selectedUser]);
+
   const handleSelectUser = async (user) => {
     setSelectedUser(user);
+    setMessageLoading(true);
     try {
       const res = await getAllMessages(user._id);
-
       const userMessages = res.data.messages.map((message) => ({
         text: message.message,
         sender: message.senderId,
@@ -72,8 +113,24 @@ const AdminChat = () => {
       }));
 
       setMessages(userMessages);
+      setUnread((prevUnread) => {
+        return prevUnread.map((conv) => {
+          if (conv.participants.includes(user._id)) {
+            return {
+              ...conv,
+              unreadCount: {
+                ...conv.unreadCount,
+                [currentUser.data._id]: 0,
+              },
+            };
+          }
+          return conv;
+        });
+      });
     } catch (err) {
       console.log('Error fetching messages:', err);
+    } finally {
+      setMessageLoading(false);
     }
   };
 
@@ -102,59 +159,92 @@ const AdminChat = () => {
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
   };
+  
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+
   return (
     <div className="flex flex-row h-screen mt-[80px] overflow-hidden">
       <Sidebar />
       <div className="flex-1 flex flex-row">
         <div className="w-1/3 bg-white border-r p-1 overflow-y-auto">
-          <h2 className="text-lg font-semibold mb-4">Search Users</h2>
+          
           <input
             type="text"
             value={search}
             onChange={handleSearchChange}
             placeholder="Search users..."
-            className="w-full border rounded-full px-4 py-2 mb-4"
+            className="w-full border rounded-full px-4 py-2 mb-4 mt-2"
           />
           <ul>
-            {userData.map((user) => (
-              <li
-                key={user._id}
-                onClick={() => handleSelectUser(user)}
-                className={`cursor-pointer p-4 ${selectedUser?._id === user._id ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`}
-              >
-                <div className="flex items-center">
-                  <div className="relative">
-                    <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full border-black mr-3 object-cover" />
-                    <span
-                      className={`absolute bottom-7 left-8 block w-2 h-2 rounded-full ${onlineUsers.includes(user._id) ? 'bg-green-500' : 'bg-gray-400'}`}
-                      title={onlineUsers.includes(user._id) ? 'Online' : 'Offline'}
-                    />
+            {userData.map((user) => {
+              const conversation = unread?.find((conv) =>
+                conv.participants.includes(user._id)
+              );
+              const unreadCount = conversation ? conversation.unreadCount[currentUser.data._id] : 0;
+
+              return (
+                <li
+                  key={user._id}
+                  onClick={() => handleSelectUser(user)}
+                  className={`cursor-pointer p-4 ${selectedUser?._id === user._id ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`}
+                >
+                  <div className="flex items-center">
+                    <div className="relative">
+                      <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full border-black mr-3 object-cover" />
+                      <span
+                        className={`absolute bottom-7 left-8 block w-2 h-2 rounded-full ${onlineUsers.includes(user._id) ? 'bg-green-500' : 'bg-gray-400'}`}
+                        title={onlineUsers.includes(user._id) ? 'Online' : 'Offline'}
+                      />
+                      
+                    </div>
+                    <div>
+                      <p className="font-semibold">{user.name}</p>
+                      <p className="text-sm">{user.role}</p>
+                    </div>
+                    {unreadCount > 0 && (
+                        <span className=" bg-green-500 ml-auto text-white text-xs rounded-full px-2 py-1">
+                          {unreadCount}
+                        </span>
+                      )}
                   </div>
-                  <div>
-                    <p className="font-semibold">{user.name}</p>
-                    <p className="text-sm">{user.role}</p>
-                  </div>
-                </div>
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
           <Pagination
-               totalPages={totalPages}
-               currentPage={currentPage}
-               onPageChange={handlePageChange}
-              />
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
+          />
         </div>
-        <div className="flex-1 flex flex-col bg-gray-100 h-[calc(100vh-75px)]">
-          {selectedUser ? (
+        <div className="flex-1 flex flex-col bg-gray-100 h-[calc(100vh-75px)] relative">
+          {messageLoading && (
+            <Discuss
+              visible={true}
+              height="80"
+              width="80"
+              ariaLabel="discuss-loading"
+              wrapperStyle={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                zIndex: 10,
+              }}
+              wrapperClass="discuss-wrapper"
+              color="#fff"
+              backgroundColor="#F4442E"
+            />
+          )}
+          {selectedUser!=='null' ? (
             <>
               <div className="flex justify-between items-center p-4 bg-white shadow-md">
                 <h1 className="text-2xl font-semibold text-gray-900 pt-3">{selectedUser.name}</h1>
               </div>
               <div className="flex-1 p-4 overflow-y-auto mb-1">
-                {messages?.length > 0 ? (
+                {(!messageLoading&&messages?.length > 0) ? (
                   messages.map((message, index) => (
                     <div key={index} className={`flex ${message.sender === currentUser.data._id ? 'justify-end' : 'justify-start'}`}>
                       <div
@@ -162,29 +252,31 @@ const AdminChat = () => {
                         className={`max-w-xs md:max-w-md lg:max-w-lg p-3 my-2 rounded-lg shadow-md ${message.sender === currentUser.data._id ? 'bg-blue-500 text-white' : 'bg-gray-300 border'}`}
                       >
                         <p className='mb-2'>{message.text}</p>
-                        <span className="text-xs text-white">{message.time}</span>
+                        <span className="text-xs text-gray-600">{message.time}</span>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <h1 className="text-center mt-[160px] text-gray-400">Start a chat</h1>
+                  <p className='text-center mt-16'>{messageLoading?'fetching Messages...':'No messages'}</p>
                 )}
               </div>
-              <form className="flex items-center p-4 bg-white border-t" onSubmit={handleSendMessage}>
-                <input
-                  type="text"
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  placeholder="Type a message"
-                  className="flex-1 border rounded-full px-4 py-2 mr-2  focus:outline-none focus:border-blue-500"
-                />
-                <button
-                  type="submit"
-                  className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition"
-                >
-                  Send
-                </button>
-              </form>
+              <div className="bg-white border-t p-4">
+                <form onSubmit={handleSendMessage} className="flex">
+                  <input
+                    type="text"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    className="flex-1 border rounded-full px-4 py-2"
+                    placeholder="Type a message..."
+                  />
+                  <button
+                    type="submit"
+                    className="ml-2 bg-blue-500 text-white px-4 py-2 rounded-full"
+                  >
+                    Send
+                  </button>
+                </form>
+              </div>
             </>
           ) : (
             <div className="flex-1 flex items-center justify-center">

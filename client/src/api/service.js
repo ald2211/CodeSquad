@@ -779,6 +779,35 @@ export const uploadResume = async (userId, resumeUrl) => {
       }
     };
 
+
+    //get unread messages count
+    export const getUnreadMessages=async ()=>{
+        
+      try{
+        const res = await axiosInstance.get('/message/get/unreadMessages', {
+          withCredentials:true
+        });
+        return res
+      }catch(err){
+        Failed(err.response ? err.response.data.message : err.message) 
+      }
+    }
+
+    
+    export const markRead=async(id)=>{
+      try{
+        const res = await axiosInstance.patch(
+          `/message/set/markMessageAsRead`,
+          {messageId:id},
+           {headers:defaultHeaders}
+        );
+        return res
+      }catch(err){
+        Failed(err.response?err.response.data.message:err.message)
+      }
+    }
+  
+
   //logout
   export const userLogout =async ()=>{
 

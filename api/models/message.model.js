@@ -15,6 +15,9 @@ const messageSchema=new mongoose.Schema({
     message:{
         type:String,
         required:true
+    },
+    read:{
+        type:Boolean
     }
 },{timestamps:true})
 

@@ -12,7 +12,12 @@ const conversationSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'message'
     }
-  ]
+  ],
+  unreadCount: {
+    type: Map,
+    of: Number,
+    default: {}
+  },
 }, { timestamps: true });
 
 export default mongoose.model('Conversation', conversationSchema);

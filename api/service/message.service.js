@@ -17,28 +17,70 @@ class messageService{
             let updateData={
                 senderId,
                 receiverId,
-                message
+                message,
+                read:false
             }
             const newMessage=await messageRepository.create(updateData)
            
             console.log('new msg:',newMessage)
             conversation.messages.push(newMessage._id)
-    
-            await conversationRepository.saveMessageId(conversation)
-            //socket io functionality to send message in real time
-            const receiverSocketId=getReceiverSocketId(receiverId)
+            
+             //socket io functionality to send message in real time
+             const receiverSocketId=getReceiverSocketId(receiverId)
+
+             if(receiverSocketId){
+                 io.to(receiverSocketId).emit("newMessage",newMessage)   //send event to specific client
+             }
+             
+            const currentUnreadCount = conversation.unreadCount.get(receiverId) || 0;
+            conversation.unreadCount.set(receiverId, currentUnreadCount + 1);
+           
+            
+            
+        
             console.log('rcid:',receiverSocketId)
-            if(receiverSocketId){
-                io.to(receiverSocketId).emit("newMessage",newMessage)   //send event to specific client
-            }
+
+            await conversationRepository.saveMessageId(conversation)
+           
+            
             return newMessage
     }
 
     
     async getConversation(senderId,receiverId){
         
-        return await conversationRepository.findMessages(senderId,receiverId)
+        const userConversation= await conversationRepository.findMessages(senderId,receiverId)
+        
+         // Mark all messages as read
+         if(userConversation){
+
+            const messageIds = userConversation.messages.map(message => message._id);
+            await messageRepository.updateMany(messageIds,senderId);
+       
+            // Reset unread count for this user
+            userConversation.unreadCount.set(senderId, 0);
+            await conversationRepository.saveMessageId(userConversation)
+         }
+        
+
+         return userConversation
     }
+
+    async getUnreadMessages(receiverId){
+
+        return await conversationRepository.findUnreadMessages(receiverId)
+    }
+
+    async markRead(id,userId){
+        const message=await messageRepository.findByMessageIdAndUpdate(id)
+        // console.log('message:',message)
+        const userConversation= await conversationRepository.findByMessageId(message._id)
+        console.log('user conversation:',userConversation)
+        console.log('userId:',userId)
+        userConversation.unreadCount.set(userId,0);
+        await conversationRepository.saveMessageId(userConversation)
+    }
+    
 }
 
 export default new messageService()

@@ -22,6 +22,53 @@ class conversationRepository{
 
         await updatedConversation.save()
     }
+
+    async findUnreadMessages(receiverId){
+
+              const unreadCounts = await Conversation.aggregate([
+                {
+                  $match: {
+                    participants: receiverId
+                  }
+                },
+                {
+                  $lookup: {
+                    from: 'messages', // The collection name for messages
+                    localField: 'messages',
+                    foreignField: '_id',
+                    as: 'messageDetails'
+                  }
+                },
+                {
+                  $unwind: '$messageDetails'
+                },
+                {
+                  $match: {
+                    'messageDetails.read': false
+                  }
+                },
+                {
+                  $group: {
+                    _id: '$_id',
+                    unreadCount: { $first: '$unreadCount' },
+                    participants: { $first: '$participants' }
+                  }
+                },
+                
+              ]);
+              
+              return unreadCounts;
+          
+    }
+
+    async findByMessageId(messageId){
+
+      return await Conversation.findOne({
+        messages: messageId
+      });
+    
+    }
+    
 }
 
 export default new conversationRepository()

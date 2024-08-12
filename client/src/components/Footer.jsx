@@ -3,7 +3,7 @@ import codeSquadLogo from "/codeSquadLogo.png";
 
 const Footer = () => {
   return (
-    <section className="py-12  bg-black ">
+    <section className="py-[59px]  bg-black ">
       <div className="px-4 mx-auto sm:px-6 lg:px-8 max-w-7xl">
         <div className="text-center xl:flex xl:items-center xl:justify-between xl:text-left">
           <div className="xl:flex xl:items-center xl:justify-start">
