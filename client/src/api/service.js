@@ -807,6 +807,43 @@ export const uploadResume = async (userId, resumeUrl) => {
       }
     }
   
+    //notification related
+
+    export const getNotification = async () => {
+      try {
+        const res = await axiosInstance.get(`/notification`,
+          {
+          withCredentials: true
+        });
+        return res;
+      } catch (err) {
+        Failed(err.response ? err.response.data.message : err.message);
+      }
+    };
+   
+    export const deleteSpecificNotification=async(id)=>{
+      try {
+          const res = await axiosInstance.delete(`/notification/delete/${id}`, {
+            withCredentials: true,
+          });
+          
+          return res
+        } catch (err) {
+          Failed(err.response ? err.response.data.message : err.message) 
+        }
+    }
+
+    export const deleteAllNotfication=async(id)=>{
+      try {
+          const res = await axiosInstance.delete(`/notification/deleteAll`, {
+            withCredentials: true,
+          });
+          
+          return res
+        } catch (err) {
+          Failed(err.response ? err.response.data.message : err.message) 
+        }
+    }
 
   //logout
   export const userLogout =async ()=>{

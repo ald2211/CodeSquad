@@ -11,15 +11,15 @@ import { SocketContextProvider } from "./context/socketContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
+    <SocketContextProvider>
     <React.StrictMode>
       <BrowserRouter>
         <ToastContainer />
         <AppInitializer>
-          <SocketContextProvider>
           <App />
-          </SocketContextProvider>
         </AppInitializer>
       </BrowserRouter>
     </React.StrictMode>
+    </SocketContextProvider>
   </Provider>
 );

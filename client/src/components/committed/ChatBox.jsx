@@ -50,10 +50,14 @@ const ChatBox = ({ receiver, close }) => {
     if (newMessage.trim() === '') return;
 
     try {
+      console.log('reciverAtChatBox:',receiver)
       const res = await sendMessage(receiver, { message: newMessage });
 
       if (res.data.success) {
-        setMessages([...messages, { text: res.data.newMessage.message, sender: res.data.newMessage.senderId, time: res.data.newMessage.updatedAt }]);
+         setMessages((prevMessages) => [
+        ...prevMessages,
+        { text: res.data.newMessage.message, sender: res.data.newMessage.senderId, time: res.data.newMessage.updatedAt },
+      ]);
         setNewMessage('');
       }
     } catch (err) {

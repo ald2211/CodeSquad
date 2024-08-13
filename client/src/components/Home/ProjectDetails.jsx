@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { FiEdit } from "react-icons/fi";
 import { MdDeleteOutline } from "react-icons/md";
 import { updateWorkSuccess } from "../../Redux/user/userSlice";
+import { TbHourglassEmpty } from "react-icons/tb";
 import {
   deleteClientWork,
   getClientsAllWorks,
@@ -63,7 +64,7 @@ const ProjectDetails = ({ filterSearch,sortSearch }) => {
   useEffect(() => {
     fetchWorks();
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [currentPage, search, filterSearch, miniNavFilter,sortSearch]); // Removed dispatch from dependencies
+  }, [currentPage, search, filterSearch, miniNavFilter,sortSearch]); 
 
   const handleShowEditProject = (project) => {
     setProjectToEdit(project);
@@ -115,7 +116,6 @@ const ProjectDetails = ({ filterSearch,sortSearch }) => {
     try {
       const res = await handlebookMark(workNumber);
       dispatch(updateWorkSuccess(res.data.data.data));
-      Success(res.data.message);
     } catch (err) {
       console.log("react_bookMarkErr:", err);
     }
@@ -131,27 +131,15 @@ const ProjectDetails = ({ filterSearch,sortSearch }) => {
       console.log(err);
     }
   };
-  console.log("userData:", userWorks);
+ 
   return (
     <>
       <SearchBar setSearch={setSearch} />
       <MiniNav setMiniNavFilter={setMiniNavFilter} />
       {userWorks.length === 0 ? (
         <div className="flex flex-col items-center relative p-6 mb-6 border border-gray-300 rounded-lg bg-white shadow-md w-full max-w-4xl mx-auto">
-          <svg
-            className="w-12 h-12 mb-4 text-gray-500"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M8 16h8M8 12h8M9 20h6a2 2 0 002-2V6a2 2 0 00-2-2H9a2 2 0 00-2 2v12a2 2 0 002 2z"
-            ></path>
-          </svg>
+          
+          <TbHourglassEmpty className="w-12 h-12 mb-4 text-gray-500" />
           <p className="text-gray-600 text-center">No Projects found</p>
         </div>
       ) : (

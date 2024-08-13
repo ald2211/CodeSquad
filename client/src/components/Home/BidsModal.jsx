@@ -135,7 +135,7 @@ const BidsModal = ({ bidDetails, handleCloseModal }) => {
                           <td onClick={() => handleViewMore(bid.developer)} className="py-2 px-4 border-b text-center text-sm text-blue-600 cursor-pointer hover:text-blue-500">View More</td>
                           {currentUser.data.role==='client'&&
                           
-                           <td onClick={()=>handleBidAccept({devId:bid.developer,bidAmount:bid.bidAmount,deliveryTime:bid.deliveryTime})} className="py-2 px-4 border-b text-center rounded border-[1px] hover:bg-blue-500 hover:text-white cursor-pointer">Accept</td>
+                           <td onClick={()=>handleBidAccept({devId:bid.developer,bidAmount:bid.bidAmount,deliveryTime:bid.deliveryTime,devName:bid.developerName})} className="py-2 px-4 border-b text-center rounded border-[1px] hover:bg-blue-500 hover:text-white cursor-pointer">Accept</td>
                          }
                         
                         </tr>

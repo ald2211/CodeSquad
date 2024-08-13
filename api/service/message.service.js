@@ -22,9 +22,9 @@ class messageService{
             }
             const newMessage=await messageRepository.create(updateData)
            
-            console.log('new msg:',newMessage)
+           
             conversation.messages.push(newMessage._id)
-            
+                
              //socket io functionality to send message in real time
              const receiverSocketId=getReceiverSocketId(receiverId)
 

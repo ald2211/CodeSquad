@@ -11,6 +11,8 @@ import { FiHelpCircle } from "react-icons/fi";
 import ChatBox from './ChatBox';
 import { CiCircleAlert } from "react-icons/ci";
 import AddCompletedProjectLinkModal from './AddCompletedProjectLinkModal';
+import { useSocketContext } from '../../context/socketContext';
+import WorkStatus from './WorkStatus';
 
 const CommittedProjects = () => {
   const [committed, setCommitted] = useState([]);
@@ -29,6 +31,7 @@ const CommittedProjects = () => {
   const [workDetails, setWorkDetails] = useState({}); 
   const [addLink,setAddLink]=useState(false)
   const [copied, setCopied] = useState(false);
+  const { socket, onlineUsers } = useSocketContext();
 
   const toggleDescription = () => {
     setIsDescriptionExpanded(!isDescriptionExpanded);
@@ -68,7 +71,7 @@ const CommittedProjects = () => {
       setReceiverId(adminId);
     } else if (currentUser.data.role === 'client') {
       setReceiverId(devId);
-    } else {
+    } else if(currentUser.data.role==='developer') {
       setReceiverId(clientId);
     }
     setChatBoxVisible(true);
@@ -175,16 +178,7 @@ const CommittedProjects = () => {
 
             {/* Section 2: Project Status */}
             <div className="w-full mt-6">
-          <div className="flex flex-col items-center justify-center">
-            <div className="w-full bg-gray-300 rounded-full h-3 mb-4">
-              <div className="bg-blue-600 h-3 rounded-full" style={{ width: '70%' }}></div> 
-            </div>
-            <div className="flex justify-between w-full text-xs text-gray-600">
-              <span className="flex-1 text-center">Pending</span>
-              <span className="flex-1 text-center">Committed</span>
-              <span className="flex-1 text-center">Completed</span>
-            </div>
-          </div>
+          <WorkStatus work={work}/>
            {/* Section 3: Developer and Client Details */}
  <div className="p-4">
               <div className=" items-center mb-4 mt-3 ">
@@ -201,11 +195,15 @@ const CommittedProjects = () => {
                     <p className="text-gray-600 text-sm">Client</p>
                   </div>
                   {currentUser?.data?.role==='developer'&&<div className="flex  items-center ml-auto">
-                <button onClick={() => handleVideoCallJoin(work)} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none transition duration-200">
+                <button onClick={() => handleVideoCallJoin(work)} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none transition duration-200">
                   <PiVideoConferenceLight className='w-8 h-8 text-center' />
                 </button>
-                <button onClick={() => handleChatClick('', work.developerId, work.clientId._id)} className="bg-green-500 ml-2 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none transition duration-200">
+                <button onClick={() => handleChatClick('', work.developerId, work.clientId._id)} className="relative bg-blue-500 ml-2 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none transition duration-200">
                   <BsChatSquareDots className='w-8 h-8' />
+                  <span
+                        className={`absolute left-14 bottom-10  block w-3 h-3 rounded-full ${onlineUsers.includes(work.clientId._id) ? 'bg-green-500' : 'bg-gray-400'}`}
+                        title={onlineUsers.includes(adminId) ? 'Online' : 'Offline'}
+                      />
                 </button>
               </div>}
                 </div>
@@ -222,11 +220,15 @@ const CommittedProjects = () => {
                     <p className="text-gray-600 text-sm">Developer</p>
                   </div>
                   {currentUser?.data?.role==='client'&&<div className="flex  items-center ml-auto">
-                <button onClick={() => handleVideoCallJoin(work)} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none transition duration-200">
+                <button onClick={() => handleVideoCallJoin(work)} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none transition duration-200">
                   <PiVideoConferenceLight className='w-8 h-8 text-center' />
                 </button>
-                <button onClick={() => handleChatClick('', work.developerId, work.clientId._id)} className="bg-green-500 ml-2 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none transition duration-200">
+                <button onClick={() => handleChatClick('', work.developerId, work.clientId._id)} className="bg-blue-500 relative ml-2 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none transition duration-200">
                   <BsChatSquareDots className='w-8 h-8' />
+                <span
+                        className={`absolute left-14 bottom-10 block w-3 h-3 rounded-full ${onlineUsers.includes(work.clientId._id) ? 'bg-green-500' : 'bg-gray-400'}`}
+                        title={onlineUsers.includes(work.developerId) ? 'Online' : 'Offline'}
+                      />
                 </button>
               </div>}
                 </div>
@@ -273,10 +275,14 @@ const CommittedProjects = () => {
       Once you complete the work, upload the completed project link and inform the admin.
       </p>
     </div>}
-            <div className='fixed bottom-3 right-0'>
+            <div className='fixed bottom-3 right-1'>
                     <button onClick={() => handleChatClick('admin')} className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-500 focus:outline-none transition duration-200">
                       <FiHelpCircle className='w-8 h-8' />
                     </button>
+                    <span
+                        className={`absolute bottom-10 right-0 block w-3 h-3 rounded-full ${onlineUsers.includes(adminId) ? 'bg-green-500' : 'bg-gray-400'}`}
+                        title={onlineUsers.includes(adminId) ? 'Online' : 'Offline'}
+                      />
                   </div>
         </div>
        

@@ -1,6 +1,8 @@
 import { generateUniqueWorkId } from "../helpers/workIdGenerator.js";
+import notificationRepository from "../repository/notification.repository.js";
 import paymentRepository from "../repository/payment.repository.js";
 import workRepository from "../repository/work.repository.js";
+import { getReceiverSocketId, io } from "../socket/socket.js";
 import { errorHandler } from "../utils/customError.js";
 
 class workSerivice{
@@ -157,7 +159,37 @@ class workSerivice{
         paymentId:paymentData._id
       }
       const updatedData=await workRepository.findByWorkIdAndUpdate(work.workNumber,updateWorkData)
-      if(!updatedData)throw errorHandler(400,'bid removing failed')
+      if(!updatedData)throw errorHandler(400,'bid failed')
+      
+  const clientNotificationMessage = `Your project '${updatedData.workName}' is now assigned to ${work.developer.devName}.`;
+  const developerNotificationMessage = `Your bid for the project '${updatedData.workName}' has been accepted by the client.`;
+
+  const clientSocketId = getReceiverSocketId(updatedData.clientId); 
+const developerSocketId = getReceiverSocketId(updatedData.developerId); 
+
+if (clientSocketId) {
+  io.to(clientSocketId).emit("newNotification", {
+    receiverId: updatedData.clientId,
+    message: clientNotificationMessage,
+  });
+}
+
+if (developerSocketId) {
+  io.to(developerSocketId).emit("newNotification", {
+    receiverId: updatedData.developerId,
+    message: developerNotificationMessage,
+  });
+}
+  await notificationRepository.createNotification({
+    receiverId: updatedData.clientId,
+    message: clientNotificationMessage,
+  });
+
+  await notificationRepository.createNotification({
+    receiverId: updatedData.developerId,
+    message: developerNotificationMessage,
+  });
+
       return await workRepository.findAllWorksByUserId(role,Id)
 
     }

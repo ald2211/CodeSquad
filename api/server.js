@@ -9,6 +9,7 @@ import userRouter from './routes/user.route.js'
 import adminRouter from './routes/admin.route.js'
 import paymentRouter from './routes/payment.route.js'
 import messageRouter from './routes/message.route.js'
+import notificationRouter from './routes/notification.route.js'
 import cookieParser from 'cookie-parser'
 import { app,server } from './socket/socket.js'
 
@@ -33,6 +34,7 @@ app.use('/api/v1/user',userRouter);
 app.use('/api/v1/admin',adminRouter);
 app.use('/api/v1/payment',paymentRouter);
 app.use('/api/v1/message',messageRouter);
+app.use('/api/v1/notification',notificationRouter);
 
 
 
