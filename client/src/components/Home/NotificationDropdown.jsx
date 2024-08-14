@@ -1,19 +1,21 @@
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { AiOutlineClose } from "react-icons/ai";
 import { useEffect, useState } from "react";
-import { deleteAllNotfication, deleteSpecificNotification, getNotification } from "../../api/service";
+import {
+  deleteAllNotfication,
+  deleteSpecificNotification,
+  getNotification,
+} from "../../api/service";
 
-
-const NotificationDropdown = ({newNotification}) => {
+const NotificationDropdown = ({ newNotification }) => {
   const [notifications, setNotifications] = useState([]);
-  
+
   useEffect(() => {
     setNotifications((prevNotification) => [
       ...prevNotification,
       newNotification,
     ]);
-  }, [newNotification]); 
-  
+  }, [newNotification]);
 
   useEffect(() => {
     const getUserNotifications = async () => {
@@ -25,32 +27,26 @@ const NotificationDropdown = ({newNotification}) => {
 
   const handleDelete = async (id) => {
     try {
-        setNotifications((prev) => prev.filter((notif) => notif._id !== id));
-       deleteSpecificNotification(id);
-     
-    } catch (error) {
-      console.error("Error deleting notification:", error);
-    }
+      setNotifications((prev) => prev.filter((notif) => notif._id !== id));
+      deleteSpecificNotification(id);
+    } catch (error) {}
   };
 
   const handleClearAll = async () => {
     try {
-        setNotifications([]);
-       deleteAllNotfication();
-      
-    } catch (error) {
-      console.error("Error clearing notifications:", error);
-    }
+      setNotifications([]);
+      deleteAllNotfication();
+    } catch (error) {}
   };
 
   return (
     <div className="relative group mr-4">
       <IoMdNotificationsOutline className="w-6 h-6 cursor-pointer text-gray-600" />
-      {notifications.length>0&&
-      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-semibold px-1.5  rounded-full">
-      {notifications.length}
-    </span>
-      }
+      {notifications.length > 0 && (
+        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-semibold px-1.5  rounded-full">
+          {notifications.length}
+        </span>
+      )}
       <div className="absolute right-0 mt-2 min-w-[200px] max-w-[300px] bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         {notifications.length > 0 ? (
           <>
@@ -58,7 +54,7 @@ const NotificationDropdown = ({newNotification}) => {
               <div
                 key={notif.id}
                 className="px-4 py-2 flex justify-between items-center text-sm text-gray-800 hover:bg-blue-50"
-                title={notif.message} 
+                title={notif.message}
               >
                 <span className="flex-1 truncate">{notif.message}</span>
                 <AiOutlineClose
@@ -75,7 +71,9 @@ const NotificationDropdown = ({newNotification}) => {
             </div>
           </>
         ) : (
-          <div className="px-4 py-2 text-sm text-gray-800">No new notifications</div>
+          <div className="px-4 py-2 text-sm text-gray-800">
+            No new notifications
+          </div>
         )}
       </div>
     </div>

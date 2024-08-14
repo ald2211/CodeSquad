@@ -1,72 +1,82 @@
 import Razorpay from "razorpay";
 import paymentRepository from "../repository/payment.repository.js";
-import crypto from 'crypto'
+import crypto from "crypto";
 
-class paymentService{
+class paymentService {
+  async updateUpiId(paymentDetails) {
+    const updateData = {
+      upi: paymentDetails.upi,
+    };
 
-    async updateUpiId(paymentDetails){
-        const updateData = {
-            upi:paymentDetails.upi
-          };
-      
-          const updatedPaymentDetails = await paymentRepository.findByPaymentIdAndUpdate(paymentDetails.paymentId, updateData);
-      
-          if (!updatedPaymentDetails) {
-            throw errorHandler(404, "User not found");
-          }
-      
-          return updatedPaymentDetails.upi
+    const updatedPaymentDetails =
+      await paymentRepository.findByPaymentIdAndUpdate(
+        paymentDetails.paymentId,
+        updateData
+      );
+
+    if (!updatedPaymentDetails) {
+      throw errorHandler(404, "User not found");
     }
 
-    async makeThePayment(){
+    return updatedPaymentDetails.upi;
+  }
 
-    }
+  async makeThePayment() {}
 
-    async createOrder(amount,currency,receipt){
-      const razorpay= new Razorpay({
-        key_id: process.env.RAZORPAY_ID_KEY,
-        key_secret:process.env.RAZORPAY_SECRET_KEY
-      })
-      console.log('raz:',process.env.PORT)
-      const options={
-        amount:amount*100,
-        currency,
-        receipt
-      }
-     
-      return await razorpay.orders.create(options);
-    
-    }
+  async createOrder(amount, currency, receipt) {
+    const razorpay = new Razorpay({
+      key_id: process.env.RAZORPAY_ID_KEY,
+      key_secret: process.env.RAZORPAY_SECRET_KEY,
+    });
 
-    async verifyPayment(razorpayPaymentId,razorpayOrderId,razorpaySignature,paymentId){
-      
-      const body=razorpayOrderId+"|"+razorpayPaymentId;
-      const expectedSignature=crypto.createHmac('sha256',process.env.RAZORPAY_SECRET_KEY).update(body.toString()).digest('hex')
-      
-      if(expectedSignature===razorpaySignature){
-        let updateData={
-          razorpayPaymentId,
-          razorpayOrderId,
-          razorpaySignature,
-          clientPayment:'received',
-          developerPayment:'initiated'
-        }
-        const paymentData=await paymentRepository.findByPaymentIdAndUpdate(paymentId,updateData)
-        return {success:true,paymentData}
-      }else{
-        return {success:false}
-      }
-    
-    }
+    const options = {
+      amount: amount * 100,
+      currency,
+      receipt,
+    };
 
-    async updateThePaymentStatus(paymentId){
-      
-      let updateData={
-        developerPayment:'completed'
-      }
-      return await paymentRepository.findByPaymentIdAndUpdate(paymentId,updateData)
-    
+    return await razorpay.orders.create(options);
+  }
+
+  async verifyPayment(
+    razorpayPaymentId,
+    razorpayOrderId,
+    razorpaySignature,
+    paymentId
+  ) {
+    const body = razorpayOrderId + "|" + razorpayPaymentId;
+    const expectedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_SECRET_KEY)
+      .update(body.toString())
+      .digest("hex");
+
+    if (expectedSignature === razorpaySignature) {
+      let updateData = {
+        razorpayPaymentId,
+        razorpayOrderId,
+        razorpaySignature,
+        clientPayment: "received",
+        developerPayment: "initiated",
+      };
+      const paymentData = await paymentRepository.findByPaymentIdAndUpdate(
+        paymentId,
+        updateData
+      );
+      return { success: true, paymentData };
+    } else {
+      return { success: false };
     }
+  }
+
+  async updateThePaymentStatus(paymentId) {
+    let updateData = {
+      developerPayment: "completed",
+    };
+    return await paymentRepository.findByPaymentIdAndUpdate(
+      paymentId,
+      updateData
+    );
+  }
 }
 
-export default new paymentService()
+export default new paymentService();

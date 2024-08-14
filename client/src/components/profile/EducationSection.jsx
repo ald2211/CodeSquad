@@ -8,38 +8,38 @@ import { educationSchema } from "../../schemas";
 import { MdPostAdd } from "react-icons/md";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
 import { updateEducationSuccess } from "../../Redux/user/userSlice";
-import { addEducation, deleteEducation, editEducation, getEducation } from "../../api/service";
-
+import {
+  addEducation,
+  deleteEducation,
+  editEducation,
+  getEducation,
+} from "../../api/service";
 
 const EducationSection = () => {
-  
-  const {currentUser,currentEducation} = useSelector((state) => state.user);
+  const { currentUser, currentEducation } = useSelector((state) => state.user);
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedEducation, setSelectedEducation] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [selectedId,setSelectedId]=useState(null)
-  const [newEdu,setNewEdu]=useState(false)
-  const dispatch=useDispatch()
-  const initialValues={
+  const [selectedId, setSelectedId] = useState(null);
+  const [newEdu, setNewEdu] = useState(false);
+  const dispatch = useDispatch();
+  const initialValues = {
     courseName: "",
     collegeName: "",
     country: "",
     startDate: "",
     endDate: "",
-  }
+  };
 
- 
-  useEffect(()=>{
+  useEffect(() => {
+    getEducation()
+      .then((response) => {
+        dispatch(updateEducationSuccess(response.data));
+      })
+      .catch((err) => console.log("errfetch:", err));
+  }, []);
 
-    getEducation().then((response)=>{
-      dispatch(updateEducationSuccess(response.data))
-    })
-    .catch((err)=> console.log('errfetch:',err))
-     
-  },[])
-  
- 
   const openEditModal = (education) => {
     setSelectedEducation(education);
     setIsEditModalOpen(true);
@@ -51,58 +51,62 @@ const EducationSection = () => {
   };
 
   const openDeleteModal = (edu_id) => {
-    setSelectedId(edu_id)
+    setSelectedId(edu_id);
     setIsDeleteModalOpen(true);
   };
 
   const closeDeleteModal = () => {
-    setSelectedId(null)
+    setSelectedId(null);
     setIsDeleteModalOpen(false);
   };
   const handleDelete = async (id) => {
     try {
-      closeDeleteModal()
-      const res=await deleteEducation(id)
-      const data=res.data
-      dispatch(updateEducationSuccess(data))
+      closeDeleteModal();
+      const res = await deleteEducation(id);
+      const data = res.data;
+      dispatch(updateEducationSuccess(data));
       Success(data.message);
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   };
 
-  const { handleChange, handleBlur, values, errors, touched, handleSubmit, setValues } =
-    useFormik({
-      initialValues,
-      validationSchema: educationSchema,
-      onSubmit: async (values,action) => {
-
-        try {
-          closeEditModal();
-          let res;
-          if(!newEdu){
-            
-            res = await editEducation(selectedEducation._id,selectedEducation.userId,values)
-          }else{
-            console.log('selected:',selectedEducation)
-            res =await addEducation(currentUser.data._id,values)
-             
-          }
-          const data = res.data;
-          dispatch(updateEducationSuccess(data))
-          console.log('dataaa:',data)
-          Success(data.message);
-          action.resetForm()
-          
-        } catch (err) {
-          console.log('error:',err)
-          
-        
+  const {
+    handleChange,
+    handleBlur,
+    values,
+    errors,
+    touched,
+    handleSubmit,
+    setValues,
+  } = useFormik({
+    initialValues,
+    validationSchema: educationSchema,
+    onSubmit: async (values, action) => {
+      try {
+        closeEditModal();
+        let res;
+        if (!newEdu) {
+          res = await editEducation(
+            selectedEducation._id,
+            selectedEducation.userId,
+            values
+          );
+        } else {
+          res = await addEducation(currentUser.data._id, values);
         }
-      },
-    });
+        const data = res.data;
+        dispatch(updateEducationSuccess(data));
 
-useEffect(() => {
+        Success(data.message);
+        action.resetForm();
+      } catch (err) {
+        err;
+      }
+    },
+  });
+
+  useEffect(() => {
     if (selectedEducation) {
       setValues({
         courseName: selectedEducation.courseName,
@@ -111,13 +115,13 @@ useEffect(() => {
         startDate: selectedEducation.startDate,
         endDate: selectedEducation.endDate,
       });
-    }else{
+    } else {
       setValues({
-        courseName: ' ',
-        collegeName: ' ',
-        country: ' ',
-        startDate: '',
-        endDate: '',
+        courseName: " ",
+        collegeName: " ",
+        country: " ",
+        startDate: "",
+        endDate: "",
       });
     }
   }, [selectedEducation, setValues]);
@@ -126,56 +130,75 @@ useEffect(() => {
     <>
       <div className="p-6 bg-gray-100 rounded-lg shadow-md mt-4 relative ">
         <h2 className="text-2xl font-semibold mb-2">Education</h2>
-       {currentEducation?.data?.length>0?
-        <>
-         {currentEducation.data?.map((edu, index) => (
-          <div key={index} className="mb-4 p-4 bg-gray-50 rounded-lg relative">
-            <div className="grid grid-cols-2 border-[3px] p-4">
-              <div className="mb-2">
-                <h3 className="text-xl font-medium">Course Name</h3>
-                <p className="text-gray-700">{edu.courseName}</p>
+        {currentEducation?.data?.length > 0 ? (
+          <>
+            {currentEducation.data?.map((edu, index) => (
+              <div
+                key={index}
+                className="mb-4 p-4 bg-gray-50 rounded-lg relative"
+              >
+                <div className="grid grid-cols-2 border-[3px] p-4">
+                  <div className="mb-2">
+                    <h3 className="text-xl font-medium">Course Name</h3>
+                    <p className="text-gray-700">{edu.courseName}</p>
+                  </div>
+                  <div className="mb-2">
+                    <h3 className="text-xl font-medium">College Name</h3>
+                    <p className="text-gray-700">{edu.collegeName}</p>
+                  </div>
+                  <div className="mb-2">
+                    <h3 className="text-xl font-medium">Country</h3>
+                    <p className="text-gray-700">{edu.country}</p>
+                  </div>
+                  <div className="mb-2">
+                    <h3 className="text-xl font-medium">Duration</h3>
+                    <p className="text-gray-700">
+                      {edu.startDate.split("T")[0]} to{" "}
+                      {edu.endDate.split("T")[0]}
+                    </p>
+                  </div>
+                </div>
+                <div className="absolute top-6 right-6 flex space-x-2">
+                  <FiEdit
+                    className="h-6 w-6  hover:text-blue-500 cursor-pointer"
+                    onClick={() => {
+                      setNewEdu(false);
+                      openEditModal(edu);
+                    }}
+                  />
+                  <FiTrash
+                    className="h-6 w-6  hover:text-red-500 cursor-pointer"
+                    onClick={() => openDeleteModal(edu._id)}
+                  />
+                </div>
               </div>
-              <div className="mb-2">
-                <h3 className="text-xl font-medium">College Name</h3>
-                <p className="text-gray-700">{edu.collegeName}</p>
-              </div>
-              <div className="mb-2" >
-                <h3 className="text-xl font-medium">Country</h3>
-                <p className="text-gray-700">{edu.country}</p>
-              </div>
-              <div className="mb-2">
-                <h3 className="text-xl font-medium">Duration</h3>
-                <p className="text-gray-700">
-                  {edu.startDate.split('T')[0]} to {edu.endDate.split('T')[0]}
-                </p>
-              </div>
-            </div>
-            <div className="absolute top-6 right-6 flex space-x-2">
-              <FiEdit
-                className="h-6 w-6  hover:text-blue-500 cursor-pointer"
-                onClick={() => {setNewEdu(false);openEditModal(edu)}}
-              />
-              <FiTrash
-                className="h-6 w-6  hover:text-red-500 cursor-pointer"
-                onClick={() => openDeleteModal(edu._id)}
-              />
-            </div>
-          </div>
-        )
+            ))}
+          </>
+        ) : (
+          <>
+            <HiOutlineDocumentAdd
+              className=" absolute top-[3%] right-[1%] h-8 w-8 hover:text-blue-500"
+              onClick={() => {
+                setNewEdu(true);
+                openEditModal(edu);
+              }}
+            />
+            <MdPostAdd
+              onClick={() => {
+                openEditModal();
+                setNewEdu(true);
+              }}
+              className="m-auto h-9 w-9 hover:text-blue-600"
+            />
+          </>
         )}
-        </>
-        :
-        <>
         <HiOutlineDocumentAdd
-        className=" absolute top-[3%] right-[1%] h-8 w-8 hover:text-blue-500"
-        onClick={() => {setNewEdu(true);openEditModal(edu)}}/>
-        <MdPostAdd onClick={()=>{openEditModal();setNewEdu(true)}} className="m-auto h-9 w-9 hover:text-blue-600"  />
-        </>
-        
-       }
-       <HiOutlineDocumentAdd
-        className=" absolute top-[3%] right-[1%] h-8 w-8 hover:text-blue-500"
-        onClick={()=>{openEditModal();setNewEdu(true)}}/>
+          className=" absolute top-[3%] right-[1%] h-8 w-8 hover:text-blue-500"
+          onClick={() => {
+            openEditModal();
+            setNewEdu(true);
+          }}
+        />
       </div>
 
       {/* Edit Modal */}
@@ -186,7 +209,9 @@ useEffect(() => {
         overlayClassName="fixed inset-0 bg-black bg-opacity-75"
       >
         <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg mx-auto">
-          <h2 className="text-2xl font-semibold mb-4">{!newEdu?'Edit':'Add'} Education</h2>
+          <h2 className="text-2xl font-semibold mb-4">
+            {!newEdu ? "Edit" : "Add"} Education
+          </h2>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -200,7 +225,9 @@ useEffect(() => {
                   className="w-full p-2 border rounded"
                 />
                 {errors.courseName && touched.courseName && (
-                  <div className="text-red-500 text-sm">{errors.courseName}</div>
+                  <div className="text-red-500 text-sm">
+                    {errors.courseName}
+                  </div>
                 )}
               </div>
               <div>
@@ -214,7 +241,9 @@ useEffect(() => {
                   className="w-full p-2 border rounded"
                 />
                 {errors.collegeName && touched.collegeName && (
-                  <div className="text-red-500 text-sm">{errors.collegeName}</div>
+                  <div className="text-red-500 text-sm">
+                    {errors.collegeName}
+                  </div>
                 )}
               </div>
               <div>
@@ -236,7 +265,7 @@ useEffect(() => {
                 <input
                   type="date"
                   name="startDate"
-                  value={values.startDate.split('T')[0]}
+                  value={values.startDate.split("T")[0]}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   className="w-full p-2 border rounded"
@@ -250,7 +279,7 @@ useEffect(() => {
                 <input
                   type="date"
                   name="endDate"
-                  value={values.endDate.split('T')[0]}
+                  value={values.endDate.split("T")[0]}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   className="w-full p-2 border rounded"
@@ -278,8 +307,8 @@ useEffect(() => {
           </form>
         </div>
       </Modal>
-       {/* delete Modal */}
-       <Modal
+      {/* delete Modal */}
+      <Modal
         isOpen={isDeleteModalOpen}
         onRequestClose={closeDeleteModal}
         className="fixed inset-0 flex items-center justify-center z-50"
@@ -329,7 +358,7 @@ useEffect(() => {
                 Are you sure you want to delete this field?
               </h3>
               <button
-                onClick={()=>handleDelete(selectedId)}
+                onClick={() => handleDelete(selectedId)}
                 type="button"
                 className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
               >

@@ -3,6 +3,7 @@ import Sidebar from '../AdminSidebar';
 import { getDashBoardData } from '../../api/service';
 import AreaChart from '../AreaChart';
 import { ThreeDots } from 'react-loader-spinner';
+import { Failed } from '../../helper/popup';
 
 const AdminHome = () => {
   const [data, setData] = useState(null); 
@@ -13,10 +14,9 @@ const AdminHome = () => {
       setLoading(true);
       try {
         const res = await getDashBoardData();
-        console.log('dashboardData:', res.data.dashboardData);
         setData(res.data.dashboardData);
       } catch (err) {
-        console.log('dashboard data fetch error:', err);
+        Failed(err?.message)
       } finally {
         setLoading(false);
       }

@@ -37,7 +37,7 @@ const PublicContentOne = () => {
         </div>
       </div>
 
-      <div className="container mx-auto 2xl:px-12">
+      <div className="container mx-auto 2xl:px-12 xl:mt-[95px]">
         <img
           className="w-full mt-6"
           src="https://cdn.rareblocks.xyz/collection/celebration/images/team/4/group-of-people.png"

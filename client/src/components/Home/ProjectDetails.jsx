@@ -21,12 +21,12 @@ import SearchBar from "./SearchBar";
 import MiniNav from "./MiniNav";
 import PlaceBidModal from "./PlaceABidModal";
 
-const ProjectDetails = ({ filterSearch,sortSearch }) => {
+const ProjectDetails = ({ filterSearch, sortSearch }) => {
   const { currentUser, userWorks } = useSelector((state) => state.user);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [showEditProjectModal, setShowEditProjectModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [selectedWork,setSelectedWork]=useState(null)
+  const [selectedWork, setSelectedWork] = useState(null);
   const [placeBid, setPlaceBid] = useState(false);
   const [projectToEdit, setProjectToEdit] = useState(null); // State for project to edit
   const [placeBidDetails, setPlaceBidDetails] = useState(null);
@@ -54,17 +54,17 @@ const ProjectDetails = ({ filterSearch,sortSearch }) => {
       limit: itemsPerPage,
       filterSearch,
       miniNavFilter,
-      sortSearch
+      sortSearch,
     });
     dispatch(updateWorkSuccess(res.data.data));
     setTotalPages(res.data.totalPages);
     setTotalItems(res.data.totalItems);
   };
- 
+
   useEffect(() => {
     fetchWorks();
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [currentPage, search, filterSearch, miniNavFilter,sortSearch]); 
+  }, [currentPage, search, filterSearch, miniNavFilter, sortSearch]);
 
   const handleShowEditProject = (project) => {
     setProjectToEdit(project);
@@ -82,12 +82,12 @@ const ProjectDetails = ({ filterSearch,sortSearch }) => {
   };
 
   const handleShowBids = (work) => {
-    setSelectedWork(work)
+    setSelectedWork(work);
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
-    setSelectedWork(null)
+    setSelectedWork(null);
     setShowModal(false);
   };
 
@@ -104,21 +104,19 @@ const ProjectDetails = ({ filterSearch,sortSearch }) => {
     setSelectedId(null);
     setIsDeleteModalOpen(false);
   };
-  
-  const handleRemoveBid=async(workId)=>{
-    const res=await removBid(workId)
-    dispatch(updateWorkSuccess(res.data.data))
+
+  const handleRemoveBid = async (workId) => {
+    const res = await removBid(workId);
+    dispatch(updateWorkSuccess(res.data.data));
     Success(res.data.message);
-  }
+  };
 
   //handle bookmark
   const handleBookMark = async (workNumber) => {
     try {
       const res = await handlebookMark(workNumber);
       dispatch(updateWorkSuccess(res.data.data.data));
-    } catch (err) {
-      console.log("react_bookMarkErr:", err);
-    }
+    } catch (err) {}
   };
 
   const handleDelete = async (workNumber) => {
@@ -127,134 +125,138 @@ const ProjectDetails = ({ filterSearch,sortSearch }) => {
       const res = await deleteClientWork(workNumber);
       dispatch(updateWorkSuccess(res.data.data));
       Success(res.data.message);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
- 
+
   return (
     <>
       <SearchBar setSearch={setSearch} />
       <MiniNav setMiniNavFilter={setMiniNavFilter} />
       {userWorks.length === 0 ? (
         <div className="flex flex-col items-center relative p-6 mb-6 border border-gray-300 rounded-lg bg-white shadow-md w-full max-w-4xl mx-auto">
-          
           <TbHourglassEmpty className="w-12 h-12 mb-4 text-gray-500" />
           <p className="text-gray-600 text-center">No Projects found</p>
         </div>
       ) : (
         <>
-          {userWorks?.filter((work)=>work.workStatus==='pending').map((work) => (
-            <div
-              key={work.workNumber}
-              className="relative p-6 mb-6 border border-gray-300 rounded-lg bg-white shadow-md w-full max-w-4xl mx-auto"
-            >
-              {currentUser.data.role === "developer" ? (
-                <button className="absolute top-4 right-4">
-                  {work.bookMarks.includes(currentUser.data._id) ? (
-                    <FaBookmark
-                      onClick={() => handleBookMark(work.workNumber)}
-                      className="text-blue-700 w-6 h-6 hover:text-blue-600"
-                    />
-                  ) : (
-                    <CiBookmark
-                      onClick={() => handleBookMark(work.workNumber)}
-                      className="text-gray-600 w-6 h-6 hover:text-blue-600"
-                    />
-                  )}
-                </button>
-              ) : (
-                <div className="absolute top-4 right-4 flex space-x-2">
-                  <button onClick={() => handleShowEditProject(work)}>
-                    <FiEdit className="text-gray-600 w-5 h-5 hover:text-blue-600" />
+          {userWorks
+            ?.filter((work) => work.workStatus === "pending")
+            .map((work) => (
+              <div
+                key={work.workNumber}
+                className="relative p-6 mb-6 border border-gray-300 rounded-lg bg-white shadow-md w-full max-w-4xl mx-auto"
+              >
+                {currentUser.data.role === "developer" ? (
+                  <button className="absolute top-4 right-4">
+                    {work.bookMarks.includes(currentUser.data._id) ? (
+                      <FaBookmark
+                        onClick={() => handleBookMark(work.workNumber)}
+                        className="text-blue-700 w-6 h-6 hover:text-blue-600"
+                      />
+                    ) : (
+                      <CiBookmark
+                        onClick={() => handleBookMark(work.workNumber)}
+                        className="text-gray-600 w-6 h-6 hover:text-blue-600"
+                      />
+                    )}
                   </button>
-                  <button onClick={() => openDeleteModal(work.workNumber)}>
-                    <MdDeleteOutline className="text-gray-600 w-6 h-6 hover:text-red-600" />
-                  </button>
-                </div>
-              )}
-              <h3 className="text-xl font-semibold mb-4">{work.workName}</h3>
-              <div className="flex justify-between text-sm text-gray-600 mb-4">
-                <span>Type: {work.workType}</span>
-                <span> Budget: {work.budget}</span>
-              </div>
-              <p className="text-gray-600 mb-4 text-sm">
-                {isDescriptionExpanded
-                  ? work.description
-                  : `${work.description.slice(0, 100)}`}
-                {work.description.length > 100 && (
-                  <button
-                    onClick={toggleDescription}
-                    className="text-blue-500 ml-2 text-sm"
-                  >
-                    {isDescriptionExpanded ? "Read Less" : "Read More"}
-                  </button>
+                ) : (
+                  <div className="absolute top-4 right-4 flex space-x-2">
+                    <button onClick={() => handleShowEditProject(work)}>
+                      <FiEdit className="text-gray-600 w-5 h-5 hover:text-blue-600" />
+                    </button>
+                    <button onClick={() => openDeleteModal(work.workNumber)}>
+                      <MdDeleteOutline className="text-gray-600 w-6 h-6 hover:text-red-600" />
+                    </button>
+                  </div>
                 )}
-              </p>
-          <div className="flex flex-wrap space-x-2 space-y-2">
-          {work?.requiredSkills?.map((skill, index) => (
-            <span key={index} className="bg-gray-200 px-3 py-1 rounded-md text-xs text-gray-700">
-              {skill.toUpperCase()}
-            </span>
-          ))}
-        </div>
-      
-          
-              {work.attachMents && (
-                <p
-                  className="text-sm text-blue-500 hover:underline cursor-pointer mb-1 mt-5"
-                  onClick={() =>
-                    window.open(`${work.attachMents.split("__")[0]}`)
-                  }
-                >
-                  Attachment
+                <h3 className="text-xl font-semibold mb-4">{work.workName}</h3>
+                <div className="flex justify-between text-sm text-gray-600 mb-4">
+                  <span>Type: {work.workType}</span>
+                  <span> Budget: {work.budget}</span>
+                </div>
+                <p className="text-gray-600 mb-4 text-sm">
+                  {isDescriptionExpanded
+                    ? work.description
+                    : `${work.description.slice(0, 100)}`}
+                  {work.description.length > 100 && (
+                    <button
+                      onClick={toggleDescription}
+                      className="text-blue-500 ml-2 text-sm"
+                    >
+                      {isDescriptionExpanded ? "Read Less" : "Read More"}
+                    </button>
+                  )}
                 </p>
-              )}
-              <div className="flex justify-between text-sm text-gray-600 mb-4 mt-4">
-                <p>Bid Ends: {work.bidEndDate.split("T")[0]}</p>
-                <p>Total Bids: {work?.bids?.length||0}</p>
-              </div>
-              <p className="text-sm text-gray-600">delivery expected in {work?.expectedDelivery}</p>
-              <div className="flex justify-end space-x-4">
-                <button
-                  onClick={()=>{handleShowBids(work)}}
-                  className="bg-white text-black border border-black py-1 px-7 text-sm rounded-full hover:bg-blue-500 hover:text-white"
-                >
-                  Show Bids
-                </button>
-                {currentUser.data.role === "developer" &&
-                  (work.bids.find(
-                    (dev) => dev.developer === currentUser.data._id
-                  ) ?(
-                    <button
-                      onClick={() => {
-                        handleRemoveBid(work.workNumber);
-                      }}
-                      className="bg-white text-black border border-black py-1 px-7 text-sm rounded-full hover:bg-blue-500 hover:text-white"
+                <div className="flex flex-wrap space-x-2 space-y-2">
+                  {work?.requiredSkills?.map((skill, index) => (
+                    <span
+                      key={index}
+                      className="bg-gray-200 px-3 py-1 rounded-md text-xs text-gray-700"
                     >
-                      Withdraw the Bid
-                    </button>
-                  ):
-                  (
-                    <button
-                      onClick={() => {
-                        setPlaceBid(true);
-                        setPlaceBidDetails(work.workNumber);
-                      }}
-                      className="bg-white text-black border border-black py-1 px-7 text-sm rounded-full hover:bg-blue-500 hover:text-white"
-                    >
-                      Place a Bid
-                    </button>
-                  ) )}
+                      {skill.toUpperCase()}
+                    </span>
+                  ))}
+                </div>
+
+                {work.attachMents && (
+                  <p
+                    className="text-sm text-blue-500 hover:underline cursor-pointer mb-1 mt-5"
+                    onClick={() =>
+                      window.open(`${work.attachMents.split("__")[0]}`)
+                    }
+                  >
+                    Attachment
+                  </p>
+                )}
+                <div className="flex justify-between text-sm text-gray-600 mb-4 mt-4">
+                  <p>Bid Ends: {work.bidEndDate.split("T")[0]}</p>
+                  <p>Total Bids: {work?.bids?.length || 0}</p>
+                </div>
+                <p className="text-sm text-gray-600">
+                  delivery expected in {work?.expectedDelivery}
+                </p>
+                <div className="flex justify-end space-x-4">
+                  <button
+                    onClick={() => {
+                      handleShowBids(work);
+                    }}
+                    className="bg-white text-black border border-black py-1 px-7 text-sm rounded-full hover:bg-blue-500 hover:text-white"
+                  >
+                    Show Bids
+                  </button>
+                  {currentUser.data.role === "developer" &&
+                    (work.bids.find(
+                      (dev) => dev.developer === currentUser.data._id
+                    ) ? (
+                      <button
+                        onClick={() => {
+                          handleRemoveBid(work.workNumber);
+                        }}
+                        className="bg-white text-black border border-black py-1 px-7 text-sm rounded-full hover:bg-blue-500 hover:text-white"
+                      >
+                        Withdraw the Bid
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          setPlaceBid(true);
+                          setPlaceBidDetails(work.workNumber);
+                        }}
+                        className="bg-white text-black border border-black py-1 px-7 text-sm rounded-full hover:bg-blue-500 hover:text-white"
+                      >
+                        Place a Bid
+                      </button>
+                    ))}
+                </div>
+                {showModal && (
+                  <BidsModal
+                    bidDetails={selectedWork}
+                    handleCloseModal={handleCloseModal}
+                  />
+                )}
               </div>
-              {showModal && (
-                <BidsModal
-                  bidDetails={selectedWork}
-                  handleCloseModal={handleCloseModal}
-                />
-              )}
-            </div>
-          ))}
+            ))}
         </>
       )}
       {showEditProjectModal && (

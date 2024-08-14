@@ -1,28 +1,30 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { getAllMessages, sendMessage } from '../../api/service';
-import { Failed } from '../../helper/popup';
-import { useSocketContext } from '../../context/socketContext';
+import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { getAllMessages, sendMessage } from "../../api/service";
+import { Failed } from "../../helper/popup";
+import { useSocketContext } from "../../context/socketContext";
 
 const ChatBox = ({ receiver, close }) => {
   const { currentUser } = useSelector((state) => state.user);
   const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState("");
   const lastMessageRef = useRef(null);
-  const  {socket}=useSocketContext()
+  const { socket } = useSocketContext();
 
   useEffect(() => {
-    socket.on('newMessage', (newMessage) => {
-        console.log('newmsg:',newMessage)
+    socket.on("newMessage", (newMessage) => {
       setMessages((prevMessages) => [
         ...prevMessages,
-        { text: newMessage.message, sender: newMessage.senderId, time: newMessage.updatedAt },
+        {
+          text: newMessage.message,
+          sender: newMessage.senderId,
+          time: newMessage.updatedAt,
+        },
       ]);
     });
-  
-    return () => socket?.off('newMessage');
-  }, [socket,setMessages,messages]);
-  
+
+    return () => socket?.off("newMessage");
+  }, [socket, setMessages, messages]);
 
   useEffect(() => {
     getAllMessages(receiver)
@@ -41,27 +43,29 @@ const ChatBox = ({ receiver, close }) => {
 
   useEffect(() => {
     setTimeout(() => {
-        lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });
+      lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
     }, 100);
   }, [messages]);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (newMessage.trim() === '') return;
+    if (newMessage.trim() === "") return;
 
     try {
-      console.log('reciverAtChatBox:',receiver)
       const res = await sendMessage(receiver, { message: newMessage });
 
       if (res.data.success) {
-         setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: res.data.newMessage.message, sender: res.data.newMessage.senderId, time: res.data.newMessage.updatedAt },
-      ]);
-        setNewMessage('');
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            text: res.data.newMessage.message,
+            sender: res.data.newMessage.senderId,
+            time: res.data.newMessage.updatedAt,
+          },
+        ]);
+        setNewMessage("");
       }
     } catch (err) {
-      console.log('Error sending message:', err);
       Failed(err.message);
     }
   };
@@ -71,7 +75,10 @@ const ChatBox = ({ receiver, close }) => {
       {/* Chat Header */}
       <div className="bg-indigo-600 p-4 flex justify-between items-center">
         <h2 className="text-lg font-semibold text-white">Chat</h2>
-        <button onClick={() => close(false)} className="text-white focus:outline-none hover:text-gray-200">
+        <button
+          onClick={() => close(false)}
+          className="text-white focus:outline-none hover:text-gray-200"
+        >
           &#10005;
         </button>
       </div>
@@ -80,14 +87,17 @@ const ChatBox = ({ receiver, close }) => {
       <div className="p-4 h-80 overflow-y-auto space-y-3">
         {messages?.length > 0 ? (
           messages.map((message, index) => {
-            const messageTime = new Date(message.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const messageTime = new Date(message.time).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            });
             return (
               <div
                 key={index}
                 className={` px-4 py-2 rounded-lg ${
                   message.sender === currentUser.data._id
-                    ? 'bg-indigo-100 self-end text-right ml-auto max-w-fit'
-                    : 'bg-gray-200 self-start text-left max-w-fit'
+                    ? "bg-indigo-100 self-end text-right ml-auto max-w-fit"
+                    : "bg-gray-200 self-start text-left max-w-fit"
                 }`}
               >
                 <div className="text-sm">{message.text}</div>
@@ -97,7 +107,7 @@ const ChatBox = ({ receiver, close }) => {
             );
           })
         ) : (
-          <h1 className='text-center mt-14'>Drop a message</h1>
+          <h1 className="text-center mt-14">Drop a message</h1>
         )}
       </div>
 

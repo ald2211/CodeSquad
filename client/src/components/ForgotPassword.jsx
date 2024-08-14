@@ -1,27 +1,26 @@
-import React from 'react';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { forgotPassword } from '../api/service';
-import { Success } from '../helper/popup';
-import { forgotPasswordSchema } from '../schemas';
+import React from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { forgotPassword } from "../api/service";
+import { Success } from "../helper/popup";
+import { forgotPasswordSchema } from "../schemas";
 
 const ForgotPasswordModal = ({ isOpen, onClose }) => {
-
   const formik = useFormik({
     initialValues: {
-      email: '',
+      email: "",
     },
-    validationSchema:forgotPasswordSchema,
+    validationSchema: forgotPasswordSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
         const res = await forgotPassword(values.email);
         Success(res.data.message);
       } catch (err) {
-        console.log('Error:', err);
+        err;
       } finally {
         setSubmitting(false);
-        resetForm(); 
-        onClose();  
+        resetForm();
+        onClose();
       }
     },
   });
@@ -34,17 +33,26 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
         <h2 className="text-2xl font-semibold mb-4">Forgot Password</h2>
         <form onSubmit={formik.handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email address</label>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Email address
+            </label>
             <input
               type="email"
               id="email"
               className={`mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm ${
-                formik.touched.email && formik.errors.email ? 'border-red-500' : ''
+                formik.touched.email && formik.errors.email
+                  ? "border-red-500"
+                  : ""
               }`}
-              {...formik.getFieldProps('email')}
+              {...formik.getFieldProps("email")}
             />
             {formik.touched.email && formik.errors.email ? (
-              <div className="text-red-500 text-sm mt-1">{formik.errors.email}</div>
+              <div className="text-red-500 text-sm mt-1">
+                {formik.errors.email}
+              </div>
             ) : null}
           </div>
           <div className="flex justify-end">
@@ -62,7 +70,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
               }`}
               disabled={formik.isSubmitting}
             >
-              {formik.isSubmitting ? 'Submitting...' : 'Submit'}
+              {formik.isSubmitting ? "Submitting..." : "Submit"}
             </button>
           </div>
         </form>

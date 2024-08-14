@@ -29,14 +29,14 @@ const SignupComp = () => {
     handleSubmit,
     touched,
     isSubmitting,
-    setValues
+    setValues,
   } = useFormik({
     initialValues,
     validationSchema: signupSchema,
     onSubmit: async (values, action) => {
       const { terms, confirmPassword, ...rest } = values;
       rest.role = signState ? "client" : "developer";
-      console.log('final:',rest)
+
       try {
         console.log(rest);
         const res = await axios.post("/api/v1/auth/signup", rest, {
@@ -185,7 +185,7 @@ const SignupComp = () => {
               >
                 I accept the
                 <button
-                  onClick={()=>setIsModalOpen(true)}
+                  onClick={() => setIsModalOpen(true)}
                   className="font-medium text-primary-900 hover:underline dark:text-primary-400"
                 >
                   Terms and Conditions
@@ -217,9 +217,11 @@ const SignupComp = () => {
             </Link>
           </p>
         </form>
-        <TermsAndCondition isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+        <TermsAndCondition
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
       </div>
-      
     </>
   );
 };

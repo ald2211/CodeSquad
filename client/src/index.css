@@ -2,16 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-
 html::-webkit-scrollbar {
-    width: 12px; /* Thin scrollbar width */
-    height: 8px; /* Thin scrollbar height for horizontal scrollbars */
-  }
-  
-  
-  
-  /* Thumb hover styling */
-  html::-webkit-scrollbar-thumb:hover {
-    background: #c4bfbf; 
-  }
-  
+  width: 12px; /* Thin scrollbar width */
+  height: 8px; /* Thin scrollbar height for horizontal scrollbars */
+}
+
+/* Thumb hover styling */
+html::-webkit-scrollbar-thumb:hover {
+  background: #c4bfbf;
+}

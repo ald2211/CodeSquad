@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "./AdminSidebar";
-import {
-  getAllWorksAdmin,
-  updateWorkStatusAdmin,
-} from "../api/service";
+import { getAllWorksAdmin, updateWorkStatusAdmin } from "../api/service";
 import Pagination from "./UserTablePagination";
 import { Success } from "../helper/popup";
 
@@ -107,7 +104,12 @@ const ManageProjects = () => {
                   {userWorks.map((work, key) => (
                     <tr key={work._id} className="hover:bg-gray-100">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{work.workName}<span className="text-xs pl-1 font-normal text-gray-700">({work.workNumber.toUpperCase()})</span></div>
+                        <div className="text-sm text-gray-900">
+                          {work.workName}
+                          <span className="text-xs pl-1 font-normal text-gray-700">
+                            ({work.workNumber.toUpperCase()})
+                          </span>
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
@@ -197,7 +199,9 @@ const ManageProjects = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
                         {work.workStatus === "committed" && (
                           <p
-                            onClick={() => handleProjectState(work.workNumber, key)}
+                            onClick={() =>
+                              handleProjectState(work.workNumber, key)
+                            }
                             className="text-blue-600 hover:text-blue-900 cursor-pointer"
                           >
                             Update

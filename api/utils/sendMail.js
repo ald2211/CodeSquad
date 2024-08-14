@@ -1,16 +1,14 @@
-import nodemailer from 'nodemailer'
+import nodemailer from "nodemailer";
 
-
-
-const verifyEmail=async(email,link,name,htmlContent,subject)=>{
-    try{
-        const mailConfigurations = {
-
-            from:process.env.USER,
-            to: email,
-            subject: subject||'Account Verification',
-            html:
-            htmlContent||`
+const verifyEmail = async (email, link, name, htmlContent, subject) => {
+  try {
+    const mailConfigurations = {
+      from: process.env.USER,
+      to: email,
+      subject: subject || "Account Verification",
+      html:
+        htmlContent ||
+        `
            <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -94,31 +92,26 @@ const verifyEmail=async(email,link,name,htmlContent,subject)=>{
 </body>
 </html>
 
-            `
-        };
-        const transporter = nodemailer.createTransport({
-            service: process.env.SERVICE,
-            host:process.env.HOST,
-            port:process.env.EMAIL_PORT,
-            secure:false,
-            auth: {
-                user: process.env.USER,
-                pass: process.env.APP_Password
-            },
-            tls: {
-                rejectUnauthorized: false,
-              },
-        });
+            `,
+    };
+    const transporter = nodemailer.createTransport({
+      service: process.env.SERVICE,
+      host: process.env.HOST,
+      port: process.env.EMAIL_PORT,
+      secure: false,
+      auth: {
+        user: process.env.USER,
+        pass: process.env.APP_Password,
+      },
+      tls: {
+        rejectUnauthorized: false,
+      },
+    });
 
-        //send mail   
-        const info= await transporter.sendMail(mailConfigurations);
-        console.log('Email Sent Successfully');
-       
-    }catch(err){
-        console.log('failed to send:',err)
-    }
-}
+    //send mail
+    const info = await transporter.sendMail(mailConfigurations);
+  } catch (err) {
+  }
+};
 
 export default verifyEmail;
-
-

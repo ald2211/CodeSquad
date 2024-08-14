@@ -6,63 +6,68 @@ import userRepository from "../repository/user.repository.js";
 import UserRepository from "../repository/user.repository.js";
 import { errorHandler } from "../utils/customError.js";
 
-class userService{
+class userService {
+  async updateUserProfile(userId, profileData) {
+    const updateData = {
+      avatar: profileData.avatar,
+      rph: profileData.rph,
+      jobRole: profileData?.userRole?.trim(),
+      resume: profileData.resume,
+      summary: profileData?.summary?.trim(),
+      skills: profileData.skills,
+    };
 
-    async updateUserProfile(userId, profileData) {
-        const updateData = {
-          avatar: profileData.avatar,
-          rph: profileData.rph,
-          jobRole: profileData?.userRole?.trim(),
-          resume:  profileData.resume,
-          summary: profileData?.summary?.trim(),
-          skills: profileData.skills,
-        };
-    
-        const updatedUser = await UserRepository.findByIdAndUpdate(userId, updateData);
-    
-        if (!updatedUser) {
-          throw errorHandler(404, "User not found");
-        }
-    
-        const { password, ...rest } = updatedUser._doc;
-        return rest;
-      }
+    const updatedUser = await UserRepository.findByIdAndUpdate(
+      userId,
+      updateData
+    );
 
-      async getUserInfo(id){
-       
-        const usersInfo= await userRepository.findUserById(id)
-        const { password, ...rest } = usersInfo._doc;
-        return rest;
-      }
+    if (!updatedUser) {
+      throw errorHandler(404, "User not found");
+    }
 
-      async getDeveloperInfo(id){
+    const { password, ...rest } = updatedUser._doc;
+    return rest;
+  }
 
-        const developerDataWithPassword=await userRepository.findUserById(id)
-        const { password, ...developerData } = developerDataWithPassword._doc;
-        const developerEducation=await educationRepository.findAllByUserId(id)
-        const developerProjects=await projectRepository.findAllByUserId(id)
-        const developerExperience=await experienceRepository.findAllByUserId(id)
-        const developerReviews=await reviewRepository.findAllReviewsByUserId(id)
-        return {developerData,developerEducation,developerProjects,developerExperience,developerReviews}
-      }
-      
-      async getAdmin(){
+  async getUserInfo(id) {
+    const usersInfo = await userRepository.findUserById(id);
+    const { password, ...rest } = usersInfo._doc;
+    return rest;
+  }
 
-        return await userRepository.getAdminId()
-      }
+  async getDeveloperInfo(id) {
+    const developerDataWithPassword = await userRepository.findUserById(id);
+    const { password, ...developerData } = developerDataWithPassword._doc;
+    const developerEducation = await educationRepository.findAllByUserId(id);
+    const developerProjects = await projectRepository.findAllByUserId(id);
+    const developerExperience = await experienceRepository.findAllByUserId(id);
+    const developerReviews = await reviewRepository.findAllReviewsByUserId(id);
+    return {
+      developerData,
+      developerEducation,
+      developerProjects,
+      developerExperience,
+      developerReviews,
+    };
+  }
 
-      async getUserProfileStatus(id){
+  async getAdmin() {
+    return await userRepository.getAdminId();
+  }
 
-        const usersInfo= await userRepository.findUserById(id)
-        const eduCount=await educationRepository.findAllByUserId(id)
-        const projCount=await projectRepository.findAllByUserId(id)
-        const expCount=await experienceRepository.findAllByUserId(id)
-        return (eduCount.length>0)+(projCount.length>0)+(expCount.length>0)+(usersInfo.summary?1:0)
-      }
-
-      
-
+  async getUserProfileStatus(id) {
+    const usersInfo = await userRepository.findUserById(id);
+    const eduCount = await educationRepository.findAllByUserId(id);
+    const projCount = await projectRepository.findAllByUserId(id);
+    const expCount = await experienceRepository.findAllByUserId(id);
+    return (
+      (eduCount.length > 0) +
+      (projCount.length > 0) +
+      (expCount.length > 0) +
+      (usersInfo.summary ? 1 : 0)
+    );
+  }
 }
-
 
 export default new userService();

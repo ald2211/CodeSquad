@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Failed } from '../../helper/popup';
 
 const WorkDetails = ({ work }) => {
   const [copied,setCopied]=useState(false)
@@ -11,7 +12,7 @@ const WorkDetails = ({ work }) => {
           setTimeout(() => setCopied(false), 1000);
         })
         .catch(err => {
-          console.error('Failed to copy: ', err);
+          Failed('some error:',err.message)
         });
     }
   };

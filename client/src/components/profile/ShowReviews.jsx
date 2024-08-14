@@ -13,7 +13,7 @@ const ShowReview = () => {
         const res = await getReviews(currentUser.data._id);
         setReviews(res.data.reviews);
       } catch (error) {
-        console.error("Error fetching reviews:", error);
+        error;
       }
     };
 
@@ -50,8 +50,12 @@ const ShowReview = () => {
                 className="w-10 h-10 rounded-full mr-4 object-cover"
               />
               <div>
-                <p className="text-lg font-semibold">{review?.reviewerDetails?.author}</p>
-                <p className="text-sm text-gray-500">{review?.reviewerDetails?.authorJob}</p>
+                <p className="text-lg font-semibold">
+                  {review?.reviewerDetails?.author}
+                </p>
+                <p className="text-sm text-gray-500">
+                  {review?.reviewerDetails?.authorJob}
+                </p>
               </div>
             </div>
             <p className="text-gray-700 mb-2">{review?.content}</p>

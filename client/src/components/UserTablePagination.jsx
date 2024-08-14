@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const Pagination = ({ totalPages, currentPage, onPageChange }) => {
   const handlePageClick = (page) => {
@@ -18,10 +18,10 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
           onClick={() => handlePageClick(i)}
           className={`min-w-[30px] flex justify-center items-center text-gray-800 hover:bg-gray-100 py-1.5 text-sm rounded-full ${
             currentPage === i
-              ? 'bg-blue-500 text-white'
-              : 'text-gray-800 hover:bg-gray-100'
+              ? "bg-blue-500 text-white"
+              : "text-gray-800 hover:bg-gray-100"
           } dark:text-white dark:hover:bg-white/10`}
-          aria-current={currentPage === i ? 'page' : undefined}
+          aria-current={currentPage === i ? "page" : undefined}
         >
           {i}
         </button>

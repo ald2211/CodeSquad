@@ -8,9 +8,14 @@ import { projectSchema } from "../../schemas";
 import { MdPostAdd } from "react-icons/md";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
 import { updateProjectSuccess } from "../../Redux/user/userSlice";
-import { addProjects, deleteProjects, editProjects, getProjects } from "../../api/service";
+import {
+  addProjects,
+  deleteProjects,
+  editProjects,
+  getProjects,
+} from "../../api/service";
 
-Modal.setAppElement('#root');
+Modal.setAppElement("#root");
 
 const ProjectsSection = () => {
   const { currentUser, currentProjects } = useSelector((state) => state.user);
@@ -28,9 +33,11 @@ const ProjectsSection = () => {
   };
 
   useEffect(() => {
-    getProjects().then((response)=>{
-      dispatch(updateProjectSuccess(response.data));
-    }).catch((err)=>console.log(err))
+    getProjects()
+      .then((response) => {
+        dispatch(updateProjectSuccess(response.data));
+      })
+      .catch((err) => console.log(err));
   }, []);
 
   const openEditModal = (project) => {
@@ -56,17 +63,25 @@ const ProjectsSection = () => {
   const handleDelete = async (id) => {
     try {
       closeDeleteModal();
-      const res = await deleteProjects(id)
+      const res = await deleteProjects(id);
       const data = res.data;
-      console.log("data from delete", data);
+
       dispatch(updateProjectSuccess(data));
       Success(data.message);
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   };
 
-  const { handleChange, handleBlur, values, errors, touched, handleSubmit, setValues } = useFormik({
+  const {
+    handleChange,
+    handleBlur,
+    values,
+    errors,
+    touched,
+    handleSubmit,
+    setValues,
+  } = useFormik({
     initialValues,
     validationSchema: projectSchema,
     onSubmit: async (values, action) => {
@@ -74,16 +89,20 @@ const ProjectsSection = () => {
         closeEditModal();
         let res;
         if (!newProj) {
-          res = await editProjects(selectedProject._id,selectedProject.userId,values)
+          res = await editProjects(
+            selectedProject._id,
+            selectedProject.userId,
+            values
+          );
         } else {
-          res = await addProjects(currentUser.data._id,values)
+          res = await addProjects(currentUser.data._id, values);
         }
         const data = res.data;
         dispatch(updateProjectSuccess(data));
         Success(data.message);
         action.resetForm();
       } catch (err) {
-        console.log(err)
+        console.log(err);
       }
     },
   });
@@ -94,11 +113,11 @@ const ProjectsSection = () => {
         projectName: selectedProject.projectName,
         projectSummary: selectedProject.projectSummary,
       });
-    }else{
+    } else {
       setValues({
-        projectName:' ',
-        projectSummary:' '
-      })
+        projectName: " ",
+        projectSummary: " ",
+      });
     }
   }, [selectedProject, setValues]);
 
@@ -109,7 +128,10 @@ const ProjectsSection = () => {
         {currentProjects?.data?.length > 0 ? (
           <>
             {currentProjects?.data?.map((proj, index) => (
-              <div key={index} className="border-[3px] mb-4 p-4 bg-gray-50 rounded-lg relative">
+              <div
+                key={index}
+                className="border-[3px] mb-4 p-4 bg-gray-50 rounded-lg relative"
+              >
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <h3 className="text-xl font-medium">Project Name</h3>
@@ -123,7 +145,10 @@ const ProjectsSection = () => {
                 <div className="absolute top-6 right-6 flex space-x-2">
                   <FiEdit
                     className="h-6 w-6  hover:text-blue-500 cursor-pointer"
-                    onClick={() => { setNewProj(false); openEditModal(proj) }}
+                    onClick={() => {
+                      setNewProj(false);
+                      openEditModal(proj);
+                    }}
                   />
                   <FiTrash
                     className="h-6 w-6  hover:text-red-500 cursor-pointer"
@@ -135,13 +160,22 @@ const ProjectsSection = () => {
           </>
         ) : (
           <>
-           
-            <MdPostAdd onClick={() => { openEditModal(); setNewProj(true) }} className="m-auto h-9 w-9 hover:text-blue-600 cursor-pointer" />
+            <MdPostAdd
+              onClick={() => {
+                openEditModal();
+                setNewProj(true);
+              }}
+              className="m-auto h-9 w-9 hover:text-blue-600 cursor-pointer"
+            />
           </>
         )}
-         <HiOutlineDocumentAdd
-              className="absolute top-[3%] right-[1%] h-8 w-8 hover:text-blue-500 cursor-pointer"
-              onClick={() => { setNewProj(true); openEditModal() }} />
+        <HiOutlineDocumentAdd
+          className="absolute top-[3%] right-[1%] h-8 w-8 hover:text-blue-500 cursor-pointer"
+          onClick={() => {
+            setNewProj(true);
+            openEditModal();
+          }}
+        />
       </div>
       {/* Edit Modal */}
       <Modal
@@ -151,7 +185,9 @@ const ProjectsSection = () => {
         overlayClassName="fixed inset-0 bg-black bg-opacity-75"
       >
         <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg mx-auto">
-          <h2 className="text-2xl font-semibold mb-4">{!newProj ? 'Edit' : 'Add'} Project</h2>
+          <h2 className="text-2xl font-semibold mb-4">
+            {!newProj ? "Edit" : "Add"} Project
+          </h2>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2">
@@ -165,7 +201,9 @@ const ProjectsSection = () => {
                   className="w-full p-2 border rounded"
                 />
                 {errors.projectName && touched.projectName && (
-                  <div className="text-red-500 text-sm">{errors.projectName}</div>
+                  <div className="text-red-500 text-sm">
+                    {errors.projectName}
+                  </div>
                 )}
               </div>
               <div className="col-span-2 mb-4">
@@ -174,12 +212,14 @@ const ProjectsSection = () => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   rows="6"
-                  name='projectSummary'
+                  name="projectSummary"
                   className="w-full pl-1 pt-1 border rounded"
                   placeholder="About your project..."
                 />
                 {errors.projectSummary && touched.projectSummary && (
-                  <div className="text-red-500 text-sm">{errors.projectSummary}</div>
+                  <div className="text-red-500 text-sm">
+                    {errors.projectSummary}
+                  </div>
                 )}
               </div>
             </div>

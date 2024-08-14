@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { IoLogOutOutline } from "react-icons/io5";
 import { MdPayment } from "react-icons/md";
 import { GoProjectSymlink } from "react-icons/go";
 import { HiOutlineUsers, HiOutlineChatBubbleLeftRight } from "react-icons/hi2";
 import { RxDashboard } from "react-icons/rx";
-import { GrUserWorker } from "react-icons/gr";
-import { Link, useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { processStart, signoutSuccess, processFailed } from '../Redux/user/userSlice';
-import { Failed } from '../helper/popup';
-import { userLogout } from '../api/service';
-import { LiaToggleOffSolid, LiaToggleOnSolid } from "react-icons/lia";
+import { Link, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import {
+  processStart,
+  signoutSuccess,
+  processFailed,
+} from "../Redux/user/userSlice";
+import { Failed } from "../helper/popup";
+import { userLogout } from "../api/service";
 import { PiVideoConferenceLight } from "react-icons/pi";
 
 const Sidebar = () => {
@@ -28,18 +30,20 @@ const Sidebar = () => {
       const res = await userLogout();
       if (!res.data.success) {
         dispatch(processFailed());
-        Failed('Some error occurred');
+        Failed("Some error occurred");
         return;
       }
       dispatch(signoutSuccess());
     } catch (err) {
-      console.log('signout err:', err);
       dispatch(processFailed());
-      Failed('Signout failed');
+      Failed("Signout failed");
     }
   };
 
-  const isActive = (path) => location.pathname === path ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white' : '';
+  const isActive = (path) =>
+    location.pathname === path
+      ? "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white"
+      : "";
 
   return (
     <>
@@ -52,7 +56,9 @@ const Sidebar = () => {
             <li>
               <Link
                 to="/home"
-                className={`flex items-center p-2 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group ${isActive('/home')}`}
+                className={`flex items-center p-2 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group ${isActive(
+                  "/home"
+                )}`}
               >
                 <RxDashboard className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400" />
                 <span className="ms-3">Dashboard</span>
@@ -61,43 +67,61 @@ const Sidebar = () => {
             <li>
               <Link
                 to="/admin/userManagement"
-                className={`flex items-center p-2 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group ${isActive('/admin/userManagement')}`}
+                className={`flex items-center p-2 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group ${isActive(
+                  "/admin/userManagement"
+                )}`}
               >
                 <HiOutlineUsers className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400" />
-                <span className="flex-1 ms-3 whitespace-nowrap">User Management</span>
+                <span className="flex-1 ms-3 whitespace-nowrap">
+                  User Management
+                </span>
               </Link>
             </li>
             <li>
               <Link
-                to='/admin/paymentManagement'
-                className={`flex items-center p-2 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group ${isActive('/admin/paymentManagement')}`}
+                to="/admin/paymentManagement"
+                className={`flex items-center p-2 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group ${isActive(
+                  "/admin/paymentManagement"
+                )}`}
               >
                 <MdPayment className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400" />
-                <span className="flex-1 ms-3 whitespace-nowrap">Payments Management</span>
+                <span className="flex-1 ms-3 whitespace-nowrap">
+                  Payments Management
+                </span>
               </Link>
             </li>
             <li>
               <Link
-                to='/admin/projectManagement'
-                className={`flex items-center p-2 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group ${isActive('/admin/projectManagement')}`}
+                to="/admin/projectManagement"
+                className={`flex items-center p-2 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group ${isActive(
+                  "/admin/projectManagement"
+                )}`}
               >
                 <GoProjectSymlink className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400" />
-                <span className="flex-1 ms-3 whitespace-nowrap">Projects Management</span>
+                <span className="flex-1 ms-3 whitespace-nowrap">
+                  Projects Management
+                </span>
               </Link>
             </li>
             <li>
               <Link
-                to='/admin/videoConference'
-                className={`flex items-center p-2 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group ${isActive('/admin/videoConference')}`}
+                to="/admin/videoConference"
+                className={`flex items-center p-2 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group ${isActive(
+                  "/admin/videoConference"
+                )}`}
               >
                 <PiVideoConferenceLight className="flex-shrink-0 w-7 h-7 text-gray-500 transition duration-75 dark:text-gray-400" />
-                <span className="flex-1 ms-3 whitespace-nowrap">Conference Room</span>
+                <span className="flex-1 ms-3 whitespace-nowrap">
+                  Conference Room
+                </span>
               </Link>
             </li>
             <li>
               <Link
-                to='/admin/chat'
-                className={`flex items-center p-2 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group ${isActive('/admin/chat')}`}
+                to="/admin/chat"
+                className={`flex items-center p-2 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group ${isActive(
+                  "/admin/chat"
+                )}`}
               >
                 <HiOutlineChatBubbleLeftRight className="flex-shrink-0 w-7 h-7 text-gray-500 transition duration-75 dark:text-gray-400" />
                 <span className="flex-1 ms-3 whitespace-nowrap">Chat Room</span>
@@ -109,7 +133,12 @@ const Sidebar = () => {
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
                 <IoLogOutOutline className="flex-shrink-0 w-7 h-7 text-gray-500 transition duration-75 dark:text-gray-400" />
-                <span onClick={handleSignOut} className="flex-1 ms-3 whitespace-nowrap">Sign Out</span>
+                <span
+                  onClick={handleSignOut}
+                  className="flex-1 ms-3 whitespace-nowrap"
+                >
+                  Sign Out
+                </span>
               </a>
             </li>
           </ul>

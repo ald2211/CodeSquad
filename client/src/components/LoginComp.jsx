@@ -33,23 +33,21 @@ const LoginComp = () => {
       onSubmit: async (values, action) => {
         try {
           dispatch(processStart());
-          const response=await userLogin(values)
-          
+          const response = await userLogin(values);
+
           if (response.success) {
             const data = response.data;
-            console.log("user:", data);
-            localStorage.setItem('accessToken', data.accessToken);
+
+            localStorage.setItem("accessToken", data.accessToken);
             action.resetForm();
             dispatch(signinSuccess(data));
             navigate("/home");
             Success(data.message);
-        } else {
+          } else {
             throw new Error(response.message);
-        };
+          }
         } catch (err) {
-          console.log("signupError:", err);
           dispatch(processFailed());
-          
         }
       },
     });
@@ -118,24 +116,27 @@ const LoginComp = () => {
                 Sign In
               </button>
               <div className="flex justify-between">
-              <p className="text-sm mb-3 font-light text-gray-500 dark:text-gray-400">
-                Don't have an account?
-                <Link
-                  to="/signup"
-                  className="font-semibold  text-primary-600 hover:underline dark:text-primary-500"
+                <p className="text-sm mb-3 font-light text-gray-500 dark:text-gray-400">
+                  Don't have an account?
+                  <Link
+                    to="/signup"
+                    className="font-semibold  text-primary-600 hover:underline dark:text-primary-500"
+                  >
+                    Sign Up
+                  </Link>
+                </p>
+                <p
+                  onClick={() => setIsModalOpen(true)}
+                  className="text-sm mb-3 font-normal text-blue-600 hover:underline cursor-pointer"
                 >
-                  Sign Up
-                </Link>
-              </p>
-              <p onClick={()=>setIsModalOpen(true)} className="text-sm mb-3 font-normal text-blue-600 hover:underline cursor-pointer">
-                Forgot Password?
-              </p>
+                  Forgot Password?
+                </p>
               </div>
             </form>
             <ForgotPasswordModal
-       isOpen={isModalOpen}
-       onClose={() => setIsModalOpen(false)}
-     />
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+            />
           </div>
         </>
       ) : (
@@ -150,9 +151,3 @@ const LoginComp = () => {
 };
 
 export default LoginComp;
-
-
-{/* <div className="min-h-screen flex items-center justify-center">
-     
-    
-   </div> */}

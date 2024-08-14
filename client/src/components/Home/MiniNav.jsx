@@ -1,60 +1,59 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import AddProjectModal from './AddProjectModal';
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import AddProjectModal from "./AddProjectModal";
 
-const MiniNav = ({setMiniNavFilter}) => {
-    const {currentUser}=useSelector((state)=>state.user)
-    const [showAddProjectModal, setShowAddProjectModal] = useState(false);
+const MiniNav = ({ setMiniNavFilter }) => {
+  const { currentUser } = useSelector((state) => state.user);
+  const [showAddProjectModal, setShowAddProjectModal] = useState(false);
 
-    const handleShowAddProject = () => {
-        setShowAddProjectModal(true);
-      };
-    
-      const handleCloseAddProjectModal = () => {
-        setShowAddProjectModal(false);
-      };
+  const handleShowAddProject = () => {
+    setShowAddProjectModal(true);
+  };
 
-      const handleFilterChange = (filterValue) => {
-       
-        if (filterValue==='recent') {
-          setMiniNavFilter('recent')
-        }else if(filterValue==='saved'){
-          setMiniNavFilter('saved')
-          ('saved')
-        }
-        else{
-          setMiniNavFilter('')
+  const handleCloseAddProjectModal = () => {
+    setShowAddProjectModal(false);
+  };
 
-        }
+  const handleFilterChange = (filterValue) => {
+    if (filterValue === "recent") {
+      setMiniNavFilter("recent");
+    } else if (filterValue === "saved") {
+      setMiniNavFilter("saved")("saved");
+    } else {
+      setMiniNavFilter("");
+    }
+  };
 
-    };
-
-      
   return (
     <div className="flex justify-start mb-4">
-      {currentUser.data.role==='developer'?
+      {currentUser.data.role === "developer" ? (
         <>
-        <select 
-        className="bg-white ml-2 text-black border border-black px-1 py-1 text-sm rounded-md cursor-pointer "
-        onChange={(e) => handleFilterChange(e.target.value)}
-        >
+          <select
+            className="bg-white ml-2 text-black border border-black px-1 py-1 text-sm rounded-md cursor-pointer "
+            onChange={(e) => handleFilterChange(e.target.value)}
+          >
             <option value="projects">Projects</option>
             <option value="recent">Recent</option>
             <option value="saved">Saved</option>
-       </select>
+          </select>
         </>
-        :
+      ) : (
         <>
-        <button onClick={handleShowAddProject} className="bg-white ml-2 text-black border border-black py-1 px-7 text-sm rounded-full hover:bg-blue-500 hover:text-white">Add Project</button> 
-        {showAddProjectModal && (
+          <button
+            onClick={handleShowAddProject}
+            className="bg-white ml-2 text-black border border-black py-1 px-7 text-sm rounded-full hover:bg-blue-500 hover:text-white"
+          >
+            Add Project
+          </button>
+          {showAddProjectModal && (
             <AddProjectModal
               isOpen={showAddProjectModal}
               handleClose={handleCloseAddProjectModal}
               isAddMode={true}
             />
           )}
-          </>
-     }
+        </>
+      )}
     </div>
   );
 };

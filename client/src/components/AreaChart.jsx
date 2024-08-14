@@ -1,65 +1,72 @@
-import React, { useState, useEffect } from 'react';
-import ReactApexChart from 'react-apexcharts';
+import React, { useState, useEffect } from "react";
+import ReactApexChart from "react-apexcharts";
 
 const AreaChart = ({ chartData }) => {
   const [series, setSeries] = useState([]);
   const [options, setOptions] = useState({
     chart: {
-      type: 'area',
+      type: "area",
       height: 350,
       zoom: {
-        enabled: false
-      }
+        enabled: false,
+      },
     },
     dataLabels: {
-      enabled: false
+      enabled: false,
     },
     stroke: {
-      curve: 'straight'
+      curve: "straight",
     },
     title: {
-      text: 'Users Joined Per Day',
-      align: 'left'
+      text: "Users Joined Per Day",
+      align: "left",
     },
     subtitle: {
-      text: 'Count of users joined each day',
-      align: 'left'
+      text: "Count of users joined each day",
+      align: "left",
     },
     xaxis: {
-      type: 'datetime',
-      categories: [] // Initially empty, will be set dynamically
+      type: "datetime",
+      categories: [], // Initially empty, will be set dynamically
     },
     yaxis: {
-      opposite: true
+      opposite: true,
     },
     legend: {
-      horizontalAlign: 'left'
-    }
+      horizontalAlign: "left",
+    },
   });
 
   useEffect(() => {
     if (chartData.length > 0) {
-      const formattedSeries = [{
-        name: "Users Joined",
-        data: chartData.map(item => item.count)
-      }];
+      const formattedSeries = [
+        {
+          name: "Users Joined",
+          data: chartData.map((item) => item.count),
+        },
+      ];
 
-      const categories = chartData.map(item => item._id);
+      const categories = chartData.map((item) => item._id);
 
       setSeries(formattedSeries);
-      setOptions(prevOptions => ({
+      setOptions((prevOptions) => ({
         ...prevOptions,
         xaxis: {
           ...prevOptions.xaxis,
-          categories
-        }
+          categories,
+        },
       }));
     }
   }, [chartData]);
 
   return (
-    <div id="chart" >
-      <ReactApexChart options={options} series={series} type="area" height={350} />
+    <div id="chart">
+      <ReactApexChart
+        options={options}
+        series={series}
+        type="area"
+        height={350}
+      />
     </div>
   );
 };

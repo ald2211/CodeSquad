@@ -6,7 +6,6 @@ import {
   GithubAuthProvider,
 } from "firebase/auth";
 import { app } from "../firebase/firebase";
-import axios from "axios";
 import { useDispatch } from "react-redux";
 import { signinSuccess } from "../Redux/user/userSlice";
 import { useNavigate } from "react-router-dom";
@@ -29,15 +28,13 @@ const OAuth = ({ role }) => {
         photo: result.user.photoURL,
         role,
       };
-      const res = await OAuthLogin(user_details)
+      const res = await OAuthLogin(user_details);
       const data = res.data || "nill";
-      console.log("data:", data);
       dispatch(signinSuccess(data));
       navigate("/home");
       Success("Welcome to CodeSquad");
     } catch (err) {
-      console.log("auth signin failed:", err);
-      
+      err;
     }
   };
 
@@ -47,21 +44,21 @@ const OAuth = ({ role }) => {
       const auth = getAuth(app);
 
       const result = await signInWithPopup(auth, provider);
-      console.log("githubResult:", result);
+
       const user_details = {
         name: result.user.displayName,
         email: result.user.email,
         photo: result.user.photoURL,
         role,
       };
-      const res = await OAuthLogin(user_details)
+      const res = await OAuthLogin(user_details);
       const data = res.data || "nill";
-      console.log("data:", data);
+
       dispatch(signinSuccess(data));
       navigate("/home");
       Success("Welcome to CodeSquad");
     } catch (err) {
-      console.log("gitHubError:", err);
+      err;
     }
   };
 

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { getAvgRating, getStatusBoxData } from '../../api/service';
-import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa';
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { getAvgRating, getStatusBoxData } from "../../api/service";
+import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 const StatsBox = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -13,15 +13,13 @@ const StatsBox = () => {
       .then((res) => {
         setData(res.data.data);
       })
-      .catch((err) => console.log('Error fetching status box data:', err));
+      .catch((err) => err);
 
     const fetchAvgRating = async () => {
       try {
         const res = await getAvgRating(currentUser.data._id);
         setRating(res.data.rating);
-      } catch (err) {
-        console.log('Error fetching average rating:', err);
-      }
+      } catch (err) {}
     };
 
     fetchAvgRating();
@@ -55,20 +53,30 @@ const StatsBox = () => {
       <div className="grid lg:grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-blue-100 p-4 rounded-lg shadow-md">
           <p className="text-gray-600 mb-2 text-center">
-            {currentUser.data.role === 'developer' ? 'Committed Projects' : 'Works Created'}
+            {currentUser.data.role === "developer"
+              ? "Committed Projects"
+              : "Works Created"}
           </p>
-          <p className="text-2xl font-bold text-center text-blue-600">{data?.committedProjects}</p>
+          <p className="text-2xl font-bold text-center text-blue-600">
+            {data?.committedProjects}
+          </p>
         </div>
         <div className="bg-green-100 p-4 rounded-lg shadow-md">
           <p className="text-gray-600 text-center mb-2">
-            {currentUser.data.role === 'developer' ? 'Completed Projects' : 'Works Completed'}
+            {currentUser.data.role === "developer"
+              ? "Completed Projects"
+              : "Works Completed"}
           </p>
-          <p className="text-2xl font-bold text-center text-green-600">{data?.completedProjects}</p>
+          <p className="text-2xl font-bold text-center text-green-600">
+            {data?.completedProjects}
+          </p>
         </div>
         <div className="bg-yellow-100 p-4 rounded-lg shadow-md">
           <p className="text-gray-600 text-center mb-2">Rating</p>
           {renderStars()}
-          <p className="text-lg font-bold text-center text-yellow-600 mt-2">{rating} / 5</p>
+          <p className="text-lg font-bold text-center text-yellow-600 mt-2">
+            {rating} / 5
+          </p>
         </div>
       </div>
     </div>

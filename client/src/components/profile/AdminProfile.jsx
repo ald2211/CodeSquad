@@ -16,7 +16,6 @@ import {
 import spinner from "../../assets/loader.gif";
 import { uploadImage } from "../../api/service";
 
-
 const AdminProfile = () => {
   const { currentUser, loading } = useSelector((state) => state.user);
   const fileRef = useRef(null);
@@ -53,21 +52,19 @@ const AdminProfile = () => {
         const imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
         setFile(null);
         setUpdateImage(imageUrl);
-        console.log('imageUrl:', imageUrl);
+
         try {
           const res = await uploadImage(currentUser.data._id, imageUrl);
           const data = res.data;
           dispatch(updateUserSuccess(data));
           Success("profile image updated Successfully");
-          
         } catch (err) {
-          console.log("serverImgErr:", err);
           dispatch(processFailed());
         }
       }
     );
   };
-  
+
   return (
     <section className="relative flex flex-col items-center md:flex-row md:items-start p-4 bg-gray-100 rounded-lg shadow-md w-full">
       {!loading ? (

@@ -26,7 +26,7 @@ class workRepository {
             { workType: new RegExp(search, "i") },
           ],
         }
-      : {workStatus:'pending'};
+      : { workStatus: "pending" };
 
     if (role === "client") query.clientId = Id;
     if (role === "developer") {

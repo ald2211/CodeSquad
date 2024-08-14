@@ -1,21 +1,17 @@
-import notificationRepository from "../repository/notification.repository.js"
+import notificationRepository from "../repository/notification.repository.js";
 
-class notificationService{
-    
-    async getUserNotification(userId){
-        
-        return await notificationRepository.getNotifcationByUserId(userId)
-    }
-    
-    async deleteSpecificNotification(id){
-        return await notificationRepository.deleteNotificationById(id)
-    }
-    
-    async deleteUsersAllNotification(userId){
+class notificationService {
+  async getUserNotification(userId) {
+    return await notificationRepository.getNotifcationByUserId(userId);
+  }
 
-         await notificationRepository.deleteAllNotificationByUserId(userId)
-    }
-    
+  async deleteSpecificNotification(id) {
+    return await notificationRepository.deleteNotificationById(id);
+  }
+
+  async deleteUsersAllNotification(userId) {
+    await notificationRepository.deleteAllNotificationByUserId(userId);
+  }
 }
 
-export default new notificationService()
+export default new notificationService();

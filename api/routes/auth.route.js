@@ -1,29 +1,37 @@
-import express from 'express';
-import { signup,activate, signin,OAuthSignin, signout, tokenRefresh,forgotPassword,resetPassword} from '../controllers/auth.controller.js';
+import express from "express";
+import {
+  signup,
+  activate,
+  signin,
+  OAuthSignin,
+  signout,
+  tokenRefresh,
+  forgotPassword,
+  resetPassword,
+} from "../controllers/auth.controller.js";
 
-const router=express.Router()
+const router = express.Router();
 
-//signup 
-router.post('/signup',signup)
+//signup
+router.post("/signup", signup);
 
 //activate user account after mail verification
-router.get('/verification/confirm/:token',activate)
+router.get("/verification/confirm/:token", activate);
 
 //signin
-router.post('/signin',signin)
+router.post("/signin", signin);
 
 //OAuth signin
-router.post('/OAuth',OAuthSignin)
+router.post("/OAuth", OAuthSignin);
 
 //signout
-router.get('/signout',signout)
+router.get("/signout", signout);
 
 //token refresh
-router.get('/refreshToken',tokenRefresh);
+router.get("/refreshToken", tokenRefresh);
 
-router.post('/forgotPassword',forgotPassword)
+router.post("/forgotPassword", forgotPassword);
 
-router.post('/resetPassword/:token',resetPassword)
+router.post("/resetPassword/:token", resetPassword);
 
-
-export default router
+export default router;

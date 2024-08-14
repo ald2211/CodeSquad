@@ -1,4 +1,4 @@
-import Modal from 'react-modal';
+import Modal from "react-modal";
 
 const DeleteReviewModal = ({ isOpen, onRequestClose, onDeleteConfirm }) => {
   return (

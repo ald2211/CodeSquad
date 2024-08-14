@@ -21,12 +21,12 @@ import {
 import spinner from "../../assets/loader.gif";
 import StarRating from "./StarRating";
 import { updateUser, uploadImage } from "../../api/service";
-import { ThreeDots } from 'react-loader-spinner';
+import { ThreeDots } from "react-loader-spinner";
 
 const DeveloperProfile = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { currentUser, loading } = useSelector((state) => state.user);
-  const [dataLoading,setDataLoading]=useState(false)
+  const [dataLoading, setDataLoading] = useState(false);
   const fileRef = useRef(null);
   const [file, setFile] = useState(undefined);
   const dispatch = useDispatch();
@@ -43,21 +43,17 @@ const DeveloperProfile = () => {
       onSubmit: async (values, action) => {
         try {
           closeEditModal();
-          setDataLoading(true)
-          const res = await updateUser(currentUser.data._id,values)
+          setDataLoading(true);
+          const res = await updateUser(currentUser.data._id, values);
           const data = res.data;
           console.log(data);
 
           dispatch(updateUserSuccess(data));
           Success(data.message);
-          
-          
         } catch (err) {
-          
           Failed(err.response ? err.response.data.message : err.message);
-        }
-        finally{
-          setDataLoading(false)
+        } finally {
+          setDataLoading(false);
         }
       },
     });
@@ -97,18 +93,16 @@ const DeveloperProfile = () => {
         const imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
         setFile(null);
         setUpdateImage(imageUrl);
-        console.log('imageUrl:',imageUrl)
+
         try {
-         const res=await uploadImage(currentUser.data._id,imageUrl)
+          const res = await uploadImage(currentUser.data._id, imageUrl);
           const data = res.data;
           console.log(data);
-          console.log("serverImg:", data.message);
+
           dispatch(updateUserSuccess(data));
           Success("profile image updated Successfully");
         } catch (err) {
-          console.log("serverImgErr:", err);
           dispatch(processFailed());
-          
         }
       }
     );
@@ -126,7 +120,7 @@ const DeveloperProfile = () => {
   return (
     <section className="relative  flex flex-col md:flex-row items-center p-4 bg-gray-100 rounded-lg shadow-md">
       {/* Left div */}
-      {!dataLoading ? 
+      {!dataLoading ? (
         <>
           <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div className="text-center flex">
@@ -154,8 +148,7 @@ const DeveloperProfile = () => {
 
           {/* Right div */}
           <div className="flex flex-col lg:items-center lg:mr-0 md:mr-0 m-auto  md:items-end md:w-1/2 p-4">
-            <StarRating rating={currentUser?.data?.averageRating}/>
-           
+            <StarRating rating={currentUser?.data?.averageRating} />
           </div>
           <div className="flex space-x-2 ml-auto md:mb-auto lg:mb-auto">
             <FiEdit
@@ -212,19 +205,19 @@ const DeveloperProfile = () => {
             </div>
           </Modal>
         </>
-      : 
-          <div className="w-full h-full flex items-center justify-center">
-            {/* <img className="w-[60px]" src={spinner} alt="spinner" /> */}
-            
-        <ThreeDots
-          visible={true}
-          height="80"
-          width="80"
-          color="#3333ff"
-          ariaLabel="three-dots-loading"
-        />
-          </div>
-      }
+      ) : (
+        <div className="w-full h-full flex items-center justify-center">
+          {/* <img className="w-[60px]" src={spinner} alt="spinner" /> */}
+
+          <ThreeDots
+            visible={true}
+            height="80"
+            width="80"
+            color="#3333ff"
+            ariaLabel="three-dots-loading"
+          />
+        </div>
+      )}
     </section>
   );
 };

@@ -1,19 +1,25 @@
-import React, { useEffect, useRef, useState } from 'react';
-import Sidebar from './AdminSidebar';
-import { getAllMessages, getAllUsers, getUnreadMessages, markRead, sendMessage } from '../api/service';
-import { Failed } from '../helper/popup';
-import { useSelector } from 'react-redux';
-import { useSocketContext } from '../context/socketContext';
-import Pagination from './UserTablePagination';
-import { Discuss } from 'react-loader-spinner';
+import React, { useEffect, useRef, useState } from "react";
+import Sidebar from "./AdminSidebar";
+import {
+  getAllMessages,
+  getAllUsers,
+  getUnreadMessages,
+  markRead,
+  sendMessage,
+} from "../api/service";
+import { Failed } from "../helper/popup";
+import { useSelector } from "react-redux";
+import { useSocketContext } from "../context/socketContext";
+import Pagination from "./UserTablePagination";
+import { Discuss } from "react-loader-spinner";
 
 const AdminChat = () => {
-  const [selectedUser, setSelectedUser] = useState('null');
+  const [selectedUser, setSelectedUser] = useState("null");
   const { currentUser } = useSelector((state) => state.user);
   const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState("");
   const [userData, setUserData] = useState([]);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
@@ -24,19 +30,21 @@ const AdminChat = () => {
   const [messageLoading, setMessageLoading] = useState(false);
 
   useEffect(() => {
-    socket?.on('newMessage', (newMessage) => {
-      console.log('selected:',selectedUser._id,':',newMessage.senderId)
+    socket?.on("newMessage", (newMessage) => {
       if (selectedUser && newMessage.senderId === selectedUser._id) {
         setMessages((prevMessages) => [
           ...prevMessages,
           {
             text: newMessage.message,
             sender: newMessage.senderId,
-            time: new Date(newMessage.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            time: new Date(newMessage.updatedAt).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
           },
         ]);
-      } if (selectedUser && newMessage.senderId !== selectedUser._id) {
-        
+      }
+      if (selectedUser && newMessage.senderId !== selectedUser._id) {
         setUnread((prevUnread) => {
           return prevUnread.map((conv) => {
             if (conv.participants.includes(newMessage.senderId)) {
@@ -44,22 +52,23 @@ const AdminChat = () => {
                 ...conv,
                 unreadCount: {
                   ...conv.unreadCount,
-                  [currentUser.data._id]: (conv.unreadCount[currentUser.data._id] || 0) + 1,
+                  [currentUser.data._id]:
+                    (conv.unreadCount[currentUser.data._id] || 0) + 1,
                 },
               };
             }
             return conv;
           });
         });
-      } 
-  
+      }
+
       // Mark the message as read if it’s relevant
       if (selectedUser?._id === newMessage.senderId) {
         markRead(newMessage._id);
       }
     });
 
-    return () => socket?.off('newMessage');
+    return () => socket?.off("newMessage");
   }, [socket, messages, setMessages]);
 
   useEffect(() => {
@@ -79,14 +88,14 @@ const AdminChat = () => {
       const parentElement = lastMessageRef.current.parentElement;
       parentElement.scrollTo({
         top: 0,
-        behavior: 'smooth',
+        behavior: "smooth",
       });
 
       // Scroll the child element (or the container) to the bottom
       const childElement = lastMessageRef.current;
       childElement.scrollIntoView({
-        behavior: 'smooth',
-        block: 'end',
+        behavior: "smooth",
+        block: "end",
       });
     }
   }, [messages]);
@@ -97,7 +106,7 @@ const AdminChat = () => {
         setUnread(res?.data.unreadMessages);
       })
       .catch((err) => {
-        console.log('noti err:', err);
+        err;
       });
   }, [selectedUser]);
 
@@ -109,7 +118,10 @@ const AdminChat = () => {
       const userMessages = res.data.messages.map((message) => ({
         text: message.message,
         sender: message.senderId,
-        time: new Date(message.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        time: new Date(message.updatedAt).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
       }));
 
       setMessages(userMessages);
@@ -128,7 +140,7 @@ const AdminChat = () => {
         });
       });
     } catch (err) {
-      console.log('Error fetching messages:', err);
+      err;
     } finally {
       setMessageLoading(false);
     }
@@ -136,22 +148,27 @@ const AdminChat = () => {
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (newMessage.trim() === '') return;
+    if (newMessage.trim() === "") return;
 
     try {
       const res = await sendMessage(selectedUser._id, { message: newMessage });
 
       if (res.data.success) {
-        setMessages([...messages, {
-          text: res.data.newMessage.message,
-          sender: res.data.newMessage.senderId,
-          time: new Date(res.data.newMessage.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }]);
+        setMessages([
+          ...messages,
+          {
+            text: res.data.newMessage.message,
+            sender: res.data.newMessage.senderId,
+            time: new Date(res.data.newMessage.updatedAt).toLocaleTimeString(
+              [],
+              { hour: "2-digit", minute: "2-digit" }
+            ),
+          },
+        ]);
       }
 
-      setNewMessage('');
+      setNewMessage("");
     } catch (err) {
-      console.log('Error sending message:', err);
       Failed(err.message);
     }
   };
@@ -159,7 +176,7 @@ const AdminChat = () => {
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
   };
-  
+
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
@@ -169,7 +186,6 @@ const AdminChat = () => {
       <Sidebar />
       <div className="flex-1 flex flex-row">
         <div className="w-1/3 bg-white border-r p-1 overflow-y-auto">
-          
           <input
             type="text"
             value={search}
@@ -182,32 +198,47 @@ const AdminChat = () => {
               const conversation = unread?.find((conv) =>
                 conv.participants.includes(user._id)
               );
-              const unreadCount = conversation ? conversation.unreadCount[currentUser.data._id] : 0;
+              const unreadCount = conversation
+                ? conversation.unreadCount[currentUser.data._id]
+                : 0;
 
               return (
                 <li
                   key={user._id}
                   onClick={() => handleSelectUser(user)}
-                  className={`cursor-pointer p-4 ${selectedUser?._id === user._id ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`}
+                  className={`cursor-pointer p-4 ${
+                    selectedUser?._id === user._id
+                      ? "bg-blue-500 text-white"
+                      : "hover:bg-gray-100"
+                  }`}
                 >
                   <div className="flex items-center">
                     <div className="relative">
-                      <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full border-black mr-3 object-cover" />
-                      <span
-                        className={`absolute bottom-7 left-8 block w-2 h-2 rounded-full ${onlineUsers.includes(user._id) ? 'bg-green-500' : 'bg-gray-400'}`}
-                        title={onlineUsers.includes(user._id) ? 'Online' : 'Offline'}
+                      <img
+                        src={user.avatar}
+                        alt={user.name}
+                        className="w-10 h-10 rounded-full border-black mr-3 object-cover"
                       />
-                      
+                      <span
+                        className={`absolute bottom-7 left-8 block w-2 h-2 rounded-full ${
+                          onlineUsers.includes(user._id)
+                            ? "bg-green-500"
+                            : "bg-gray-400"
+                        }`}
+                        title={
+                          onlineUsers.includes(user._id) ? "Online" : "Offline"
+                        }
+                      />
                     </div>
                     <div>
                       <p className="font-semibold">{user.name}</p>
                       <p className="text-sm">{user.role}</p>
                     </div>
                     {unreadCount > 0 && (
-                        <span className=" bg-green-500 ml-auto text-white text-xs rounded-full px-2 py-1">
-                          {unreadCount}
-                        </span>
-                      )}
+                      <span className=" bg-green-500 ml-auto text-white text-xs rounded-full px-2 py-1">
+                        {unreadCount}
+                      </span>
+                    )}
                   </div>
                 </li>
               );
@@ -227,10 +258,10 @@ const AdminChat = () => {
               width="80"
               ariaLabel="discuss-loading"
               wrapperStyle={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
                 zIndex: 10,
               }}
               wrapperClass="discuss-wrapper"
@@ -238,26 +269,45 @@ const AdminChat = () => {
               backgroundColor="#F4442E"
             />
           )}
-          {selectedUser!=='null' ? (
+          {selectedUser !== "null" ? (
             <>
               <div className="flex justify-between items-center p-4 bg-white shadow-md">
-                <h1 className="text-2xl font-semibold text-gray-900 pt-3">{selectedUser.name}</h1>
+                <h1 className="text-2xl font-semibold text-gray-900 pt-3">
+                  {selectedUser.name}
+                </h1>
               </div>
               <div className="flex-1 p-4 overflow-y-auto mb-1">
-                {(!messageLoading&&messages?.length > 0) ? (
+                {!messageLoading && messages?.length > 0 ? (
                   messages.map((message, index) => (
-                    <div key={index} className={`flex ${message.sender === currentUser.data._id ? 'justify-end' : 'justify-start'}`}>
+                    <div
+                      key={index}
+                      className={`flex ${
+                        message.sender === currentUser.data._id
+                          ? "justify-end"
+                          : "justify-start"
+                      }`}
+                    >
                       <div
-                        ref={index === messages.length - 1 ? lastMessageRef : null}
-                        className={`max-w-xs md:max-w-md lg:max-w-lg p-3 my-2 rounded-lg shadow-md ${message.sender === currentUser.data._id ? 'bg-blue-500 text-white' : 'bg-gray-300 border'}`}
+                        ref={
+                          index === messages.length - 1 ? lastMessageRef : null
+                        }
+                        className={`max-w-xs md:max-w-md lg:max-w-lg p-3 my-2 rounded-lg shadow-md ${
+                          message.sender === currentUser.data._id
+                            ? "bg-blue-500 text-white"
+                            : "bg-gray-300 border"
+                        }`}
                       >
-                        <p className='mb-2'>{message.text}</p>
-                        <span className="text-xs text-gray-600">{message.time}</span>
+                        <p className="mb-2">{message.text}</p>
+                        <span className="text-xs text-gray-600">
+                          {message.time}
+                        </span>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <p className='text-center mt-16'>{messageLoading?'fetching Messages...':'No messages'}</p>
+                  <p className="text-center mt-16">
+                    {messageLoading ? "fetching Messages..." : "No messages"}
+                  </p>
                 )}
               </div>
               <div className="bg-white border-t p-4">

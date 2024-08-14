@@ -13,7 +13,14 @@ const initialValues = {
   projectLink: null,
 };
 
-const AddCompletedProjectLinkModal = ({ isOpen, handleClose, work, committed, setCommitted, setUploading }) => {
+const AddCompletedProjectLinkModal = ({
+  isOpen,
+  handleClose,
+  work,
+  committed,
+  setCommitted,
+  setUploading,
+}) => {
   const formik = useFormik({
     initialValues,
     validationSchema: projectLinkSchema,
@@ -42,12 +49,10 @@ const AddCompletedProjectLinkModal = ({ isOpen, handleClose, work, committed, se
           const updatedWorkData = [...committed];
           updatedWorkData[work.key].projectLink = fileUrl;
           setCommitted(updatedWorkData);
-          Success('Project link updated successfully');
+          Success("Project link updated successfully");
         }
-
       } catch (err) {
-        console.log('Error adding project link:', err);
-        Failed('Failed to update project link');
+        Failed("Failed to update project link");
       } finally {
         actions.resetForm();
         setUploading(false);
@@ -73,14 +78,23 @@ const AddCompletedProjectLinkModal = ({ isOpen, handleClose, work, committed, se
         >
           <IoMdClose className="h-6 w-6" />
         </button>
-        <h2 id="add-project-link-title" className="text-2xl font-semibold mb-6 text-center text-gray-800">
+        <h2
+          id="add-project-link-title"
+          className="text-2xl font-semibold mb-6 text-center text-gray-800"
+        >
           Add Project Link
         </h2>
 
-        <form onSubmit={formik.handleSubmit} aria-labelledby="add-project-link-title">
+        <form
+          onSubmit={formik.handleSubmit}
+          aria-labelledby="add-project-link-title"
+        >
           <div className="grid grid-cols-1 gap-6 mb-6">
             <div>
-              <label htmlFor="projectLink" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="projectLink"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Upload ZIP File
               </label>
               <input
@@ -88,15 +102,25 @@ const AddCompletedProjectLinkModal = ({ isOpen, handleClose, work, committed, se
                 name="projectLink"
                 type="file"
                 accept=".zip"
-                onChange={(event) => formik.setFieldValue('projectLink', event.currentTarget.files[0])}
+                onChange={(event) =>
+                  formik.setFieldValue(
+                    "projectLink",
+                    event.currentTarget.files[0]
+                  )
+                }
                 onBlur={formik.handleBlur}
                 className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
               />
-              {formik.errors.projectLink && formik.touched.projectLink && <ShowError Error={formik.errors.projectLink} />}
+              {formik.errors.projectLink && formik.touched.projectLink && (
+                <ShowError Error={formik.errors.projectLink} />
+              )}
             </div>
           </div>
           <div className="flex justify-end">
-            <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-200">
+            <button
+              type="submit"
+              className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-200"
+            >
               Submit
             </button>
           </div>

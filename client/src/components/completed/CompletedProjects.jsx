@@ -16,9 +16,6 @@ import PaymentSuccess from "../PaymentSuccess";
 import PaymentFailed from "../PaymentFailed";
 import PaymentIdCard from "../PaymentIdCard";
 import WorkDetails from "./workDetails";
-import { CiEdit } from "react-icons/ci";
-import { MdDeleteOutline } from "react-icons/md";
-import EditReviewModal from "./EditReviewModal";
 import ReviewDisplay from "./ReviewDisplay";
 import { FiHelpCircle } from "react-icons/fi";
 import ChatBox from "../committed/ChatBox";
@@ -41,8 +38,8 @@ const CompletedProjects = () => {
   const itemsPerPage = 10;
   const { currentUser } = useSelector((state) => state.user);
   const [isChatBoxVisible, setChatBoxVisible] = useState(false);
-  const [adminId, setAdminId] = useState('');
-  const [receiverId, setReceiverId] = useState('');
+  const [adminId, setAdminId] = useState("");
+  const [receiverId, setReceiverId] = useState("");
 
   useEffect(() => {
     const getCompletedProjects = async () => {
@@ -52,15 +49,14 @@ const CompletedProjects = () => {
           itemsPerPage,
           search
         );
-        const { data, totalPages, totalItems,adminId } = res.data;
+        const { data, totalPages, totalItems, adminId } = res.data;
 
         setCompleted(data);
         setTotalPages(totalPages);
         setTotalItems(totalItems);
-        setAdminId(adminId)
+        setAdminId(adminId);
         window.scrollTo({ top: 0, behavior: "smooth" });
       } catch (err) {
-        console.log("completedErr:", err);
       } finally {
         setLoading(false);
       }
@@ -76,11 +72,9 @@ const CompletedProjects = () => {
   };
 
   const handleChatClick = () => {
-
-      setReceiverId(adminId);
+    setReceiverId(adminId);
     setChatBoxVisible(true);
   };
-
 
   const handleRequestPayment = async (paymentId, key) => {
     try {
@@ -99,9 +93,7 @@ const CompletedProjects = () => {
         setCompleted(updatedWorkData);
         Success(res.data.message);
       }
-    } catch (err) {
-      console.log("err at upi:", err);
-    }
+    } catch (err) {}
   };
 
   const handleSubmitReview = async (clientId, developerId, workId, key) => {
@@ -140,9 +132,7 @@ const CompletedProjects = () => {
         setCompleted(updatedWorkData);
         Success(res.data.message);
       }
-    } catch (err) {
-      console.log("err at review:", err);
-    }
+    } catch (err) {}
   };
 
   const handlePayment = async (amount, paymentId, key) => {
@@ -416,11 +406,14 @@ const CompletedProjects = () => {
           </div>
         ))
       )}
-      <div className='fixed bottom-3 right-0'>
-                    <button onClick={ handleChatClick} className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-500 focus:outline-none transition duration-200">
-                      <FiHelpCircle className='w-8 h-8' />
-                    </button>
-                  </div>
+      <div className="fixed bottom-3 right-0">
+        <button
+          onClick={handleChatClick}
+          className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-500 focus:outline-none transition duration-200"
+        >
+          <FiHelpCircle className="w-8 h-8" />
+        </button>
+      </div>
       {isChatBoxVisible && (
         <div className="fixed right-3 bottom-4 bg-white shadow-lg border-l border-gray-300 flex flex-col z-50">
           <ChatBox receiver={receiverId} close={setChatBoxVisible} />
