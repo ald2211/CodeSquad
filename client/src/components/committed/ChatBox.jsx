@@ -3,11 +3,13 @@ import { useSelector } from "react-redux";
 import { getAllMessages, sendMessage } from "../../api/service";
 import { Failed } from "../../helper/popup";
 import { useSocketContext } from "../../context/socketContext";
+import { Discuss } from "react-loader-spinner";
 
 const ChatBox = ({ receiver, close }) => {
   const { currentUser } = useSelector((state) => state.user);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const [messageLoading,setMessageLoading]=useState(false)
   const lastMessageRef = useRef(null);
   const { socket } = useSocketContext();
 
@@ -27,6 +29,7 @@ const ChatBox = ({ receiver, close }) => {
   }, [socket, setMessages, messages]);
 
   useEffect(() => {
+    setMessageLoading(true)
     getAllMessages(receiver)
       .then((res) => {
         const userMessages = res.data.messages.map((message) => ({
@@ -38,6 +41,9 @@ const ChatBox = ({ receiver, close }) => {
       })
       .catch((err) => {
         Failed(err.message);
+      })
+      .finally(() => {
+        setMessageLoading(false); 
       });
   }, []);
 
@@ -83,33 +89,46 @@ const ChatBox = ({ receiver, close }) => {
         </button>
       </div>
 
-      {/* Chat Messages */}
-      <div className="p-4 h-80 overflow-y-auto space-y-3">
-        {messages?.length > 0 ? (
-          messages.map((message, index) => {
-            const messageTime = new Date(message.time).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            });
-            return (
-              <div
-                key={index}
-                className={` px-4 py-2 rounded-lg ${
-                  message.sender === currentUser.data._id
-                    ? "bg-indigo-100 self-end text-right ml-auto max-w-fit"
-                    : "bg-gray-200 self-start text-left max-w-fit"
-                }`}
-              >
-                <div className="text-sm">{message.text}</div>
-                <div className="text-xs text-gray-500">{messageTime}</div>
-                {index === messages.length - 1 && <div ref={lastMessageRef} />}
-              </div>
-            );
-          })
-        ) : (
-          <h1 className="text-center mt-14">Drop a message</h1>
-        )}
-      </div>
+     {/* Chat Messages */}
+<div className="p-4 h-80 overflow-y-auto relative">
+  {messageLoading ? (
+    <div className="flex items-center justify-center h-full">
+      <Discuss
+        visible={true}
+        height={80}
+        width={80}
+        ariaLabel="discuss-loading"
+        wrapperClass="discuss-wrapper"
+        color="#4F46E5" 
+        backgroundColor="#E0E7FF" 
+      />
+    </div>
+  ) : messages?.length > 0 ? (
+    messages.map((message, index) => {
+      const messageTime = new Date(message.time).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      return (
+        <div
+          key={index}
+          className={` px-4 py-2 rounded-lg ${
+            message.sender === currentUser.data._id
+              ? "bg-indigo-100 self-end text-right ml-auto max-w-fit my-2"
+              : "bg-gray-200 self-start text-left max-w-fit my-2"
+          }`}
+        >
+          <div className="text-sm">{message.text}</div>
+          <div className="text-xs text-gray-500">{messageTime}</div>
+          {index === messages.length - 1 && <div ref={lastMessageRef} />}
+        </div>
+      );
+    })
+  ) : (
+    <h1 className="text-center mt-14">Drop a message</h1>
+  )}
+</div>
+
 
       {/* Chat Input */}
       <form onSubmit={handleSendMessage}>

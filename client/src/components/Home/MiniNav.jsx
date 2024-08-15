@@ -32,9 +32,9 @@ const MiniNav = ({ setMiniNavFilter }) => {
             className="bg-white ml-2 text-black border border-black px-1 py-1 text-sm rounded-md cursor-pointer "
             onChange={(e) => handleFilterChange(e.target.value)}
           >
-            <option value="projects">Projects</option>
-            <option value="recent">Recent</option>
-            <option value="saved">Saved</option>
+            <option value="projects">Preferred Projects</option>
+            <option value="recent">Recently Added</option>
+            <option value="saved">Saved Projects</option>
           </select>
         </>
       ) : (

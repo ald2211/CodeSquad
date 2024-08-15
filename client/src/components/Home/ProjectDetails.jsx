@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { CiBookmark } from "react-icons/ci";
-import { FaBookmark } from "react-icons/fa";
+import { FaBookmark, FaSpinner } from "react-icons/fa";
 import BidsModal from "./BidsModal";
 import AddProjectModal from "./AddProjectModal"; // Import the modal
 import { useDispatch, useSelector } from "react-redux";
@@ -33,6 +33,7 @@ const ProjectDetails = ({ filterSearch, sortSearch }) => {
   const dispatch = useDispatch();
   const [selectedId, setSelectedId] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [bookmarkLoading, setBookmarkLoading] = useState(false);
 
   // Pagination and filter related
   const [search, setSearch] = useState("");
@@ -40,7 +41,7 @@ const ProjectDetails = ({ filterSearch, sortSearch }) => {
   const [currentPage, setCurrentPage] = useState(1); // Track current page
   const [totalPages, setTotalPages] = useState(1); // Total number of pages
   const [totalItems, setTotalItems] = useState(0); // Total number of items
-  const itemsPerPage = 10; // Number of items per page
+  const itemsPerPage = 6; // Number of items per page
 
   // Function to handle page change and scroll to top
   const paginate = (pageNumber) => {
@@ -113,10 +114,15 @@ const ProjectDetails = ({ filterSearch, sortSearch }) => {
 
   //handle bookmark
   const handleBookMark = async (workNumber) => {
+    setBookmarkLoading(true);
     try {
       const res = await handlebookMark(workNumber);
       dispatch(updateWorkSuccess(res.data.data.data));
-    } catch (err) {}
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setBookmarkLoading(false);
+    }
   };
 
   const handleDelete = async (workNumber) => {
@@ -148,7 +154,13 @@ const ProjectDetails = ({ filterSearch, sortSearch }) => {
               >
                 {currentUser.data.role === "developer" ? (
                   <button className="absolute top-4 right-4">
-                    {work.bookMarks.includes(currentUser.data._id) ? (
+                    {bookmarkLoading ? (
+                      <div className="loader">
+                        {" "}
+                        {/* You can style or use any loader/spinner component here */}
+                        <FaSpinner className="animate-spin w-6 h-6 text-blue-700" />
+                      </div>
+                    ) : work.bookMarks.includes(currentUser.data._id) ? (
                       <FaBookmark
                         onClick={() => handleBookMark(work.workNumber)}
                         className="text-blue-700 w-6 h-6 hover:text-blue-600"

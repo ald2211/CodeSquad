@@ -69,7 +69,6 @@ class workSerivice {
   }
 
   async updateWork(role, workId, workData, clientId) {
-    console.log("UpdateworkData:", workData);
     const updateWorkData = {
       workName: workData.projectName,
       workType: workData.type,
@@ -172,7 +171,6 @@ class workSerivice {
   }
 
   async acceptDeveloperBid(role, Id, work) {
-    console.log("weeee:", work);
     let finalAmount;
     if (work.workType === "hourly") {
       finalAmount = work.developer.bidAmount * 8 * work.developer.deliveryTime;

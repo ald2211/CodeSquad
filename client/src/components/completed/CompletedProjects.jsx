@@ -189,7 +189,7 @@ const CompletedProjects = () => {
       ) : completed?.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-[380px] text-center">
           <TbHourglassEmpty className="w-12 h-12 text-gray-500" />
-          <p className="text-gray-600">No committed projects found</p>
+          <p className="text-gray-600">No completed projects found</p>
         </div>
       ) : (
         completed.map((work, index) => (
@@ -291,7 +291,7 @@ const CompletedProjects = () => {
                 <p className="text-gray-600">
                   Total Amount: ₹{work.paymentId?.finalAmount}
                 </p>
-                {currentUser.data.role === "developer" && (
+                {(currentUser.data.role === "developer" && work?.paymentId?.developerPayment!=='completed')&& (
                   <>
                     {work.paymentId.upi && (
                       <p className="text-black mt-2 font-semibold ">

@@ -71,7 +71,7 @@ const DeveloperProfile = () => {
   }, [file]);
 
   const handleFileUpload = (file) => {
-    dispatch(processStart());
+    setDataLoading(true)
     const storage = getStorage(app);
     const fileName = new Date().getTime() + "_" + file.name;
     const storageRef = ref(storage, `avatar/${fileName}`);
@@ -102,7 +102,9 @@ const DeveloperProfile = () => {
           dispatch(updateUserSuccess(data));
           Success("profile image updated Successfully");
         } catch (err) {
-          dispatch(processFailed());
+          err
+        }finally{
+          setDataLoading(false)
         }
       }
     );
