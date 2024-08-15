@@ -4,7 +4,7 @@ import { FiEdit, FiTrash } from "react-icons/fi";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { Failed, Success } from "../../helper/popup";
-import axios from "axios";
+import { ThreeDots } from "react-loader-spinner";
 import { experienceSchema } from "../../schemas";
 import { MdPostAdd } from "react-icons/md";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
@@ -24,6 +24,7 @@ const ExperienceSection = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [newExp, setNewExp] = useState(false);
+  const [expLoading,setExpLoading]=useState(false);
   const dispatch = useDispatch();
 
   const initialValues = {
@@ -35,11 +36,13 @@ const ExperienceSection = () => {
   };
 
   useEffect(() => {
+    setExpLoading(true)
     getExperience()
       .then((response) => {
         dispatch(updateExperienceSuccess(response.data));
       })
-      .catch((err) => console.log("fetchErrrorExp:", err));
+      .catch((err) => console.log("fetchErrrorExp:", err))
+      .finally(()=>setExpLoading(false))
   }, []);
 
   const openEditModal = (experience) => {
@@ -65,12 +68,15 @@ const ExperienceSection = () => {
   const handleDelete = async (id) => {
     try {
       closeDeleteModal();
+      setExpLoading(true)
       const res = await deleteExperience(id);
       const data = res.data;
       dispatch(updateExperienceSuccess(data));
       Success(data.message);
     } catch (err) {
       console.log(err);
+    }finally{
+      setExpLoading(false)
     }
   };
 
@@ -88,6 +94,7 @@ const ExperienceSection = () => {
     onSubmit: async (values, action) => {
       try {
         closeEditModal();
+        setExpLoading(true)
         let res;
         if (!newExp) {
           res = await editExperience(
@@ -104,6 +111,8 @@ const ExperienceSection = () => {
         action.resetForm();
       } catch (err) {
         console.log(err);
+      } finally{
+        setExpLoading(false)
       }
     },
   });
@@ -130,78 +139,91 @@ const ExperienceSection = () => {
 
   return (
     <>
-      <div className="p-6 bg-gray-100 rounded-lg shadow-md mt-4 relative ">
-        <h2 className="text-2xl font-semibold mb-2">Experience</h2>
-        {currentExperience?.data?.length > 0 ? (
-          <>
-            {currentExperience.data?.map((exp, index) => (
-              <div
-                key={index}
-                className="mb-4 p-4 bg-gray-50 rounded-lg relative"
-              >
-                <div className="grid grid-cols-2 border-[3px] p-4">
-                  <div className="mb-2">
-                    <h3 className="text-xl font-medium">Job Title</h3>
-                    <p className="text-gray-700">{exp.jobTitle}</p>
-                  </div>
-                  <div className="mb-2">
-                    <h3 className="text-xl font-medium">Company Name</h3>
-                    <p className="text-gray-700">{exp.company}</p>
-                  </div>
-                  <div className="mb-2">
-                    <h3 className="text-xl font-medium">Company Location</h3>
-                    <p className="text-gray-700">{exp.location}</p>
-                  </div>
-                  <div className="mb-2">
-                    <h3 className="text-xl font-medium">Duration</h3>
-                    <p className="text-gray-700">
-                      {exp.startDate.split("T")[0]} to{" "}
-                      {exp.endDate.split("T")[0]}
-                    </p>
-                  </div>
-                </div>
-                <div className="absolute top-6 right-6 flex space-x-2">
-                  <FiEdit
-                    className="h-6 w-6  hover:text-blue-500 cursor-pointer"
-                    onClick={() => {
-                      setNewExp(false);
-                      openEditModal(exp);
-                    }}
-                  />
-                  <FiTrash
-                    className="h-6 w-6  hover:text-red-500 cursor-pointer"
-                    onClick={() => openDeleteModal(exp._id)}
-                  />
-                </div>
+      <div className="p-6 bg-gray-100 rounded-lg shadow-md mt-4 relative">
+  <h2 className="text-2xl font-semibold mb-2">Experience</h2>
+
+  {expLoading ? (
+    <div className="w-full h-full flex flex-col items-center justify-center">
+      <ThreeDots
+        visible={true}
+        height="80"
+        width="80"
+        color="#3333ff"
+        ariaLabel="three-dots-loading"
+      />
+    </div>
+  ) : (
+    <>
+      {currentExperience?.data?.length > 0 ? (
+        currentExperience.data.map((exp, index) => (
+          <div
+            key={index}
+            className="mb-4 p-4 bg-gray-50 rounded-lg relative"
+          >
+            <div className="grid grid-cols-2 border-[3px] p-4">
+              <div className="mb-2">
+                <h3 className="text-xl font-medium">Job Title</h3>
+                <p className="text-gray-700">{exp.jobTitle}</p>
               </div>
-            ))}
-          </>
-        ) : (
-          <>
-            <HiOutlineDocumentAdd
-              className=" absolute top-[3%] right-[1%] h-8 w-8 hover:text-blue-500"
-              onClick={() => {
-                setNewEdu(true);
-                openEditModal(exp);
-              }}
-            />
-            <MdPostAdd
-              onClick={() => {
-                openEditModal();
-                setNewExp(true);
-              }}
-              className="m-auto h-9 w-9 hover:text-blue-600"
-            />
-          </>
-        )}
-        <HiOutlineDocumentAdd
-          className=" absolute top-[3%] right-[1%] h-8 w-8 hover:text-blue-500"
-          onClick={() => {
-            openEditModal();
-            setNewExp(true);
-          }}
-        />
-      </div>
+              <div className="mb-2">
+                <h3 className="text-xl font-medium">Company Name</h3>
+                <p className="text-gray-700">{exp.company}</p>
+              </div>
+              <div className="mb-2">
+                <h3 className="text-xl font-medium">Company Location</h3>
+                <p className="text-gray-700">{exp.location}</p>
+              </div>
+              <div className="mb-2">
+                <h3 className="text-xl font-medium">Duration</h3>
+                <p className="text-gray-700">
+                  {exp.startDate.split("T")[0]} to {exp.endDate.split("T")[0]}
+                </p>
+              </div>
+            </div>
+            <div className="absolute top-6 right-6 flex space-x-2">
+              <FiEdit
+                className="h-6 w-6 hover:text-blue-500 cursor-pointer"
+                onClick={() => {
+                  setNewExp(false);
+                  openEditModal(exp);
+                }}
+              />
+              <FiTrash
+                className="h-6 w-6 hover:text-red-500 cursor-pointer"
+                onClick={() => openDeleteModal(exp._id)}
+              />
+            </div>
+          </div>
+        ))
+      ) : (
+        <>
+          <HiOutlineDocumentAdd
+            className="absolute top-[3%] right-[1%] h-8 w-8 hover:text-blue-500"
+            onClick={() => {
+              setNewExp(true);
+              openEditModal();
+            }}
+          />
+          <MdPostAdd
+            onClick={() => {
+              openEditModal();
+              setNewExp(true);
+            }}
+            className="m-auto h-9 w-9 hover:text-blue-600"
+          />
+        </>
+      )}
+      <HiOutlineDocumentAdd
+        className="absolute top-[3%] right-[1%] h-8 w-8 hover:text-blue-500"
+        onClick={() => {
+          openEditModal();
+          setNewExp(true);
+        }}
+      />
+    </>
+  )}
+</div>
+
 
       {/* Edit Modal */}
       <Modal

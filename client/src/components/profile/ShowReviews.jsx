@@ -2,18 +2,23 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { getReviews } from "../../api/service";
 import { FaStar } from "react-icons/fa";
+import { ThreeDots } from "react-loader-spinner";
 
 const ShowReview = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [reviews, setReviews] = useState([]);
+  const [reviewsLoading,setReviewsLoading]=useState(false)
 
   useEffect(() => {
     const fetchReviews = async () => {
       try {
+        setReviewsLoading(true)
         const res = await getReviews(currentUser.data._id);
         setReviews(res.data.reviews);
       } catch (error) {
         error;
+      } finally{
+        setReviewsLoading(false)
       }
     };
 
@@ -36,7 +41,21 @@ const ShowReview = () => {
 
   return (
     <div className="p-6 bg-gray-100 rounded-lg shadow-md mt-4 relative">
-      <h2 className="text-2xl font-semibold mb-4">Reviews</h2>
+  <h2 className="text-2xl font-semibold mb-4">Reviews</h2>
+  
+  {reviewsLoading ? (
+    <div className="w-full h-full flex flex-col items-center justify-center">
+      <ThreeDots
+        visible={true}
+        height="80"
+        width="80"
+        color="#3333ff"
+        ariaLabel="three-dots-loading"
+      />
+      <h1 className="text-xl font-semibold mt-4">Loading Reviews...</h1>
+    </div>
+  ) : (
+    <>
       {reviews?.length > 0 ? (
         reviews.map((review) => (
           <div
@@ -68,7 +87,10 @@ const ShowReview = () => {
       ) : (
         <p>No reviews available.</p>
       )}
-    </div>
+    </>
+  )}
+</div>
+
   );
 };
 

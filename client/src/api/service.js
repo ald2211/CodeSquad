@@ -546,7 +546,7 @@ export const AcceptBid = async (developer, workNumber, workType) => {
   try {
     const res = await axiosInstance.patch(
       `/user/bid/accept`,
-      { developer, workNumber },
+      { developer, workNumber,workType },
       { headers: defaultHeaders }
     );
     return res;

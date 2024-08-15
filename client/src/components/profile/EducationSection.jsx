@@ -8,6 +8,7 @@ import { educationSchema } from "../../schemas";
 import { MdPostAdd } from "react-icons/md";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
 import { updateEducationSuccess } from "../../Redux/user/userSlice";
+import { ThreeDots } from "react-loader-spinner";
 import {
   addEducation,
   deleteEducation,
@@ -23,6 +24,7 @@ const EducationSection = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [newEdu, setNewEdu] = useState(false);
+  const [eduLoading,setEduLoading]=useState(false)
   const dispatch = useDispatch();
   const initialValues = {
     courseName: "",
@@ -33,11 +35,13 @@ const EducationSection = () => {
   };
 
   useEffect(() => {
+    setEduLoading(true)
     getEducation()
       .then((response) => {
         dispatch(updateEducationSuccess(response.data));
       })
-      .catch((err) => console.log("errfetch:", err));
+      .catch((err) => console.log("errfetch:", err))
+      .finally(()=>setEduLoading(false))
   }, []);
 
   const openEditModal = (education) => {
@@ -62,12 +66,15 @@ const EducationSection = () => {
   const handleDelete = async (id) => {
     try {
       closeDeleteModal();
+      setEduLoading(true)
       const res = await deleteEducation(id);
       const data = res.data;
       dispatch(updateEducationSuccess(data));
       Success(data.message);
     } catch (err) {
       console.log(err);
+    }finally{
+      setEduLoading(false)
     }
   };
 
@@ -85,6 +92,7 @@ const EducationSection = () => {
     onSubmit: async (values, action) => {
       try {
         closeEditModal();
+        setEduLoading(true)
         let res;
         if (!newEdu) {
           res = await editEducation(
@@ -102,6 +110,8 @@ const EducationSection = () => {
         action.resetForm();
       } catch (err) {
         err;
+      }finally{
+        setEduLoading(false)
       }
     },
   });
@@ -128,78 +138,91 @@ const EducationSection = () => {
 
   return (
     <>
-      <div className="p-6 bg-gray-100 rounded-lg shadow-md mt-4 relative ">
-        <h2 className="text-2xl font-semibold mb-2">Education</h2>
-        {currentEducation?.data?.length > 0 ? (
-          <>
-            {currentEducation.data?.map((edu, index) => (
-              <div
-                key={index}
-                className="mb-4 p-4 bg-gray-50 rounded-lg relative"
-              >
-                <div className="grid grid-cols-2 border-[3px] p-4">
-                  <div className="mb-2">
-                    <h3 className="text-xl font-medium">Course Name</h3>
-                    <p className="text-gray-700">{edu.courseName}</p>
-                  </div>
-                  <div className="mb-2">
-                    <h3 className="text-xl font-medium">College Name</h3>
-                    <p className="text-gray-700">{edu.collegeName}</p>
-                  </div>
-                  <div className="mb-2">
-                    <h3 className="text-xl font-medium">Country</h3>
-                    <p className="text-gray-700">{edu.country}</p>
-                  </div>
-                  <div className="mb-2">
-                    <h3 className="text-xl font-medium">Duration</h3>
-                    <p className="text-gray-700">
-                      {edu.startDate.split("T")[0]} to{" "}
-                      {edu.endDate.split("T")[0]}
-                    </p>
-                  </div>
-                </div>
-                <div className="absolute top-6 right-6 flex space-x-2">
-                  <FiEdit
-                    className="h-6 w-6  hover:text-blue-500 cursor-pointer"
-                    onClick={() => {
-                      setNewEdu(false);
-                      openEditModal(edu);
-                    }}
-                  />
-                  <FiTrash
-                    className="h-6 w-6  hover:text-red-500 cursor-pointer"
-                    onClick={() => openDeleteModal(edu._id)}
-                  />
-                </div>
+      <div className="p-6 bg-gray-100 rounded-lg shadow-md mt-4 relative">
+  <h2 className="text-2xl font-semibold mb-2">Education</h2>
+
+  {eduLoading ? (
+    <div className="w-full h-full flex flex-col items-center justify-center">
+      <ThreeDots
+        visible={true}
+        height="80"
+        width="80"
+        color="#3333ff"
+        ariaLabel="three-dots-loading"
+      />
+    </div>
+  ) : (
+    <>
+      {currentEducation?.data?.length > 0 ? (
+        currentEducation.data.map((edu, index) => (
+          <div
+            key={index}
+            className="mb-4 p-4 bg-gray-50 rounded-lg relative"
+          >
+            <div className="grid grid-cols-2 border-[3px] p-4">
+              <div className="mb-2">
+                <h3 className="text-xl font-medium">Course Name</h3>
+                <p className="text-gray-700">{edu.courseName}</p>
               </div>
-            ))}
-          </>
-        ) : (
-          <>
-            <HiOutlineDocumentAdd
-              className=" absolute top-[3%] right-[1%] h-8 w-8 hover:text-blue-500"
-              onClick={() => {
-                setNewEdu(true);
-                openEditModal(edu);
-              }}
-            />
-            <MdPostAdd
-              onClick={() => {
-                openEditModal();
-                setNewEdu(true);
-              }}
-              className="m-auto h-9 w-9 hover:text-blue-600"
-            />
-          </>
-        )}
-        <HiOutlineDocumentAdd
-          className=" absolute top-[3%] right-[1%] h-8 w-8 hover:text-blue-500"
-          onClick={() => {
-            openEditModal();
-            setNewEdu(true);
-          }}
-        />
-      </div>
+              <div className="mb-2">
+                <h3 className="text-xl font-medium">College Name</h3>
+                <p className="text-gray-700">{edu.collegeName}</p>
+              </div>
+              <div className="mb-2">
+                <h3 className="text-xl font-medium">Country</h3>
+                <p className="text-gray-700">{edu.country}</p>
+              </div>
+              <div className="mb-2">
+                <h3 className="text-xl font-medium">Duration</h3>
+                <p className="text-gray-700">
+                  {edu.startDate.split("T")[0]} to {edu.endDate.split("T")[0]}
+                </p>
+              </div>
+            </div>
+            <div className="absolute top-6 right-6 flex space-x-2">
+              <FiEdit
+                className="h-6 w-6 hover:text-blue-500 cursor-pointer"
+                onClick={() => {
+                  setNewEdu(false);
+                  openEditModal(edu);
+                }}
+              />
+              <FiTrash
+                className="h-6 w-6 hover:text-red-500 cursor-pointer"
+                onClick={() => openDeleteModal(edu._id)}
+              />
+            </div>
+          </div>
+        ))
+      ) : (
+        <>
+          <HiOutlineDocumentAdd
+            className="absolute top-[3%] right-[1%] h-8 w-8 hover:text-blue-500"
+            onClick={() => {
+              setNewEdu(true);
+              openEditModal();
+            }}
+          />
+          <MdPostAdd
+            onClick={() => {
+              openEditModal();
+              setNewEdu(true);
+            }}
+            className="m-auto h-9 w-9 hover:text-blue-600"
+          />
+        </>
+      )}
+      <HiOutlineDocumentAdd
+        className="absolute top-[3%] right-[1%] h-8 w-8 hover:text-blue-500"
+        onClick={() => {
+          openEditModal();
+          setNewEdu(true);
+        }}
+      />
+    </>
+  )}
+</div>
+
 
       {/* Edit Modal */}
       <Modal

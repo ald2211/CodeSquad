@@ -8,6 +8,7 @@ import { projectSchema } from "../../schemas";
 import { MdPostAdd } from "react-icons/md";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
 import { updateProjectSuccess } from "../../Redux/user/userSlice";
+import { ThreeDots } from "react-loader-spinner";
 import {
   addProjects,
   deleteProjects,
@@ -25,6 +26,7 @@ const ProjectsSection = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [newProj, setNewProj] = useState(false);
+  const [projLoading,setProjLoading]=useState(false);
   const dispatch = useDispatch();
 
   const initialValues = {
@@ -33,11 +35,13 @@ const ProjectsSection = () => {
   };
 
   useEffect(() => {
+    setProjLoading(true)
     getProjects()
       .then((response) => {
         dispatch(updateProjectSuccess(response.data));
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(()=>setProjLoading(false))
   }, []);
 
   const openEditModal = (project) => {
@@ -63,6 +67,7 @@ const ProjectsSection = () => {
   const handleDelete = async (id) => {
     try {
       closeDeleteModal();
+      setProjLoading(true)
       const res = await deleteProjects(id);
       const data = res.data;
 
@@ -70,6 +75,8 @@ const ProjectsSection = () => {
       Success(data.message);
     } catch (err) {
       console.log(err);
+    }finally{
+      setProjLoading(false);
     }
   };
 
@@ -87,6 +94,7 @@ const ProjectsSection = () => {
     onSubmit: async (values, action) => {
       try {
         closeEditModal();
+        setProjLoading(true)
         let res;
         if (!newProj) {
           res = await editProjects(
@@ -103,6 +111,8 @@ const ProjectsSection = () => {
         action.resetForm();
       } catch (err) {
         console.log(err);
+      }finally{
+        setProjLoading(false)
       }
     },
   });
@@ -124,59 +134,75 @@ const ProjectsSection = () => {
   return (
     <>
       <div className="p-6 bg-gray-100 rounded-lg shadow-md mt-4 relative">
-        <h2 className="text-2xl font-semibold mb-2">Projects</h2>
-        {currentProjects?.data?.length > 0 ? (
-          <>
-            {currentProjects?.data?.map((proj, index) => (
-              <div
-                key={index}
-                className="border-[3px] mb-4 p-4 bg-gray-50 rounded-lg relative"
-              >
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <h3 className="text-xl font-medium">Project Name</h3>
-                    <p className="text-gray-700">{proj.projectName}</p>
-                  </div>
-                  <div className="col-span-2">
-                    <h3 className="text-xl font-medium">Summary</h3>
-                    <p className="text-gray-700">{proj.projectSummary}</p>
-                  </div>
+  <h2 className="text-2xl font-semibold mb-2">Projects</h2>
+
+  {projLoading ? (
+    <div className="w-full h-full flex flex-col items-center justify-center">
+      <ThreeDots
+        visible={true}
+        height="80"
+        width="80"
+        color="#3333ff"
+        ariaLabel="three-dots-loading"
+      />
+    </div>
+  ) : (
+    <>
+      {currentProjects?.data?.length > 0 ? (
+        <>
+          {currentProjects.data.map((proj, index) => (
+            <div
+              key={index}
+              className="border-[3px] mb-4 p-4 bg-gray-50 rounded-lg relative"
+            >
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h3 className="text-xl font-medium">Project Name</h3>
+                  <p className="text-gray-700">{proj.projectName}</p>
                 </div>
-                <div className="absolute top-6 right-6 flex space-x-2">
-                  <FiEdit
-                    className="h-6 w-6  hover:text-blue-500 cursor-pointer"
-                    onClick={() => {
-                      setNewProj(false);
-                      openEditModal(proj);
-                    }}
-                  />
-                  <FiTrash
-                    className="h-6 w-6  hover:text-red-500 cursor-pointer"
-                    onClick={() => openDeleteModal(proj._id)}
-                  />
+                <div className="col-span-2">
+                  <h3 className="text-xl font-medium">Summary</h3>
+                  <p className="text-gray-700">{proj.projectSummary}</p>
                 </div>
               </div>
-            ))}
-          </>
-        ) : (
-          <>
-            <MdPostAdd
-              onClick={() => {
-                openEditModal();
-                setNewProj(true);
-              }}
-              className="m-auto h-9 w-9 hover:text-blue-600 cursor-pointer"
-            />
-          </>
-        )}
-        <HiOutlineDocumentAdd
-          className="absolute top-[3%] right-[1%] h-8 w-8 hover:text-blue-500 cursor-pointer"
-          onClick={() => {
-            setNewProj(true);
-            openEditModal();
-          }}
-        />
-      </div>
+              <div className="absolute top-6 right-6 flex space-x-2">
+                <FiEdit
+                  className="h-6 w-6 hover:text-blue-500 cursor-pointer"
+                  onClick={() => {
+                    setNewProj(false);
+                    openEditModal(proj);
+                  }}
+                />
+                <FiTrash
+                  className="h-6 w-6 hover:text-red-500 cursor-pointer"
+                  onClick={() => openDeleteModal(proj._id)}
+                />
+              </div>
+            </div>
+          ))}
+        </>
+      ) : (
+        <>
+          <MdPostAdd
+            onClick={() => {
+              openEditModal();
+              setNewProj(true);
+            }}
+            className="m-auto h-9 w-9 hover:text-blue-600 cursor-pointer"
+          />
+        </>
+      )}
+      <HiOutlineDocumentAdd
+        className="absolute top-[3%] right-[1%] h-8 w-8 hover:text-blue-500 cursor-pointer"
+        onClick={() => {
+          setNewProj(true);
+          openEditModal();
+        }}
+      />
+    </>
+  )}
+</div>
+
       {/* Edit Modal */}
       <Modal
         isOpen={isEditModalOpen}

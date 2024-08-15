@@ -9,10 +9,12 @@ import { updateUserSuccess } from "../../Redux/user/userSlice";
 import { MdPostAdd } from "react-icons/md";
 import { HiOutlineDocumentAdd } from "react-icons/hi";
 import { uploadSkills } from "../../api/service";
+import { ThreeDots } from "react-loader-spinner";
 
 const SkillsSection = () => {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
+  const [skillsLoading,setSkillsLoading]=useState(false);
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const skills = currentUser?.data?.skills;
@@ -23,6 +25,7 @@ const SkillsSection = () => {
       validationSchema: skillsSchema,
       onSubmit: async (values, { resetForm }) => {
         try {
+          setSkillsLoading(true)
           closeEditModal();
           const updatedSkills =
             values.skills === ""
@@ -31,12 +34,12 @@ const SkillsSection = () => {
 
           const res = await uploadSkills(currentUser.data._id, updatedSkills);
           const data = res.data;
-          console.log(data);
-
           dispatch(updateUserSuccess(data));
           Success(data.message);
         } catch (err) {
           err;
+        } finally{
+          setSkillsLoading(false)
         }
       },
     });
@@ -52,36 +55,47 @@ const SkillsSection = () => {
   return (
     <>
       <div className="p-6 bg-gray-100 rounded-lg shadow-md mt-4 relative">
-        <h2 className="text-2xl font-semibold mb-2">Skills</h2>
-        {skills && skills.length > 0 ? (
-          <div className="flex flex-wrap space-x-2 space-y-2">
-            {skills.map((skill, index) => (
-              <span
-                key={index}
-                className="bg-gray-200 px-3 py-1 rounded-md text-gray-700"
-              >
-                {skill.toUpperCase()}
-              </span>
-            ))}
-          </div>
-        ) : (
-          <MdPostAdd
-            onClick={openEditModal}
-            className="m-auto h-9 w-9 hover:text-blue-600"
-          />
-        )}
-        {skills && skills.length === 0 ? (
-          <HiOutlineDocumentAdd
-            className=" absolute top-[3%] right-[1%] h-8 w-8 hover:text-blue-500"
-            onClick={openEditModal}
-          />
-        ) : (
-          <FiEdit
-            className=" absolute top-[3%] right-[1%] h-6 w-6 hover:text-blue-500"
-            onClick={openEditModal}
-          />
-        )}
+      <h2 className="text-2xl font-semibold mb-2">Skills</h2>
+      {skillsLoading ? (
+        <div className="w-full h-full flex flex-col items-center justify-center">
+        <ThreeDots
+          visible={true}
+          height="80"
+          width="80"
+          color="#3333ff"
+          ariaLabel="three-dots-loading"
+        />
       </div>
+      ) : skills && skills.length > 0 ? (
+        <div className="flex flex-wrap space-x-2 space-y-2">
+          {skills.map((skill, index) => (
+            <span
+              key={index}
+              className="bg-gray-200 px-3 py-1 rounded-md text-gray-700"
+            >
+              {skill.toUpperCase()}
+            </span>
+          ))}
+        </div>
+      ) : (
+        <MdPostAdd
+          onClick={openEditModal}
+          className="m-auto h-9 w-9 hover:text-blue-600"
+        />
+      )}
+      {skills && skills.length === 0 ? (
+        <HiOutlineDocumentAdd
+          className="absolute top-[3%] right-[1%] h-8 w-8 hover:text-blue-500"
+          onClick={openEditModal}
+        />
+      ) : (
+        <FiEdit
+          className="absolute top-[3%] right-[1%] h-6 w-6 hover:text-blue-500"
+          onClick={openEditModal}
+        />
+      )}
+    </div>
+
 
       {/* Edit Modal */}
       <Modal

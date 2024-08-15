@@ -20,6 +20,7 @@ import WorksPagination from "./WorksPagination";
 import SearchBar from "./SearchBar";
 import MiniNav from "./MiniNav";
 import PlaceBidModal from "./PlaceABidModal";
+import { ThreeDots } from "react-loader-spinner";
 
 const ProjectDetails = ({ filterSearch, sortSearch }) => {
   const { currentUser, userWorks } = useSelector((state) => state.user);
@@ -42,6 +43,7 @@ const ProjectDetails = ({ filterSearch, sortSearch }) => {
   const [totalPages, setTotalPages] = useState(1); // Total number of pages
   const [totalItems, setTotalItems] = useState(0); // Total number of items
   const itemsPerPage = 6; // Number of items per page
+  const [dataLoading,setDataLoading]=useState(false)
 
   // Function to handle page change and scroll to top
   const paginate = (pageNumber) => {
@@ -49,6 +51,7 @@ const ProjectDetails = ({ filterSearch, sortSearch }) => {
   };
 
   const fetchWorks = async () => {
+    setDataLoading(true)
     const res = await getClientsAllWorks({
       page: currentPage,
       search,
@@ -60,6 +63,7 @@ const ProjectDetails = ({ filterSearch, sortSearch }) => {
     dispatch(updateWorkSuccess(res.data.data));
     setTotalPages(res.data.totalPages);
     setTotalItems(res.data.totalItems);
+    setDataLoading(false)
   };
 
   useEffect(() => {
@@ -138,7 +142,20 @@ const ProjectDetails = ({ filterSearch, sortSearch }) => {
     <>
       <SearchBar setSearch={setSearch} />
       <MiniNav setMiniNavFilter={setMiniNavFilter} />
-      {userWorks.length === 0 ? (
+      
+      {
+      dataLoading ? (
+        <div className="flex justify-center items-center h-[370px]  ">
+     <ThreeDots
+        visible={true}
+        height="80"
+        width="80"
+        color="#3333ff"
+        ariaLabel="three-dots-loading"
+      />
+  </div>
+      ) :
+      userWorks.length === 0 ? (
         <div className="flex flex-col items-center relative p-6 mb-6 border border-gray-300 rounded-lg bg-white shadow-md w-full max-w-4xl mx-auto">
           <TbHourglassEmpty className="w-12 h-12 mb-4 text-gray-500" />
           <p className="text-gray-600 text-center">No Projects found</p>
