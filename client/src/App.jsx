@@ -1,5 +1,6 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Public from "./pages/Public";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
@@ -9,7 +10,6 @@ import Footer from "./components/Footer";
 import Committed from "./pages/Committed";
 import Closed from "./pages/Completed";
 import ProtectedRoute from "./components/PrivateRoutes/ProtectedRoute";
-import { useSelector } from "react-redux";
 import Navbar from "./components/Navbar";
 import NotFound from "./pages/NotFound";
 import AdminOnly from "./components/PrivateRoutes/AdminOnly";
@@ -23,17 +23,28 @@ import ResetPassword from "./components/ResetPassword";
 
 const App = () => {
   const { currentUser } = useSelector((state) => state.user);
+
   return (
     <div>
       {currentUser && <Navbar />}
 
       <Routes>
-        {!currentUser && (
+        {!currentUser ? (
           <>
             <Route path="/" element={<Public />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
             <Route path="/resetPassword/:token" element={<ResetPassword />} />
+          </>
+        ) : (
+          <>
+            <Route path="/" element={<Navigate to="/home" replace />} />
+            <Route path="/signup" element={<Navigate to="/home" replace />} />
+            <Route path="/login" element={<Navigate to="/home" replace />} />
+            <Route
+              path="/resetPassword/:token"
+              element={<Navigate to="/home" replace />}
+            />
           </>
         )}
 
@@ -66,6 +77,7 @@ const App = () => {
 
         <Route path="*" element={<NotFound />} />
       </Routes>
+
       <Footer />
     </div>
   );
